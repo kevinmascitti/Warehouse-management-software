@@ -50,7 +50,18 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 | Stakeholder name  | Description | 
 | ----------------- |:-----------:|
-|   Stakeholder x..     |             | 
+|	Company	| Buys from suppliers and manages warehouses |
+|	Retailer	| Same as company but sells to the customers |
+|	Supplier	| Provides the goods |
+|	Warehouse Manager		| Supervises the warehouse |
+|	Warehouse Employee	| Works in the warehouse |
+|	Quality Office	| Performs quality checks |
+|	Software Office	| Installs, maintains, provides security controls and manages the network of the software |
+|	Organizational Unit	| Manages different aspects of the company |	
+|	System Administrator	| Manages system privileges |
+|	Transport Companies	| Ships the goods from and to the warehouse |
+|	Cloud Service	| Provides centralized database |
+
 
 # Context Diagram and interfaces
 
@@ -66,7 +77,14 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 | Actor | Logical Interface | Physical Interface  |
 | ------------- |:-------------:| -----:|
-|   Actor x..     |  |  |
+|   Software Office    | GUI | Keyboard, mouse and screen on PC |
+|   Quality Office    | GUI | Keyboard, mouse and screen on PC |
+|   Organizational Units    | GUI | Keyboard, mouse and screen on PC |
+|   System Administrator    | GUI | Keyboard, mouse and screen on PC |
+|   Warehouse Manager    | GUI | Keyboard, mouse and screen on PC |
+|   Warehouse Employee    | GUI | Keyboard, mouse and screen on PC |
+|   Cloud Service  | API | Internet |
+|   Supplier    | Email | Internet |
 
 # Stories and personas
 \<A Persona is a realistic impersonation of an actor. Define here a few personas and describe in plain text how a persona interacts with the system>
@@ -86,9 +104,43 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 | ID        | Description  |
 | ------------- |:-------------:| 
-|  FR1     |  |
-|  FR2     |   |
-| FRx..  | | 
+|  FR1     | Manage warehouse items |
+|  FR1.1     | Add item |
+|       | Delete item |
+|       | Locate item |
+|       | Modify item information |
+|       | Supplier list |
+|       |  |
+|       |  |
+|  FR2     | Manage quality check |
+|       | Define test list for each item |
+|       | Pick random item for test |
+|       | Quality check pass |
+|       | Send back faulty items |
+|       |  |
+|  FR3     | Manage external orders |
+|       | Add order and send email to supplier |
+|       | Check quantity |
+|       | Refill item stock and email supplier |
+|       |  |
+|  FR4     | Manage internal order |
+|       | Add order |
+|       | Specify pickup area |
+|       | Acknowledge fulfilled order |
+|       |  |
+|  FR5     | Manage physical space |
+|       | Check available space |
+|       | Organize inventory |
+|       |  |
+|  FR6     | Manage cloud |
+|       | Sync warehouse items |
+|       | Provide backup |
+|       |  |
+|   FR7    | Manage privileges |
+|       | Add role |
+|       | Modify role |
+|       | Remove role |
+|       |  |
 
 ## Non Functional Requirements
 
@@ -96,11 +148,13 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 | ID        | Type (efficiency, reliability, ..)           | Description  | Refers to |
 | ------------- |:-------------:| :-----:| -----:|
-|  NFR1     |   |  | |
-|  NFR2     | |  | |
-|  NFR3     | | | |
-| NFRx .. | | | | 
-
+|  NFR1     | Usability | 20 hours needed to learn using the program |  |
+|  NFR2     | Efficiency | All functions should be executed in less than 0.1 seconds |  |
+|  NFR3     | Correctness | Capability to provide correct functionality in ALL cases | |
+| NFR4 | Reliability | Mean time between failures ~ 250 hours | | 
+| NFR5 | Security | Protection from malicious users. Access only for authorized users | | 
+| NFR6 | Portability | Cross-platform interoperability | | 
+| NFR7 | Robustness | Time to restart after failure ~ 5 minutes | |  
 
 # Use case diagram and use cases
 
@@ -110,14 +164,13 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 
 \<next describe here each use case in the UCD>
-### Use case 1, UC1
-| Actors Involved        |  |
+### Use case 1, UC1 - Authentication
+| Actors Involved        | Employee |
 | ------------- |:-------------:| 
-|  Precondition     | \<Boolean expression, must evaluate to true before the UC can start> |
-|  Post condition     | \<Boolean expression, must evaluate to true after UC is finished> |
-|  Nominal Scenario     | \<Textual description of actions executed by the UC> |
-|  Variants     | \<other normal executions> |
-|  Exceptions     | \<exceptions, errors > |
+|  Precondition     | User is not authenticated |
+|  Post condition     | User is authenticated |
+|  Nominal Scenario     | User inputs username and password in GUI page |
+|  Variants     | User inputs wrong credentials |
 
 ##### Scenario 1.1 
 
@@ -142,13 +195,51 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 ##### Scenario 1.x
 
-### Use case 2, UC2
-..
+### Use case 2, UC2 - Manage Items
+| Actors Involved        | Employee |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists |
+|  Post condition     |  |
+|  Nominal Scenario     | Item is added to the warehouse |
+|  Variants     | Item already exists and it is modified |
+|	| Item already exists and it is deleted |
+|	| Item already exists and it is located |
+|	| Item already exists. Show supplier list |
+|	| Check item quantity |
+|	Exception	|	Not enough space in warehouse to add item	|
+|	|	Cannot add already existing item	|
 
-### Use case x, UCx
-..
+### Use case 3, UC3 - Manage External Orders
+| Actors Involved        | Warehouse Manager |
+| ------------- |:-------------:| 
+|  Precondition     |  |
+|  Post condition     |  |
+|  Nominal Scenario     | Manager creates order |
+|  Variants     | Existing order is modified |
+|	| Existing order is deleted |
 
+### Use case 4, UC4 - Quality Check
+| Actors Involved        | Quality Office |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists |
+|  Post condition     | Item is evaluated |
+|  Nominal Scenario     | Item passes quality check |
+|  Variants     | Item does not pass quality check |
 
+### Use case 5, UC5 - Manage privileges
+| Actors Involved        | System Administrator |
+| ------------- |:-------------:| 
+|  Precondition     | User exists |
+|  Post condition     | User has changed privileges |
+|  Nominal Scenario     | System Administrator changes user privileges |
+
+### Use case 6, UC6 - Manage Internal Orders
+| Actors Involved        | Organizational Units |
+| ------------- |:-------------:| 
+|  Precondition     | Items in order exist |
+|  Post condition     | Order has been created |
+|  Nominal Scenario     | OU creates internal order |
+|	Exception	|	Not enough items to complete order 	|
 
 # Glossary
 
