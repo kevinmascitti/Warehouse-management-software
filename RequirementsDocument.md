@@ -95,56 +95,55 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 | ID        | Description  |
 | ------------- |:-------------:| 
-|  FR1     | Manage warehouse items |
-|  FR1.1     | Add item |
-|       | Delete item |
-|       | Locate item |
-|       | Modify item information |
-|       | Supplier list |
-|       |  |
-|       |  |
-|  FR2     | Manage quality check |
-|       | Define test list for each item |
-|       | Pick random item for test |
-|       | Quality check pass |
-|       | Send back faulty items |
-|       |  |
-|  FR3     | Manage external orders |
-|       | Add order and send email to supplier |
-|       | Check quantity |
-|       | Refill item stock and email supplier |
-|       |  |
-|  FR4     | Manage internal order |
-|       | Add order |
-|       | Specify pickup area |
-|       | Acknowledge fulfilled order |
-|       |  |
-|  FR5     | Manage physical space |
-|       | Check available space |
-|       | Organize inventory |
-|       |  |
-|  FR6     | Manage cloud |
-|       | Sync warehouse items |
-|       | Provide backup |
-|       |  |
-|   FR7    | Manage privileges |
-|       | Add role |
-|       | Modify role |
-|       | Remove role |
-|       |  |
+|  FR1  | Manage warehouse items |
+| FR1.1 | Add item |
+| FR1.2 | Delete item |
+| FR1.3 | Locate item |
+| FR1.4 | Modify item information |
+| FR1.5 | Supplier list |
+|	|	|
+|  FR2  | Manage quality check |
+| FR2.1 | Define test list for each item |
+| FR2.2 | Pick random item for test |
+| FR2.3 | Quality check pass |
+| FR2.4 | Send back faulty items |
+|	|	|
+|  FR3  | Manage external orders |
+| FR3.1 | Add order and send email to supplier |
+| FR3.2 | Check quantity |
+| FR3.3 | Refill item stock and email supplier |
+|	|	|
+|  FR4  | Manage internal order |
+| FR4.1 | Add order |
+| FR4.2 | Specify pickup area |
+| FR4.3 | Acknowledge fulfilled order |
+|	|	|
+|  FR5  | Manage physical space |
+| FR5.1 | Check available space |
+| FR5.2 | Organize inventory |
+|	|	|
+|  FR6  | Manage cloud |
+| FR6.1 | Sync warehouse items |
+| FR6.2 | Provide backup |
+|	|	|
+|  FR7  | Manage privileges |
+| FR7.1 | Add role |
+| FR7.2 | Modify role |
+| FR7.3 | Remove role |
+|	|	|
 
 ## Non Functional Requirements
 
 
 | ID        | Type (efficiency, reliability, ..)           | Description  | Refers to |
 | ------------- |:-------------:| :-----:| -----:|
-|  NFR1     | Usability | 20 hours needed to learn using the program |  |
-|  NFR2     | Efficiency | All functions should be executed in less than 0.1 seconds |  |
-|  NFR3     | Correctness | Capability to provide correct functionality in ALL cases | |
+| NFR1 | Usability | 20 hours needed to learn using the program |  |
+| NFR2 | Efficiency | All functions should be executed in less than 0.1 seconds | |
+| NFR3 | Correctness | Capability to provide correct functionality in ALL cases | |
 | NFR4 | Reliability | Mean time between failures ~ 250 hours | | 
 | NFR5 | Security | Protection from malicious users. Access only for authorized users | | 
 | NFR6 | Portability | Cross-platform interoperability | | 
-| NFR7 | Robustness | Time to restart after failure ~ 5 minutes | |  
+| NFR7 | Robustness | Time to restart after failure ~ 5 minutes | |
 
 # Use case diagram and use cases
 
@@ -341,6 +340,63 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 |  Post condition     | User has changed privileges |
 |  Nominal Scenario     | System Administrator changes user privileges |
 
+##### Scenario 5.1 
+
+| Scenario | System Administrator creates role with privileges |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated |
+|  Post condition     | Role has been created |
+| Step#        | Description |
+|  1     | A creates role with certain privileges |
+
+##### Scenario 5.2 
+
+| Scenario | System Administrator removes role with privileges |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated |
+|  Post condition     | Role has been removed |
+| Step#        | Description |
+|  1     | A removes role |
+
+##### Scenario 5.3
+
+| Scenario | System Administrator adds role to User |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated |
+|  Post condition     | User is assigned a role |
+| Step#        | Description |
+|  1    | A adds role to User |
+|  2	| A informs User of the change |
+
+##### Scenario 5.4
+
+| Scenario | System Administrator removes role from User |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated |
+|  Post condition     | User has a role removed |
+| Step#        | Description |
+|  1    | A removes role from User |
+|  2	| A informs User of the change |
+
+##### Scenario 5.5
+
+| Scenario | System Administrator modifies role privileges |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated. Role exists |
+|  Post condition     | Role has modified privileges |
+| Step#        | Description |
+|  1    | A adds or removes privileges from certain role |
+
+##### Scenario 5.6 
+
+| Scenario | System Administrator tries to add role to non existing user |
+| ------------- |:-------------:| 
+|  Precondition     | Sysadmin A exists and is authenticated. |
+|  Post condition     | User roles are not changed |
+| Step#        | Description |
+|  1     | A tries to add role to a non existing user |
+|  2     | System informs A that user does not exist |
+
 ### Use case 6, UC6 - Manage Internal Orders
 | Actors Involved        | Organizational Units |
 | ------------- |:-------------:| 
@@ -348,6 +404,87 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 |  Post condition     | Order has been created |
 |  Nominal Scenario     | OU creates internal order |
 |	Exception	|	Not enough items to complete order 	|
+
+##### Scenario 6.1 
+
+| Scenario | OU creates a new internal order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | New internal order is created |
+| Step#        | Description |
+|  1     | OU adds items to the order |
+|  2     | OU defines order pickup area |
+|  3     | System checks item availability |
+|  4	 | Internal order is created |
+
+##### Scenario 6.2 
+
+| Scenario | OU updates internal order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is updated |
+| Step#        | Description |
+|  1     | OU adds or removes items from order |
+|  2     | OU defines order pickup area |
+|  3     | System checks item availability |
+|  4	 | Internal order is updated |
+
+##### Scenario 6.3 
+
+| Scenario | OU fails to update internal order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is not updated |
+| Step#        | Description |
+|  1     | OU adds or removes items from order |
+|  2     | OU defines order pickup area |
+|  3     | System checks item availability |
+|  4	 | System informs OU that order has already been completed |
+|  5	 | Internal order cannot be updated after fulfillment |
+
+##### Scenario 6.4 
+
+| Scenario | OU cancels internal order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is cancelled |
+| Step#        | Description |
+|  1     | OU cancels internal order |
+|  2     | Internal order is cancelled |
+
+##### Scenario 6.5 
+
+| Scenario | OU fails to cancel internal order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is not cancelled |
+| Step#        | Description |
+|  1     | OU cancels internal order |
+|  2     | System informs OU that order cannot be cancelled after fulfillment |
+|  3	 | Internal order is not cancelled |
+
+##### Scenario 6.6 
+
+| Scenario | OU confirms recieved order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is labeled as fulfilled |
+| Step#        | Description |
+|  1     | OU confirms order is recieved |
+|  2     | System labels order as fulfilled |
+
+##### Scenario 6.7 
+
+| Scenario | OU fails to create order |
+| ------------- |:-------------:| 
+|  Precondition     | OU is logged into the system |
+|  Post condition     | Internal order is not created |
+| Step#        | Description |
+|  1     | OU adds items to the order |
+|  2     | OU defines order pickup area |
+|  3     | System checks item availability |
+|  4	 | Items are not available |
+|  5	 | Internal order cannot be created or OU has to adjust item quanity |
 
 # Glossary
 
