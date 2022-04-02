@@ -1,7 +1,6 @@
-
  #Requirements Document 
 
-Date: 22 march 2022
+Date: 2 April 2022
 
 Version: 0.0
 
@@ -71,9 +70,6 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 \<actors are a subset of stakeholders>
 
 ## Interfaces
-\<describe here each interface in the context diagram>
-
-\<GUIs will be described graphically in a separate document>
 
 | Actor | Logical Interface | Physical Interface  |
 | ------------- |:-------------:| -----:|
@@ -97,10 +93,6 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 # Functional and non functional requirements
 
 ## Functional Requirements
-
-\<In the form DO SOMETHING, or VERB NOUN, describe high level capabilities of the system>
-
-\<they match to high level use cases>
 
 | ID        | Description  |
 | ------------- |:-------------:| 
@@ -144,7 +136,6 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 ## Non Functional Requirements
 
-\<Describe constraints on functional requirements>
 
 | ID        | Type (efficiency, reliability, ..)           | Description  | Refers to |
 | ------------- |:-------------:| :-----:| -----:|
@@ -163,7 +154,6 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 \<define here UML Use case diagram UCD summarizing all use cases, and their relationships>
 
 
-\<next describe here each use case in the UCD>
 ### Use case 1, UC1 - Authentication
 | Actors Involved        | Employee |
 | ------------- |:-------------:| 
@@ -174,26 +164,49 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 ##### Scenario 1.1 
 
-\<describe here scenarios instances of UC1>
-
-\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
-
-\<a scenario is a more formal description of a story>
-
-\<only relevant scenarios should be described>
-
-| Scenario 1.1 | |
+| Scenario | Correct credentials |
 | ------------- |:-------------:| 
-|  Precondition     | \<Boolean expression, must evaluate to true before the scenario can start> |
-|  Post condition     | \<Boolean expression, must evaluate to true after scenario is finished> |
+|  Precondition     | Employee is not authenticated |
+|  Post condition     | Employee is logged in and authenticated |
 | Step#        | Description  |
-|  1     |  |  
-|  2     |  |
-|  ...     |  |
+|  1     | Employee inserts his username |  
+|  2     | Employee inserts his password |
+|  3     | Employee is authenticated by the system |
 
-##### Scenario 1.2
+##### Scenario 1.2 
 
-##### Scenario 1.x
+| Scenario | Wrong password |
+| ------------- |:-------------:| 
+|  Precondition     | Employee is not authenticated |
+|  Post condition     | Employee fails to authenticate |
+| Step#        | Description  |
+|  1     | Employee inserts his username |  
+|  2     | Employee inserts wrong password |
+|  3     | Employee is not authenticated by the system |
+
+##### Scenario 1.3 
+
+| Scenario | Forgot password |
+| ------------- |:-------------:| 
+|  Precondition     | Employee is not authenticated and forgot his password |
+|  Post condition     | Employee resets a new password |
+| Step#        | Description  |
+|  1     | Employee asks for a password reset | 
+|  2     | Employee inserts his username | 
+|  3     | Employee inserts his email |
+|  4     | System send an authomatic email to the employee with password reset instructions |
+
+##### Scenario 1.4 
+
+| Scenario | Password attempts exceeded |
+| ------------- |:-------------:| 
+|  Precondition     | Employee is not authenticated  |
+|  Post condition     | Employee fails to authenticate and cannot insert password again |
+| Step#        | Description  |
+|  1     | Employee inserts his username |  
+|  2     | Employee inserts wrong password for the third time in a row |
+|  3     | Employee is not authenticated by the system |
+|  4     | System informs the employee that he will not able to attempt a new login for the next 60 miutes|
 
 ### Use case 2, UC2 - Manage Items
 | Actors Involved        | Employee |
@@ -208,6 +221,101 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 |	| Check item quantity |
 |	Exception	|	Not enough space in warehouse to add item	|
 |	|	Cannot add already existing item	|
+
+##### Scenario 2.1 
+
+| Scenario | New item added |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists |
+|  Post condition     | Item is added to the warehouse |
+| Step#        | Description  |
+|  1     | Employee specifies attributes of the item to add (ID, Name, Weight, Size, Model...) |  
+|  2     | The item is added to the warehouse |
+
+##### Scenario 2.2
+
+| Scenario | Existing item is modified |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | One or more item attributes are modified |
+| Step#        | Description  |
+|  1     | Employee searches for an existing item ID |  
+|  2     | The item attributes are displayed |
+|  3     | Employee modifies some item attributes |
+
+##### Scenario 2.3
+
+| Scenario | Existing item is deleted |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | Item is deleted from the warehouse |
+| Step#        | Description  |
+|  1     | Employee searches for an existing item ID |  
+|  2     | The item attributes are displayed |
+|  3     | Employee deletes item from the warehouse |
+
+##### Scenario 2.4
+
+| Scenario | Existing item is located |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | Item has been located inside the warehouse |
+| Step#        | Description  |
+|  1     | Employee searches for an existing item ID |  
+|  2     | The item attributes (among which its location in the warehouse) are displayed |
+
+##### Scenario 2.5
+
+| Scenario | Show supplier list |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | Item supplier list is displayed |
+| Step#        | Description  |
+|  1     | Employee searches for an existing item ID |  
+|  2     | The item attributes (among which its supplier list) are displayed |
+
+##### Scenario 2.6
+
+| Scenario | Duplicated ID |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | Item exists in the warehouse |
+| Step#        | Description  |
+|  1     | Employee specifies attributes of the item to add (ID, Name, Weight, Size, Model...) | 
+|  2     | System fail to add item  |
+|  3    | System informs the employee that "ID" is duplicated |
+
+##### Scenario 2.7
+
+| Scenario | No physical space available for new item |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists |
+|  Post condition     | Item is not added to the warehouse |
+| Step#        | Description  |
+|  1     | Employee specifies attributes of the item to add (ID, Name, Weight, Size, Model...) | 
+|  2     | System fail to add item  |
+|  3    | System informs the employee that there is no sufficient physical space |
+
+##### Scenario 2.8
+
+| Scenario | Item not present |
+| ------------- |:-------------:| 
+|  Precondition     | Item is not in the warehouse |
+|  Post condition     | Item is not in the warehouse |
+| Step#        | Description  |
+|  1     | Employee searches for an item ID |  
+|  2     | System fail to retrieve item attributes |
+|  3    | System informs the employee that "ID" is invalid |
+
+##### Scenario 2.9
+
+| Scenario | Show item quantity |
+| ------------- |:-------------:| 
+|  Precondition     | Item exists in the warehouse |
+|  Post condition     | Item quantity is displayed |
+| Step#        | Description  |
+|  1     | Employee searches for an existing item ID |  
+|  2     | The item attributes (among which its  quantity in the warehouse) are displayed |
 
 ### Use case 3, UC3 - Manage External Orders
 | Actors Involved        | Warehouse Manager |
