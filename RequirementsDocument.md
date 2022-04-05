@@ -371,7 +371,7 @@ Story: her Organizational Unit needs items from other OUs, she adds a new intern
 |  Post condition     | Item quantity is displayed |
 | Step#        | Description  |
 |  1     | Employee searches for an existing item descriptor ID |  
-|  2     | The item attributes (among which its  quantity in the warehouse) are displayed |
+|  2     | The item attributes are displayed |
 
 ### Use case 3, UC3 - Manage External Orders
 | Actors Involved        | Warehouse Manager |
@@ -692,7 +692,6 @@ Shipping time: expressed in terms of working days.
 <img src="Glossary.png" width="900">
 
 # System Design
-\<describe here system design>
 
 <img src="SystemDesign.png" width="300">
 
