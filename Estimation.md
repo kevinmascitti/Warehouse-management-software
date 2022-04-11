@@ -39,7 +39,7 @@ Consider the EZWH  project as described in YOUR requirement document, assume tha
 
 Insert here Gantt chart with above activities
 
-<img src="GANTT.png" width="1000">
+<img src="Diagram_photos/GANTT.png" width="1000">
 
 # Summary
 
