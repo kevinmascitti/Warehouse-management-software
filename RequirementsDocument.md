@@ -69,7 +69,7 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 ## Context Diagram
 
-<img src="ContextDiagram.png" width="600">
+<img src="Diagram_photos/ContextDiagram.png" width="600">
 
 ## Interfaces
 
@@ -172,7 +172,7 @@ Story: her Organizational Unit needs items from other OUs, she adds a new intern
 
 ## Use case diagram
 
-<img src="UseCaseDiagram.png" width="650">
+<img src="Diagram_photos/UseCaseDiagram.png" width="650">
 
 
 ### Use case 1, UC1 - Authentication
@@ -689,15 +689,15 @@ Pickup area: the physical location in the company warehouse where internal order
 
 Shipping time: expressed in terms of working days.
 
-<img src="Glossary.png" width="900">
+<img src="Diagram_photos/Glossary.png" width="900">
 
 # System Design
 
-<img src="SystemDesign.png" width="300">
+<img src="Diagram_photos/SystemDesign.png" width="300">
 
 # Deployment Diagram 
 
-<img src="DeploymentDiagram.png" width="400">
+<img src="Diagram_photos/DeploymentDiagram.png" width="400">
 
 
 
