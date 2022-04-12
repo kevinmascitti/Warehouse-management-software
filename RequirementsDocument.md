@@ -391,9 +391,9 @@ Story: her Organizational Unit needs items from other OUs, she adds a new intern
 | Step#        | Description  |
 |  1     | Manager starts a new order |  
 |  2     | Manager insert each item |
-|  3     | Manager selects the quantity needed for each items (weight or number of pieces depending on the item) |
-|  4     | Manager starts the search |  
-|  5     | System shows the various suppliers and the prices they offer for each item and the quantity available |
+|  3     | Manager starts the search |  
+|  4     | System shows the various suppliers and the prices they offer for each item and the quantity available |
+|  5 	 | User selects the items and the quantity |
 |  6     | Manager selects the supplier and generates new order |
 |  7     | System checks if there is enough space in the warehouse | 
 |  8     | An automated E-mail is sent to the supplier |
@@ -660,7 +660,7 @@ Story: her Organizational Unit needs items from other OUs, she adds a new intern
 |  1     | OU adds items to the order |
 |  2     | OU defines order pickup area |
 |  3     | System checks item availability |
-|  4	 | Items are not available |
+|  4	 | There is not enough space in the warehouse |
 |  5	 | Internal order cannot be created or OU has to adjust item quantity |
 
 # Glossary
