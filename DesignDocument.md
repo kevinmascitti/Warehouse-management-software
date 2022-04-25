@@ -146,8 +146,8 @@ class EZWh {
     +boolean deleteSkuItem(id: int)
     
     +List<Position> getAllPositions()
-    +Position createPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int)
-    +boolean modifyPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int)
+    +Position createPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int, occupiedWeight: int, occupiedVolume: int)
+    +boolean modifyPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int, occupiedWeight: int, occupiedVolume: int)
     +boolean modifyPositionID(positionID: long, newPositionID: long)
     +boolean deletePosition(positionID: long)
 
@@ -163,7 +163,7 @@ class EZWh {
     +boolean modifyTestResult(RFID: long, TestResultID: int,  newTestDescriptorID: int, newDate: String, newResult: boolean)
     boolean deleteTestResult(RFID: long, TestResultID: int)
 
-    +String infoUser(UserID: int)
+    +User infoUser(UserID: int)
     +List<Supplier> getAllSuppliers();
     +List<User> getAllUsersExceptManagers();
     +User createUser(username: String, name: String, surname: String, password: String, type: String)
@@ -319,4 +319,79 @@ EZWH -> Position: getPosition(ID: long)
 EZWH <-- Position: Position 
 EZWH -> Position: deletePosition(positionID: long)
 EZWH <-- Position: Position deleted
+```
+
+## scenario 3-1
+
+```plantuml
+EZWH -> SKU: getSku(id: int)
+EZWH <-- SKU: SKU
+EZWH -> RestockOrder: createEmptyRO(RestockOrderID: int, issueDate: String, supplierID: int)
+RestockOrder -> RestockOrder: setIssueDate(issueDate: String)
+RestockOrder -> RestockOrder: setSupplierID(ID: int)
+EZWH <-- RestockOrder: Restock order created
+EZWH -> RestockOrder: addProductsToRO(RestockOrderID: int, products: List<SkuItem>)
+RestockOrder -> RestockOrder: setProductList(products: List<SkuItem>)
+EZWH <-- RestockOrder: Product list set
+EZWH -> RestockOrder: modifyRO(RestockOrderID: int, newState: String)
+RestockOrder -> RestockOrder: setStatus(status: stateRestockOrder)
+EZWH <-- RestockOrder: RO recorded in ISSUED state
+```
+
+## scenario 4-1
+
+```plantuml
+EZWH -> User: createUser(username: String, name: String, surname: String, password: String, type: String)
+EZWH <-- User: User is created
+EZWH -> User: modifyRights(username: String, newType: String)
+EZWH <-- User: User rights are modified
+```
+
+## scenario 5-1-1
+
+```plantuml
+EZWH -> SKU: getSku(id: int)
+EZWH <-- SKU: SKU
+EZWH -> RestockOrder: getRO(RestockOrderID: int)
+EZWH <-- RestockOrder: RestockOrder
+EZWH -> SkuItem: createSkuItem(RFID: long, SKUId: int, DateOfStock: String)
+EZWH <-- SkuItem: SkuItem created
+EZWH -> RestockOrder: modifyRO(RestockOrderID: int, newState: String)
+EZWH <-- RestockOrder: RestockOrder updated to DELIVERED state
+```
+
+## scenario 5-2-1
+
+```plantuml
+EZWH -> SKU: getSku(id: int)
+EZWH <-- SKU: SKU
+EZWH -> RestockOrder: getRO(RestockOrderID: int)
+EZWH <-- RestockOrder: RestockOrder
+EZWH -> SKUItem: getAvailableSkuItems(id: int)
+EZWH <-- SKUItem: List<SkuItem>
+EZWH -> TestResult: createTestResult(RFID: long, TestDescriptorID: int, date: String, result: boolean)
+EZWH <-- TestResult: Recorded positive test result
+EZWH -> RestockOrder: modifyRO(RestockOrderID: int, newState: String)
+EZWH <-- RestockOrder: RestockOrder updated to TESTED state
+```
+
+## scenario 5-3-1
+
+```plantuml
+EZWH -> SKU: getSku(id: int)
+EZWH <-- SKU: SKU
+EZWH -> SKUItem: getAvailableSkuItems(id: int)
+EZWH <-- SKUItem: List<SkuItem>
+EZWH -> TestResult: getAllSkuTestResults(RFID: long)
+EZWH <-- TestResult: List<TestResult>
+EZWH -> RestockOrder: getRO(RestockOrderID: int)
+EZWH <-- RestockOrder: RestockOrder
+EZWH -> SKU: modifySkuPosition(id: int, newPosition: long)
+EZWH <-- SKU: modified SKU position
+EZWH -> Position: modifyPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int, occupiedWeight: int, occupiedVolume: int)
+EZWH <-- Position: updated Position information
+EZWH -> SKU: modifySku(id: int, newAvailableQuantity: int, occupiedWeight: int, occupiedVolume: int)
+EZWH <-- SKU: modified available quantity
+EZWH -> RestockOrder: modifyRO(RestockOrderID: int, newState: String)
+EZWH <-- RestockOrder: RestockOrder updated to COMPLETED state
 ```
