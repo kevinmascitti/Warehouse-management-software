@@ -1,7 +1,7 @@
 # Design Document 
 
 
-Authors: Giuliano Bellini, Matteo Guarna, Daniel Calin Panaite, Kevin Macitti
+Authors: Giuliano Bellini, Matteo Guarna, Daniel Calin Panaite, Kevin Mascitti
 
 Date: 22/04/22
 
@@ -48,14 +48,14 @@ We do not need to implement the GUI as it has already been given to us.
 
 # Back End
 
-The backend is developed using node.js. There will be an API interface called ''.
+The backend is developed using node.js. 
 
 ### Package overview
 ```plantuml
 @startuml
 package "Backend" {
 
-package "it.polito.ezwh.interfaces" {
+package "it.polito.ezwh.data" {
 }
 
 package "it.polito.ezwh.warehouse" {
@@ -82,38 +82,38 @@ package "it.polito.ezshop.exceptions" {
 package "it.polito.ezwh.data" as warehouse {
     interface "EZWhInterface"
     class EZWh implements EZWhInterface
-    interface EmployeeI;
-    interface SkuI;
-    interface SkuItemI;
-    interface TestDescriptorI;
-    interface TestResultI;
-    interface PositionI;
-    interface InternalOrderI;
-    interface RestockOrderI;
-    interface ReturnOrderI;
-    interface ItemI;
-    interface UserI;
+    interface EmployeeI
+    interface SkuI
+    interface SkuItemI
+    interface TestDescriptorI
+    interface TestResultI
+    interface PositionI
+    interface InternalOrderI
+    interface RestockOrderI
+    interface ReturnOrderI
+    interface ItemI
+    interface UserI
 }
 
 package "it.polito.ezwh.warehouse" as model {
-    class Sku implements SkuI;
-    class SkuItem implements SkuItemI;
-    class TestDescriptor implements TestDescriptorI;
-    class TestResult implements TestResultI;
-    class Position implements PositionI;
-    class InternalOrder implements InternalOrderI;
-    class RestockOrder implements RestockOrderI;
-    class ReturnOrder implements ReturnOrderI;
-    class Item implements ItemI;
-    class User implements UserI;
-    class Supplier extends User;
-    class Employee extends User;
-    class Clerk extends Employee;
-    class QualityCheckEmployee extends Employee;
-    class DeliveryEmployee extends Employee;
-    class InternalCustomer extends Employee;
-    class Manager extends User;
-    class Administrator extends Manager;
+    class Sku implements SkuI
+    class SkuItem implements SkuItemI
+    class TestDescriptor implements TestDescriptorI
+    class TestResult implements TestResultI
+    class Position implements PositionI
+    class InternalOrder implements InternalOrderI
+    class RestockOrder implements RestockOrderI
+    class ReturnOrder implements ReturnOrderI
+    class Item implements ItemI
+    class User implements UserI
+    class Supplier extends User
+    class Employee extends User
+    class Clerk extends Employee
+    class QualityCheckEmployee extends Employee
+    class DeliveryEmployee extends Employee
+    class InternalCustomer extends Employee
+    class Manager extends User
+    class Administrator extends Manager
 }
 
 
@@ -126,7 +126,7 @@ package "it.polito.ezwh.warehouse" as model {
 ```plantuml
 left to right direction
 
-package "it.polito.ezwh.interfaces" {
+package "it.polito.ezwh.data" {
 
 class EZWh {
 
@@ -187,24 +187,24 @@ class EZWh {
     +boolean addNoteToRO(RestockORderID: int, note: String)
     +boolean deleteRO(RestockOrderID: int)
 
-		+List<ReturnOrder> getAllReturnOrders()
-		+ReturnOrder getReturnOrder(ReturnOrderID: int)
-		+ReturnOrder createReturnOrder(returnDate: String, products: List<SkuItem>)
-		+boolean deleteReturnOrder(ReturnORderID: int)
+	+List<ReturnOrder> getAllReturnOrders()
+	+ReturnOrder getReturnOrder(ReturnOrderID: int)
+	+ReturnOrder createReturnOrder(returnDate: String, products: List<SkuItem>)
+	+boolean deleteReturnOrder(ReturnORderID: int)
 		
-		+List<InternalOrder> getAllIO()
-		+List<InternalOrder> getIssuedIO()
-		+List<InternalOrder> getAcceptedIO()
-		+InternalOrder getIO(InternalOrderID: int)
-		+InternalOrder createIO(issueDate: String, products: List<SkuItem>, customerID: int)
-		+Optional<List<RFID>> modifyStateIO(InternalOrderID: int, newState: String)
-		+boolean deleteIO(InternalOrderID: int)
+	+List<InternalOrder> getAllIO()
+	+List<InternalOrder> getIssuedIO()
+	+List<InternalOrder> getAcceptedIO()
+	+InternalOrder getIO(InternalOrderID: int)
+	+InternalOrder createIO(issueDate: String, products: List<SkuItem>, customerID: int)
+	+Optional<List<RFID>> modifyStateIO(InternalOrderID: int, newState: String)
+	+boolean deleteIO(InternalOrderID: int)
 		
-		+List<Item> getAllItems()
-		+Item getItem(ItemID: int)
-		+Item createItem(description: String, price: float, SkuID: int, supplierID: int)
-		+boolean modifyItem(ItemID: int, newDescription: String, newPrice: String)
-		+boolean deleteItem(ItemID: int)
+	+List<Item> getAllItems()
+	+Item getItem(ItemID: int)
+	+Item createItem(description: String, price: float, SkuID: int, supplierID: int)
+	+boolean modifyItem(ItemID: int, newDescription: String, newPrice: float)
+	+boolean deleteItem(ItemID: int)
 
 }
 
@@ -233,7 +233,6 @@ class EZWh {
 
 
 # Verification sequence diagrams 
-\<select key scenarios from the requirement document. For each of them define a sequence diagram showing that the scenario can be implemented by the classes and methods in the design>
 
 ## scenario 1-1
 
@@ -409,8 +408,6 @@ EZWH -> SKUItem: modifySkuItemRfid(id: int, RFID: long, newAvailable: int, newDa
 EZWH <-- SKUItem: Item set as unavailable
 ```
 
-## scenario 6-2
-
 
 
 ## scenario 7-1
@@ -429,6 +426,23 @@ EZWH <-- User: User logged out
 
 ## scenario 9-1
 
+```plantuml
+EZWH -> InternalOrder: createIO(issueDate: String, products: List<SkuItem>, customerID: int)
+EZWH <-- InternalOrder: New internal order with products created
+EZWH -> InternalOrder: modifyStateIO(InternalOrderID: int, newState: String)
+InternalOrder -> InternalOrder: setStatus(status:stateInternalOrder)
+EZWH <-- InternalOrder: Internal order state updated to ISSUED
+EZWH -> SKU: modifySku(id: int, newAvailableQuantity: int, occupiedWeight: int, occupiedVolume: int)
+SKU -> SKU: setAvailableQuantity(quantity: int)
+EZWH <-- SKU: SKU quantity updated
+EZWH -> Position: modifyPosition(positionID: long, aisleID: int, row: int, col: int, maxWeight: int, maxVolume: int, occupiedWeight: int, occupiedVolume: int)
+Position -> Position: setOccupiedWeight (weight: int)
+Position -> Position: setOccupiedVolume (volume: int)
+EZWH <-- Position: occupied weight and occupied volume updated
+EZWH -> InternalOrder: modifyStateIO(InternalOrderID: int, newState: String)
+InternalOrder -> InternalOrder: setStatus(status:stateInternalOrder)
+EZWH <-- InternalOrder: Internal order state updated to ACCEPTED
+```
 
 
 ## scenario 9-2
@@ -450,7 +464,7 @@ EZWH -> SkuItem: modifySkuItemRfid(id: int, RFID: long)
 EZWH <-- SkuItem: RFID assigned
 EZWH -> Sku: modifySku(id: int, newAvailableQuantity: int, occupiedWeight: int, occupiedVolume: int)
 EZWH <-- Sku: quantity updated
-EZWH -> InternalOrder modifyStateIO(internalOrderID: int, newState: String)
+EZWH -> InternalOrder: modifyStateIO(internalOrderID: int, newState: String)
 EZWH <-- InternalOrder: order completed
 ```
 
