@@ -3,9 +3,9 @@
 
 Authors: Giuliano Bellini, Matteo Guarna, Daniel Calin Panaite, Kevin Mascitti
 
-Date: 22/04/22
+Date: 27/04/22
 
-Version: 0.3
+Version: 0.4
 
 
 # Contents
@@ -55,13 +55,18 @@ The backend is developed using node.js.
 @startuml
 package "Backend" {
 
-package "it.polito.ezwh.data" {
+package "it.polito.ezwh.data" as data{
 }
 
-package "it.polito.ezwh.warehouse" {
+package "it.polito.ezwh.warehouse" as warehouse{
 
 }
 
+package "it.polito.ezwh.exceptions" {
+
+}
+
+}
 ```
 
 ### Package details
@@ -100,7 +105,7 @@ package "it.polito.ezshop.exceptions" {
 
 ```plantuml
 @startuml
-package "it.polito.ezwh.data" as warehouse {
+package "it.polito.ezwh.data" as data {
     interface "EZWhInterface"
     class EZWh implements EZWhInterface
     interface EmployeeI
@@ -116,7 +121,7 @@ package "it.polito.ezwh.data" as warehouse {
     interface UserI
 }
 
-package "it.polito.ezwh.warehouse" as model {
+package "it.polito.ezwh.warehouse" as warehouse {
     class Sku implements SkuI
     class SkuItem implements SkuItemI
     class TestDescriptor implements TestDescriptorI
@@ -234,7 +239,7 @@ class EZWh {
 
 left to right direction
 
-package "it.polito.ezwh.warehouse" as warehouse{
+package "it.polito.ezwh.warehouse"{
 
     class TestDescriptor {
         -ID: int
