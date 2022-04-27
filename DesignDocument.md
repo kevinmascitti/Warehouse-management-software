@@ -71,8 +71,29 @@ package "it.polito.ezwh.warehouse" {
 package "it.polito.ezshop.exceptions" {
     class InvalidUsernameException
     class InvalidPasswordException
-    class InvalidRoleException
-    
+    class InvalidSkuException
+    class InvalidWeightException
+    class InvalidVolumeException
+    class VoidSkuDescriptionException
+    class InvalidPositionException
+    class OccupiedPositionException
+    class InvalidAisleException
+    class InvalidRowException
+    class InvalidColumnException
+    class InvalidQuantityException
+    class InvalidSupplierException
+    class DuplicatedRFIDException
+    class InvalidRFIDException
+    class EmptySkuException
+    class InvalidReturnOrderException
+    class VoidReturnOrderException
+    class InvalidInternalOrderException
+    class VoidInternalOrderException
+    class DuplicatedItemException
+    class InvalidPriceException
+    class VoidItemDescriptionException
+    class VoidTestNameException
+    class VoidTestProcedureDescriptionException
 }
 
 ```
@@ -167,12 +188,7 @@ class EZWh {
     +List<Supplier> getAllSuppliers();
     +List<User> getAllUsersExceptManagers();
     +User createUser(username: String, name: String, surname: String, password: String, type: String)
-    +boolean LoginManager(username: String, password: String)
-    +boolean LoginCustomer(username: String, password: String)
-    +boolean LogiSupplier(username: String, password: String)
-    +boolean LoginClerk(username: String, password: String)
-    +boolean LoginQualityEmployee(username: String, password: String)
-    +boolean LoginDeliveryEmployee(username: String, password: String)
+    +boolean Login(username: String, password: String)
     +boolean Logout()
     +boolean modifyRights(username: String, newType: String)
     +boolean deleteUser(username: String, type: String)
@@ -443,13 +459,6 @@ EZWH -> InternalOrder: modifyStateIO(InternalOrderID: int, newState: String)
 InternalOrder -> InternalOrder: setStatus(status:stateInternalOrder)
 EZWH <-- InternalOrder: Internal order state updated to ACCEPTED
 ```
-
-
-## scenario 9-2
-
-
-
-## scenario 9-3
 
 
 
