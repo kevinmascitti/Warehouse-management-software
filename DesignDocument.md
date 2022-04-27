@@ -229,15 +229,300 @@ class EZWh {
 
 ```
 
-## it.polito.ezwh.model
+## it.polito.ezwh.warehouse
+```plantuml
+
+left to right direction
+
+package "it.polito.ezwh.warehouse" as warehouse{
+
+    class TestDescriptor {
+        -ID: int
+        -Name: String
+        -ProcedureDescriptor:String
+        -SKUID: int
+        +new(): TestDescriptor
+        +getID(): int
+        +getName(: String
+        +getProcedureDescriptor():String
+        +getSKUID(): int
+        +setName(name: String): void
+        +setProcedureDescriptor(descr:String):void
+        +setSKUID(skulD: int): void
+    }
 
 
+    class SKU {
+        -id
+        -SKUID: int
+        -description: String
+        -weight: int
+        -volume: int
+        -notes: String
+        -price: float
+        -availableQuantity:int
+        -testDescriptors: Array<int>
+        +new(): SKU
+        +getSKUID(): int
+        +getDescription(): String
+        +getWeight(): int
+        +getVolume(): int
+        +getNotes(): String
+        +getPrice(): float
+        +getAvailableQuantity(): int
+        +getTestDescriptors():Array<int>
+        +setDescription(description: String): void
+        +setWeight(weight: int): void
+        +setNotes(notes: String): void
+        +setPrice(price; float): void
+        +setAvailableQuantity(quantity: int): void
+        +setTestDescriptors(desc:Array<int>):void
+        +addTestDescriptor(newDesc:int):void
+    }
 
+    class Position {
+        -positionID: long
+        -aisleID: int
+        -row: int
+        -col: int
+        -maxWeight: int
+        -maxVolume: int
+        -occupiedWeight: int
+        -occupiedVolume: int
+        +new(): Position
+        +getID(): int
+        +getAisle(): int
+        +getRow0: int
+        +getCol(): int
+        +getMaxWeight(): int
+        +getMaxVolume0: int
+        +getOccupiedWeight(): int
+        +getOccupied Volume(): int
+        +setAisle(aisle: int): void
+        +setRow(row: int): void
+        +setCol(col: int): void
+        +setMaxWeight(weight: int): void
+        +setMaxVolume(volume: int): void
+        +setOccupiedWeight(weight. int): Void
+        +setOccupiedVolume(volume: int): void
+    }
+
+    class EZWh {
+        +main(): void
+        +GetAllUsers(): List<User>
+        +getUser(ID: int): User
+        +deleteUser(ID: int): void
+        +getSkuByDescr(description: String): SKU
+        +getCustomers(): List<InternalCustomer>
+    }
+
+    class TestResult {
+        -ID: int
+        -TestDescriptorID: int
+        -Date: String
+        -Result: boolean
+        +new(): TestResult
+        +getID(): int
+        +getRFID(): long
+        +getTestDescriptor():int
+        +getDate(): String
+        +getResult(): boolean
+        +setRFID(RFID: long): void
+        +setTestDescriptorlD(descr: int): void
+        +setDate(date String): void
+        +setResult(result: boolean): void
+    }
+
+    class SkuItem {
+        -RFID: long
+        -SKUID: int
+        -dateOfStock: String
+        +new(): SKUItem
+        +getSKUID(): int
+        +getRFID(): long
+        +getSkuID(): int
+        +getDateOfStock(): String
+        +getState(): available
+        +setRFID(RFID: long): void
+        +setSkuID(SkuID: int): void
+        +setDateOfStock(date: String): void
+        +setState(state: available): void
+    }
+
+    enum available {
+        FALSE
+        TRUE
+    }
+
+    class Item {
+        -ID: int
+        -price: float
+        -description: String
+        -SKUID: int
+        -supplierID: int
+        +getID(): int
+        +getPrice(): float
+        +getDescription(): String
+        +getSKUID(): int
+        +getSupplierID(): int
+        +setPrice(price: float): void
+        +setDescription (descr: String): void
+        +setSKUID(SKUID : int): void
+        +setSupplierID(supplierID: int): void
+    }
+
+
+    class User{
+        -ID: int
+        -name: String
+        -surname: String
+        -username: String
+        -password: String
+        -email: String
+
+        +int getID()
+        +String getName()
+        +String getSurname()
+        +String getUsername()
+        +String getPassword()
+        +String getEmail()
+        +employee_type getType()
+        +void setName(name: String)
+        +void setSurname (surname: String)
+        +void setUsername (username: String)
+        +void setPassword (password: String)
+        +void setEmail(email: String)
+        +void setType(type: employee_type)
+    }
+
+    enum employee_type{
+        CLERK
+        DELIVERY EMPLOYEE
+        QUALITY CHECK EMPLOYEE
+        MANAGER
+        INTERNAL CUSTOMER
+        ADMINISTRATOR
+        SUPPLIER
+    }
+
+    class InternalOrder{
+        -ID: int
+        -IssueDate: String
+        -Products: List<int>
+        -CustomerID: int
+        -Quantity: List<int>
+        
+        +stateInternalOrder getStatus()
+        +int getID()
+        +String getIssueDate()
+        +List<int> getProducts()
+        +int getCustomerID()
+        +List<int> getQuantity()
+        +int getQuantityForProduct(product: int)
+        +int getFIFOSku()
+        +void setStatus(status: stateInternalOrder)
+        +void setIssueDate (issueDate: String)
+        +void setProducts(products: List<int>)
+        +void setCustomerID(customerID: int)
+        +void addSku(sku: int)
+        +void deleteSku(sku: int)
+        +void setQuantity(quantity: List<int>)
+        +void setQuantityForProduct(product: int, quantity: int)
+    }
+
+    enum stateInternalOrder{
+        ISSUED
+        ACCEPTED
+        REFUSED
+        CANCELED
+        COMPLETED
+    }
+
+    class RestockOrder{
+        -ID: int
+        -issueDate: String
+        -supplierID: int
+        -transportNote: String
+        
+        +int getID()
+        +String getIssueDate()
+        +int getSupplierID()
+        +String getTransportNote()
+        +stateRestockOrder getState()
+        +List<SKUItem> getProducts()
+        +ReturnOrder getReturnOrder()
+        +void setIssueDate(issueDate: String)
+        +void setSupplierID(ID: int)
+        +void setTransportNote(note: String)
+        +void setState(status: stateRestockOrder)
+        +void setProductList(products: List<SKUItem>)
+        +void setReturnOrder(order: ReturnOrder)
+        +void addProductsList(products: List<SKUItems>)
+    }
+
+    enum stateRestockOrder{
+        ISSUED
+        DELIVERY
+        DELIVERED
+        TESTED
+        COMPLETEDRETURN
+        COMPLETED
+    }
+
+    class ReturnOrder{
+        -ID: int
+        -returnDate: String
+        
+        +int getID()
+        +String getReturnDate()
+        +List<Item> getProducts()
+        +stateReturnOrder getState()
+        +void setReturnDate(returnDate: String)
+        +void setProducts(products: List<Item>)
+        +void setState(status: stateReturnOrder)
+        +void addProducts(products: List<Item>)
+    }
+
+    enum stateReturnOrder{
+        ISSUED
+        ACCEPTED
+        REFUSED
+        CANCELED
+        DELIVERED
+        COMPLETED
+    }
+
+    class DataImpl{}
+
+    TestDescriptor -d-> DataImpl : tests
+    SKU -d-> DataImpl: SKUlist
+    Position -d-> DataImpl: positions
+    EZWh -> DataImpl: data
+    TestResult -d-> SkuItem: result
+    SkuItem -d- available: state
+    SkuItem -r-> RestockOrder: products
+    RestockOrder -r-> DataImpl: restockOrders
+    RestockOrder -d- stateRestockOrder: state
+    ReturnOrder -u-> RestockOrder: return
+    ReturnOrder -d- stateReturnOrder: state
+    Item -u-> ReturnOrder: products
+    InternalOrder -u-> DataImpl: internalOrders
+    InternalOrder -d- stateInternalOrder: state
+    User -l-> DataImpl: users
+    User -d- employee_type: type
+
+    note "This class contains needed methods not present in the API package" as N1
+    N1 .. EZWh
+    note "Implements methods from package it.polito.ezwh.data" as N2
+    N2 .. DataImpl
+
+}
+```
 
 
 # Verification traceability matrix
 
-| | EZWH | User  | InternalOrder | RestockOrder | ReturnOrder | Sku | SkuItem | Item | TestDescriptor | TestResult | Position |
+| | DataImpl | User  | InternalOrder | RestockOrder | ReturnOrder | Sku | SkuItem | Item | TestDescriptor | TestResult | Position |
 | ------------- |:-------------:| -----:| -----:| -----:| -----:| -----:| -----:| -----:| -----:| -----: | -----: |
 | FR1  | <div align="center">X</div> | <div align="center">X</div> | | | | | | | | | | 
 | FR2  | <div align="center">X</div> |  | | | | <div align="center">X</div> | | | | | | |
