@@ -142,7 +142,7 @@ class EZWh {
     +List<SkuItem> getAvailableSkuItems(id: int)
     +SkuItem getSkuItem(RFID: long)
     +SkuItem createSkuItem(RFID: long, SKUId: int, DateOfStock: String)
-    +boolean modifySkuItemRfid(id: int, RFID: long)
+    +boolean modifySkuItemRfid(id: int, RFID: long, newAvailable: int, newDateOfStock: String)
     +boolean deleteSkuItem(id: int)
     
     +List<Position> getAllPositions()
@@ -394,4 +394,115 @@ EZWH -> SKU: modifySku(id: int, newAvailableQuantity: int, occupiedWeight: int, 
 EZWH <-- SKU: modified available quantity
 EZWH -> RestockOrder: modifyRO(RestockOrderID: int, newState: String)
 EZWH <-- RestockOrder: RestockOrder updated to COMPLETED state
+```
+
+## scenario 6-1
+
+```plantuml
+EZWH -> SKU: getSku(id: int)
+EZWH <-- SKU: SKU
+EZWH -> RestockOrder: getRO(RestockOrderID: int)
+EZWH <-- RestockOrder: RestockOrder
+EZWH -> ReturnOrder: createReturnOrder(returnDate: String, products: List<SkuItem>)
+EZWH <-- ReturnOrder: Return Order created
+EZWH -> SKUItem: modifySkuItemRfid(id: int, RFID: long, newAvailable: int, newDateOfStock: String)
+EZWH <-- SKUItem: Item set as unavailable
+```
+
+## scenario 6-2
+
+
+
+## scenario 7-1
+
+```plantuml
+EZWH -> User: Login(username: String, password: String)
+EZWH <-- User: User logged in
+```
+
+## scenario 7-2
+
+```plantuml
+EZWH -> User: Logout()
+EZWH <-- User: User logged out
+```
+
+## scenario 9-1
+
+
+
+## scenario 9-2
+
+
+
+## scenario 9-3
+
+
+
+## scenario 10-1
+
+```plantuml
+EZWH -> InternalOrder: getIO(internalOrderID: int)
+EZWH <-- InternalOrder: InternalOrder
+EZWH -> InternalOrder: getSkuItems()
+EZWH <-- InternalOrder: List of SKU items
+EZWH -> SkuItem: modifySkuItemRfid(id: int, RFID: long)
+EZWH <-- SkuItem: RFID assigned
+EZWH -> Sku: modifySku(id: int, newAvailableQuantity: int, occupiedWeight: int, occupiedVolume: int)
+EZWH <-- Sku: quantity updated
+EZWH -> InternalOrder modifyStateIO(internalOrderID: int, newState: String)
+EZWH <-- InternalOrder: order completed
+```
+
+## scenario 11-1
+
+```plantuml
+EZWH -> Item: createItem(description: String, price: float, SkuID: int, suppierID: int)
+Item -> Item: setDescription(description: String)
+Item -> Item: setPrice(price: float)
+Item -> Item: setSkuID(skuID: int)
+EZWH <-- Item: Item created
+```
+
+## scenario 11-2
+
+```plantuml
+EZWH -> Item: getItem(ItemID: int)
+EZWH <-- Item: Item
+EZWH -> Item: modifyItem(itemID: int, newDescription: String, newPrice: float)
+Item -> Item: setDescription(description: String)
+Item -> Item: setPrice(price: float)
+Item -> Item: setSkuID(skuID: int)
+EZWH <-- Item: Item's decription and price modified
+```
+
+## scenario 12-1
+
+```plantuml
+EZWH -> TestDescriptor: createTestDescriptor(name: String, procedureDescriptor: String, SkuID: int)
+TestDescriptor -> TestDescriptor: setName(name: String)
+TestDescriptor -> TestDescriptor: setProcedureDescriptor(procedureDescriptor: String)
+TestDescriptor -> TestDescriptor: setSkuID(SkuID: int)
+EZWH <-- TestDescriptor: TestDescriptor created
+```
+
+## scenario 12-2
+
+```plantuml
+EZWH -> TestDescriptor: getTestDescriptor(TestDescriptorID: int)
+EZWH <-- TestDescriptor: TestDescriptor
+EZWH -> TestDescriptor: modifyTestDescriptor(TestDescriptorID: int, name: String, procedureDescriptor: String, SkuID: int)
+TestDescriptor -> TestDescriptor: setName(name: String)
+TestDescriptor -> TestDescriptor: setProcedureDescriptor(procedureDescriptor: String)
+TestDescriptor -> TestDescriptor: setSkuID(SkuID: int)
+EZWH <-- TestDescriptor: TestDescriptor updated
+```
+
+## scenario 12-3
+
+```plantuml
+EZWH -> TestDescriptor: getTestDescriptor(TestDescriptorID: int)
+EZWH <-- TestDescriptor: TestDescriptor
+EZWH -> TestDescriptor: deleteTestDescriptor(TestDescriptorID: int)
+EZWH <-- TestDescriptor: TestDescriptor deleted
 ```
