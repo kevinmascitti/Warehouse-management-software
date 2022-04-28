@@ -86,7 +86,7 @@ EZWH (EaSy WareHouse) is a software application to support the management of a w
 
 # Stories and personas
 
-Persona 1: male, 43 years old, married with children. He is the manager of the warehouse. He has high income but he is very stressed. He wants everything to be under control in every moment.
+ Persona 1: male, 43 years old, married with children. He is the manager of the warehouse. He has high income but he is very stressed. He wants everything to be under control in every moment.
 Story: he cheks items quantities and, if the quantity is lower than a fixed threshold, he adds a new external order to a supplier chosen from the list of the suppliers for that item. EzWH sends an automatically generated email to that specific supplier.
 
 Persona 2: female, 35 years old, single. Mid income. She is a warehouse worker who looks for location of the items in the warehouse. She checks that data between warehouse and software are consistent; if not, she modifies information about a certain item. She also communicates with the quality office if she finds failures in items.
