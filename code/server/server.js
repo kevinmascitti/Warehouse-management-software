@@ -3,8 +3,11 @@ const express = require('express');
 // init express
 const app = new express();
 const port = 3001;
+const item = require('./warehouse/item')
 
 app.use(express.json());
+
+require('./warehouse/item')(app);
 
 //GET /api/test
 app.get('/api/hello', (req,res)=>{
