@@ -14,13 +14,12 @@ module.exports = function (app, db) {
     if (isNaN(req.params.id)) {
       return res.status(422).json();
     }
-    const item = await db.getStoredItem({ id: req.params.id });
-    if (Object.keys(item).length === 0){ //item vuoto
-      return res.status(404).json();
-    }
-    else {
+    const N = await db.isThereItem({ id: req.params.id });
+    if ( N == 1) {
+      const item = await db.getStoredItem({ id: req.params.id });
       return res.status(200).json(item);
     }
+    return res.status(404).json();
   });
 
   //POST /api/item
@@ -50,9 +49,12 @@ module.exports = function (app, db) {
       newDescription: req.body.newDescription,
       newPrice: req.body.newPrice,
     };
-    await db.modifyStoredItem(data);
-    return res.status(200).json();
-    //return res.status(404).json();
+    const N = await db.isThereItem({ id: req.params.id });
+    if ( N == 1) {
+      await db.modifyStoredItem(data);
+      return res.status(200).json();
+    }
+    return res.status(404).json();
   });
 
   //DELETE /api/items/:id

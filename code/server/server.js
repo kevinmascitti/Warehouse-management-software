@@ -8,6 +8,7 @@ const database = require('./warehouse/DB.js');
 const db = new database();
 
 require('./warehouse/item')(app, db);
+require('./warehouse/sku')(app, db);
 
 // activate the server
 app.listen(port, () => {
