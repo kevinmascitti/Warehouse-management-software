@@ -5,10 +5,10 @@ const port = 3001;
 app.use(express.json());
 
 const database = require('./warehouse/DB.js');
-const db = new database();
+const DB = new database();
 
-require('./warehouse/item')(app, db);
-require('./warehouse/sku')(app, db);
+require('./warehouse/item')(app, DB.db);
+require('./warehouse/sku')(app, DB.db);
 
 // activate the server
 app.listen(port, () => {
