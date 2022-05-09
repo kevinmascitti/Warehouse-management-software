@@ -132,80 +132,104 @@ module.exports = function (app, db) {
 
     //GET /api/skuitems
     app.get('/api/skuitems', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        const skuitems = await getStoredSkuitems();
-        return res.status(200).json(skuitems);
+        try {
+            const skuitems = await getStoredSkuitems();
+            return res.status(200).json(skuitems);
+        } catch (err) {
+            return res.status(500).json();
+        }
     });
 
     //GET /api/skuitems/sku/:id
     app.get('/api/skuitems/sku/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.id)) {
-            return res.status(422).json();
+        try {
+            if (isNaN(req.params.id)) {
+                return res.status(422).json();
+            }
+            const N = await isThereSku({ id: req.params.id });
+            if (N == 1) {
+                const skuitems = await getStoredSkuitemsForSkuid({ id: req.params.id });
+                return res.status(200).json(skuitems);
+            }
+            return res.status(404).json();
+        } catch (err) {
+            return res.status(500).json();
         }
-        const N = await isThereSku({ id: req.params.id });
-        if (N == 1) {
-            const skuitems = await getStoredSkuitemsForSkuid({ id: req.params.id });
-            return res.status(200).json(skuitems);
-        }
-        return res.status(404).json();
     });
 
     //GET /api/skuitems/:rfid
     app.get('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.rfid)) {
-            return res.status(422).json();
+        try {
+            if (isNaN(req.params.rfid)) {
+                return res.status(422).json();
+            }
+            const N = await isThereSkuitem({ rfid: req.params.rfid });
+            if (N == 1) {
+                const skuitem = await getStoredSkuitem({ rfid: req.params.rfid });
+                return res.status(200).json(skuitem);
+            }
+            return res.status(404).json();
+        } catch (err) {
+            return res.status(500).json();
         }
-        const N = await isThereSkuitem({ rfid: req.params.rfid });
-        if (N == 1) {
-            const skuitem = await getStoredSkuitem({ rfid: req.params.rfid });
-            return res.status(200).json(skuitem);
-        }
-        return res.status(404).json();
     });
 
     //POST /api/skuitem
     app.post('/api/skuitem', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.body.SKUId) || !req.body.RFID) {
-            return res.status(422).json();
+        try {
+            if (isNaN(req.body.SKUId) || !req.body.RFID) {
+                return res.status(422).json();
+            }
+            const data = {
+                rfid: req.body.RFID,
+                skuid: req.body.SKUId,
+                dateofstock: req.body.DateOfStock,
+            };
+            const N = await isThereSku({ id: req.body.SKUId });
+            if (N == 1) {
+                await storeSkuitem(data);
+                return res.status(200).json();
+            }
+            return res.status(404).json();
+        } catch (err) {
+            return res.status(500).json();
         }
-        const data = {
-            rfid: req.body.RFID,
-            skuid: req.body.SKUId,
-            dateofstock: req.body.DateOfStock,
-        };
-        const N = await isThereSku({ id: req.body.SKUId });
-        if (N == 1) {
-            await storeSkuitem(data);
-            return res.status(200).json();
-        }
-        return res.status(404).json();
     });
 
     //PUT /api/skuitems/:rfid
     app.put('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.rfid) || (req.body.newAvailable!=0 && req.body.newAvailable!=1)) {
-            return res.status(422).json();
+        try {
+            if (isNaN(req.params.rfid) || (req.body.newAvailable != 0 && req.body.newAvailable != 1)) {
+                return res.status(422).json();
+            }
+            const data = {
+                oldRFID: req.params.rfid,
+                newRFID: req.body.newRFID,
+                newAvailable: req.body.newAvailable,
+                newDateOfStock: req.body.newDateOfStock
+            };
+            const N = await isThereSkuitem({ rfid: req.params.rfid });
+            if (N == 1) {
+                await modifyStoredSkuitem(data);
+                return res.status(200).json();
+            }
+            return res.status(404).json();
+        } catch (err) {
+            return res.status(500).json();
         }
-        const data = {
-            oldRFID: req.params.rfid,
-            newRFID: req.body.newRFID,
-            newAvailable: req.body.newAvailable,
-            newDateOfStock: req.body.newDateOfStock
-        };
-        const N = await isThereSkuitem({ rfid: req.params.rfid });
-        if (N == 1) {
-            await modifyStoredSkuitem(data);
-            return res.status(200).json();
-        }
-        return res.status(404).json();
     });
 
     //DELETE /api/skuitems/:rfid
     app.delete('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.rfid)) {
-            return res.status(422).json();
+        try {
+            if (isNaN(req.params.rfid)) {
+                return res.status(422).json();
+            }
+            await deleteStoredSkuitem({ rfid: req.params.rfid });
+            return res.status(204).json();
+        } catch (err) {
+            return res.status(500).json();
         }
-        await deleteStoredSkuitem({ rfid: req.params.rfid });
-        return res.status(204).json();
     });
 
 }
