@@ -392,7 +392,7 @@ module.exports = function (app, db) {
           surname: req.body.surname,
           password: req.body.password,
           type: req.body.type
-        }
+        };
         await storeUser(data);
         return res.status(201).json();
       }
