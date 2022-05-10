@@ -10,6 +10,9 @@ const DB = new database();
 require('./warehouse/item')(app, DB.db);
 require('./warehouse/sku')(app, DB.db);
 require('./warehouse/skuitem')(app, DB.db);
+require('./warehouse/position')(app, DB.db);
+require('./warehouse/testDescriptor')(app, DB.db);
+require('./warehouse/testResult')(app, DB.db);
 
 // activate the server
 app.listen(port, () => {
