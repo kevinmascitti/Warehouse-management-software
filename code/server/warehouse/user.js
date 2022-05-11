@@ -193,14 +193,14 @@ module.exports = function (app, db) {
           username: req.body.username,
           type: req.body.type
         };
-        if ( getStoredUser(dataCheck)==null ) { // ????
+        const user = getStoredUser(dataCheck);
+        if ( user==null ) {
           return res.status(409).json();
         }
 
         if ( isNaN(req.body.username) || isNaN(req.body.name)
           || isNaN(req.body.surname) || isNaN(req.body.password)
           || isNaN(req.body.type) || req.body.password.length()<8 ) {
-            // check su type???
           return res.status(422).json();
         }
 
@@ -407,9 +407,9 @@ module.exports = function (app, db) {
   app.put('/api/user/:id', async (req, res) => {
     try {
       if (isLoggedUser() == 1 && this.type=='manager') {
-        
-              if ( getStoredUser(req.params.username)!=1
-                || getStoredUser(req.params.username).TYPE!=req.body.oldType ) {
+              const user = await getStoredUser(req.params.username);
+              if ( user==null
+                || user.TYPE!=req.body.oldType ) {
                 return res.status(404).json();
               }
 
