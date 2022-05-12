@@ -133,10 +133,8 @@ module.exports = function (app, db) {
   app.post('/api/position', async (req, res) => {
     try {
         const r = req.body;
-        if ( r.positionID===undefined || r.positionID===null ){
-          return res.status(422).json();
-        }
-        if ( r.aisleID===undefined || r.aisleID===null
+        if ( r.positionID===undefined || r.positionID===null
+          || r.aisleID===undefined || r.aisleID===null
           || r.row===undefined || r.row===null
           || r.col===undefined || r.col===null
           || isNaN(r.maxWeight) || r.maxWeight<=0
