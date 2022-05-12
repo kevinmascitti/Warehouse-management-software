@@ -170,23 +170,27 @@ module.exports = function (app, db) {
   app.put('/api/position/:positionID', async (req, res) => {
     try {
           if ( req.param.positionID===undefined || req.param.positionID===null
-            || req.body.aisleID===undefined || req.body.aisleID===null
-            || req.body.row===undefined || req.body.row===null
-            || req.body.col===undefined || req.body.col===null
-            || isNaN(req.body.maxWeight) || req.body.maxWeight<=0
-            || isNaN(req.body.maxVolume) || req.body.maxVolume<=0
+            || req.body.newAisleID===undefined || req.body.newAisleID===null
+            || req.body.newRow===undefined || req.body.newRow===null
+            || req.body.newCol===undefined || req.body.newCol===null
+            || isNaN(req.body.newMaxWeight) || req.body.newMaxWeight<=0
+            || isNaN(req.body.newMaxVolume) || req.body.newMaxVolume<=0
+            || isNaN(req.body.newOccupiedWeight) || req.body.newOccupiedWeight<=0
+            || isNaN(req.body.newOccupiedVolume) || req.body.newOccupiedVolume<=0
+            || req.body.newOccupiedWeight>req.body.newMaxWeight
+            || req.body.newOccupiedVolume>req.body.newMaxVolume
             || req.param.positionID.length!=12
-            || req.body.aisleID.length!=4 
-            || req.body.row.length!=4
-            || req.body.col.length!=4
-            || req.param.positionID!==req.body.aisleID+req.body.row+req.body.col
+            || req.body.newAisleID.length!=4 
+            || req.body.newRow.length!=4
+            || req.body.newCol.length!=4
+            || req.param.positionID!==req.body.newAisleID+req.body.newRow+req.body.newCol
             || Object.keys(req.body).length===0 ) {
                 return res.status(422).json();
             }
               
-              const N = await isTherePosition({ id: req.body.positionID });
+              const N = await isTherePosition({ id: req.param.positionID });
               if (N == 1) {
-                  const position = await getPosition({ id: req.body.positionID });
+                  const position = await getPosition({ id: req.param.positionID });
                   const data = {
                     positionID: position.positionID,
                     aisleID: position.aisleID,
@@ -199,7 +203,7 @@ module.exports = function (app, db) {
                     newPositionID: position.aisleID+position.row+position.col
                   };
                   await modifyPosition(data);
-                  const result = await getPosition({ id: req.body.newPositionID });
+                  const result = await getPosition({ id: data.newPositionID });
                   return res.status(200).json(result);
               }
               return res.status(404).json();
@@ -224,7 +228,8 @@ module.exports = function (app, db) {
                  return res.status(422).json();
               }
               const N = await isTherePosition({ id: req.params.positionID });
-              if (N == 1) {
+              const M = await isTherePosition({ id: req.body.newPositionID });
+              if (N == 1 && M == 0) {
                 const position = await getPosition({ id: req.params.positionID });
                 const data = {
                   positionID: req.params.positionID,
