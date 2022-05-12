@@ -1,7 +1,5 @@
 'use strict';
 
-var user = require('user');
-
 module.exports = function (app, db) {
 
   function storePosition(data) {
@@ -85,11 +83,8 @@ module.exports = function (app, db) {
   //GET /api/positions
   app.get('/api/positions', async (req, res) => {
     try {
-      if ( user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk') ) {
         const positions = await getPositions();
         return res.status(200).json(user);
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(500).json();
     }
@@ -98,8 +93,6 @@ module.exports = function (app, db) {
   //POST /api/position
   app.post('/api/position', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && user.type=='manager') {
-
         if ( isNaN(req.body.positionID) || isNaN(req.body.aisleID)
           || isNaN(req.body.row) || isNaN(req.body.col)
           || isNaN(req.body.maxWeight) || isNan(req.body.maxVolume) 
@@ -122,8 +115,6 @@ module.exports = function (app, db) {
         };
         await storePosition(data);
         return res.status(201).json();
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -133,8 +124,6 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk')) {
-        
               if ( getPosition(req.params.positionID)==null ) {
                 return res.status(404).json();
               }
@@ -163,8 +152,6 @@ module.exports = function (app, db) {
               await modifyPosition(data);
               return res.status(200).json();
 
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -173,8 +160,6 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
-      if (user.sLoggedUser() == 1 && user.type=='manager') {
-        
               if ( getPosition(req.params.positionID)==null ) {
                 return res.status(404).json();
               }
@@ -193,8 +178,6 @@ module.exports = function (app, db) {
               await modifyPositionID(data);
               return res.status(200).json();
 
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -203,8 +186,6 @@ module.exports = function (app, db) {
   //DELETE /api/position/:positionID
   app.delete('/api/position/:positionID', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && user.type=='manager') {
-
               if ( isNaN(req.params.positionID) ) {
                 return res.status(422).json();
               }
@@ -212,8 +193,6 @@ module.exports = function (app, db) {
               await deletePosition({ positionID: req.params.positionID });
               return res.status(204).json();
 
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
