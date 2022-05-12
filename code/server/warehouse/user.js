@@ -200,7 +200,7 @@ module.exports = function (app, db) {
 
         if ( isNaN(req.body.username) || isNaN(req.body.name)
           || isNaN(req.body.surname) || isNaN(req.body.password)
-          || isNaN(req.body.type) || req.body.password.length()<8 ) {
+          || isNaN(req.body.type) || Object.keys(req.body.password).length<8 || Object.keys(req.body).length === 0 ) {
           return res.status(422).json();
         }
 
@@ -408,14 +408,15 @@ module.exports = function (app, db) {
     try {
       if (isLoggedUser() == 1 && this.type=='manager') {
               const user = await getStoredUser(req.params.username);
-              if ( user==null
-                || user.TYPE!=req.body.oldType ) {
+              if ( user==null || user.TYPE!=req.body.oldType ) {
                 return res.status(404).json();
               }
 
-              if ( isNaN(req.params.username) || isNaN(req.body.oldType) 
+              if ( isNaN(req.params.username) 
+                  || isNaN(req.body.oldType) 
                   || isNaN(req.body.newType)
-                  || req.body.oldType=='manager') {
+                  || req.body.oldType=='manager' 
+                  || Object.keys(req.body).length === 0) {
                 return res.status(422).json();
               }
 
@@ -438,8 +439,10 @@ module.exports = function (app, db) {
     try {
       if (isLoggedUser() == 1 && this.type=='manager') {
 
-              if ( isNaN(req.params.username) || isNaN(req.params.type) 
-                  || req.params.type=='manager') {
+              if ( isNaN(req.params.username) 
+                  || isNaN(req.params.type) 
+                  || req.params.type=='manager' 
+                  || Object.keys(req.body).length === 0 ) {
                 return res.status(422).json();
               }
 
