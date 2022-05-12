@@ -83,7 +83,7 @@ module.exports = function (app, db) {
   //GET /api/positions
   app.get('/api/positions', async (req, res) => {
     try {
-      if ( isLoggedUser() == 1 && (this.type=='manager' || this.type=='clerk') ) {
+      if ( user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk') ) {
         const positions = await getPositions();
         return res.status(200).json(user);
       }
@@ -96,14 +96,15 @@ module.exports = function (app, db) {
   //POST /api/position
   app.post('/api/position', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
+      if (user.isLoggedUser() == 1 && user.type=='manager') {
 
         if ( isNaN(req.body.positionID) || isNaN(req.body.aisleID)
           || isNaN(req.body.row) || isNaN(req.body.col)
           || isNaN(req.body.maxWeight) || isNan(req.body.maxVolume) 
           || req.body.aisleID.length()!=4 || req.body.row.length()!=4
           || req.body.col.length()!=4
-          || req.body.positionID!=req.body.aisleID.append(req.body.row).append(req.body.col) ) {
+          || req.body.positionID!=req.body.aisleID+req.body.row+req.body.col
+          || Object.keys(req.body).length === 0) {
           return res.status(422).json();
         }
 
@@ -130,20 +131,21 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && (this.type=='manager' || this.type=='clerk')) {
+      if (user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk')) {
         
               if ( getPosition(req.params.positionID)==null ) {
                 return res.status(404).json();
               }
 
-              if ( isNaN(req.params.positionID) || isNaN(req.body.aisleID)
+               if ( isNaN(req.body.positionID) || isNaN(req.body.aisleID)
                   || isNaN(req.body.row) || isNaN(req.body.col)
                   || isNaN(req.body.maxWeight) || isNan(req.body.maxVolume) 
                   || req.body.aisleID.length()!=4 || req.body.row.length()!=4
                   || req.body.col.length()!=4
-                  || req.params.positionID!=req.body.aisleID.append(req.body.row).append(req.body.col) ) {
-                 return res.status(422).json();
-              }
+                  || req.body.positionID!=req.body.aisleID+req.body.row+req.body.col
+                  || Object.keys(req.body).length === 0) {
+                  return res.status(422).json();
+                }
 
               const data = {
                 positionID: req.params.positionID,
@@ -154,7 +156,7 @@ module.exports = function (app, db) {
                 maxVolume: req.body.maxVolume,
                 occupiedWeight: req.body.occupiedWeight,
                 occupiedVolume: req.body.occupiedVolume,
-                newPositionID: req.body.aisleID.append(req.body.row).append(req.body.col)
+                newPositionID: req.body.aisleID+req.body.row+req.body.col
               };
               await modifyPosition(data);
               return res.status(200).json();
@@ -169,13 +171,13 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
+      if (user.sLoggedUser() == 1 && user.type=='manager') {
         
               if ( getPosition(req.params.positionID)==null ) {
                 return res.status(404).json();
               }
 
-              if ( isNaN(req.params.positionID) || isNaN(req.body.newPositionID) ) {
+              if ( isNaN(req.params.positionID) || isNaN(req.body.newPositionID) || Object.keys(req.body).length === 0 ) {
                  return res.status(422).json();
               }
 
@@ -199,7 +201,7 @@ module.exports = function (app, db) {
   //DELETE /api/position/:positionID
   app.delete('/api/position/:positionID', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
+      if (user.isLoggedUser() == 1 && user.type=='manager') {
 
               if ( isNaN(req.params.positionID) ) {
                 return res.status(422).json();
