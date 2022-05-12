@@ -23,19 +23,24 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const positions = rows.map((r) => (
-          {
-            positionID: r.ID,
-            aisleID: r.AISLE,
-            row: r.ROW,
-            col: r.COLUMN,
-            maxWeight: r.MAXWEIGHT,
-            maxVolume: r.MAXVOLUME,
-            occupiedWeight: r.OCCUPIEDWEIGHT,
-            occupiedVolume: r.OCCUPIEDVOLUME
-          }
-        ));
-        resolve(positions);
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          const positions = rows.map((r) => (
+            {
+              positionID: r.ID,
+              aisleID: r.AISLE,
+              row: r.ROW,
+              col: r.COLUMN,
+              maxWeight: r.MAXWEIGHT,
+              maxVolume: r.MAXVOLUME,
+              occupiedWeight: r.OCCUPIEDWEIGHT,
+              occupiedVolume: r.OCCUPIEDVOLUME
+            }
+          ));
+          resolve(positions);
+        }
       });
     });
   }
@@ -48,7 +53,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -61,7 +71,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -74,7 +89,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -84,7 +104,7 @@ module.exports = function (app, db) {
   app.get('/api/positions', async (req, res) => {
     try {
         const positions = await getPositions();
-        return res.status(200).json(user);
+        return res.status(200).json(positions);
     } catch (err) {
       return res.status(500).json();
     }
