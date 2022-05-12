@@ -1,5 +1,7 @@
 'use strict';
 
+var user = require('user');
+
 module.exports = function (app, db) {
 
   function storePosition(data) {
