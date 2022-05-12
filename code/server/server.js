@@ -10,6 +10,7 @@ const DB = new database();
 require('./warehouse/item')(app, DB.db);
 require('./warehouse/sku')(app, DB.db);
 require('./warehouse/skuitem')(app, DB.db);
+require('./warehouse/internalorder')(app, DB.db);
 
 // activate the server
 app.listen(port, () => {
