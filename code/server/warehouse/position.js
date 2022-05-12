@@ -23,24 +23,19 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        else if (rows===undefined){
-          resolve(false);
-        }
-        else{
-          const positions = rows.map((r) => (
-            {
-              positionID: r.ID,
-              aisleID: r.AISLE,
-              row: r.ROW,
-              col: r.COLUMN,
-              maxWeight: r.MAXWEIGHT,
-              maxVolume: r.MAXVOLUME,
-              occupiedWeight: r.OCCUPIEDWEIGHT,
-              occupiedVolume: r.OCCUPIEDVOLUME
-            }
-          ));
-          resolve(positions);
-        }
+        const positions = rows.map((r) => (
+          {
+            positionID: r.ID,
+            aisleID: r.AISLE,
+            row: r.ROW,
+            col: r.COLUMN,
+            maxWeight: r.MAXWEIGHT,
+            maxVolume: r.MAXVOLUME,
+            occupiedWeight: r.OCCUPIEDWEIGHT,
+            occupiedVolume: r.OCCUPIEDVOLUME
+          }
+        ));
+        resolve(positions);
       });
     });
   }
