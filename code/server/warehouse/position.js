@@ -124,7 +124,8 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-              if ( getPosition(req.params.positionID)==null ) {
+              const position = await getPosition(req.params.positionID);
+              if ( position==null ) {
                 return res.status(404).json();
               }
 
@@ -160,7 +161,8 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
-              if ( getPosition(req.params.positionID)==null ) {
+              const position = await getPosition(req.params.positionID);
+              if ( position==null ) {
                 return res.status(404).json();
               }
 
