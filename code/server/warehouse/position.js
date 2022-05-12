@@ -171,17 +171,17 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-          if ( req.body.positionID===undefined || req.body.positionID===null
+          if ( req.param.positionID===undefined || req.param.positionID===null
             || req.body.aisleID===undefined || req.body.aisleID===null
             || req.body.row===undefined || req.body.row===null
             || req.body.col===undefined || req.body.col===null
             || isNaN(req.body.maxWeight) || req.body.maxWeight<=0
             || isNaN(req.body.maxVolume) || req.body.maxVolume<=0
-            || req.body.positionID.length!=12
+            || req.param.positionID.length!=12
             || req.body.aisleID.length!=4 
             || req.body.row.length!=4
             || req.body.col.length!=4
-            || req.body.positionID!==req.body.aisleID+req.body.row+req.body.col
+            || req.param.positionID!==req.body.aisleID+req.body.row+req.body.col
             || Object.keys(req.body).length===0 ) {
                 return res.status(422).json();
             }
