@@ -23,22 +23,46 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const positions = rows.map((r) => (
-          {
-            positionID: r.ID,
-            aisleID: r.AISLE,
-            row: r.ROW,
-            col: r.COLUMN,
-            maxWeight: r.MAXWEIGHT,
-            maxVolume: r.MAXVOLUME,
-            occupiedWeight: r.OCCUPIEDWEIGHT,
-            occupiedVolume: r.OCCUPIEDVOLUME
-          }
-        ));
-        resolve(positions);
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          const positions = rows.map((r) => (
+            {
+              positionID: r.ID,
+              aisleID: r.AISLE,
+              row: r.ROW,
+              col: r.COLUMN,
+              maxWeight: r.MAXWEIGHT,
+              maxVolume: r.MAXVOLUME,
+              occupiedWeight: r.OCCUPIEDWEIGHT,
+              occupiedVolume: r.OCCUPIEDVOLUME
+            }
+          ));
+          resolve(positions);
+        }
       });
     });
   }
+
+  function isTherePosition(data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT COUNT(*) AS N FROM POSITION WHERE ID = ?';
+        db.all(sql, [data.id], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            else if (rows===undefined){
+              resolve(false);
+            }
+            else{
+              resolve(rows[0].N);
+            }
+        });
+    });
+}
+
 
   function modifyPosition(data) {
     return new Promise((resolve, reject) => {
@@ -48,7 +72,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -61,7 +90,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -74,7 +108,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
       });
     });
   }
@@ -83,11 +122,8 @@ module.exports = function (app, db) {
   //GET /api/positions
   app.get('/api/positions', async (req, res) => {
     try {
-      if ( user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk') ) {
         const positions = await getPositions();
-        return res.status(200).json(user);
-      }
-      return res.status(401).json();
+        return res.status(200).json(positions);
     } catch (err) {
       return res.status(500).json();
     }
@@ -96,21 +132,27 @@ module.exports = function (app, db) {
   //POST /api/position
   app.post('/api/position', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && user.type=='manager') {
-
-        if ( isNaN(req.body.positionID) || isNaN(req.body.aisleID)
-          || isNaN(req.body.row) || isNaN(req.body.col)
-          || isNaN(req.body.maxWeight) || isNan(req.body.maxVolume) 
-          || req.body.aisleID.length()!=4 || req.body.row.length()!=4
-          || req.body.col.length()!=4
-          || req.body.positionID!=req.body.aisleID+req.body.row+req.body.col
-          || Object.keys(req.body).length === 0) {
+        const r = req.body;
+        if ( r.positionID===undefined || r.positionID===null ){
           return res.status(422).json();
+        }
+        if ( r.aisleID===undefined || r.aisleID===null
+          || r.row===undefined || r.row===null
+          || r.col===undefined || r.col===null
+          || isNaN(r.maxWeight) || r.maxWeight<=0
+          || isNaN(r.maxVolume) || r.maxVolume<=0
+          || r.positionID.length!=12
+          || r.aisleID.length!=4 
+          || r.row.length!=4
+          || r.col.length!=4
+          || r.positionID!==r.aisleID+r.row+r.col
+          || Object.keys(r).length===0 ) {
+            return res.status(422).json();
         }
 
         const data = {
           positionID: req.body.positionID,
-          aisleID: req.body.name,
+          aisleID: req.body.aisleID,
           row: req.body.row,
           col: req.body.col,
           maxWeight: req.body.maxWeight,
@@ -120,8 +162,6 @@ module.exports = function (app, db) {
         };
         await storePosition(data);
         return res.status(201).json();
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -131,38 +171,45 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && (user.type=='manager' || user.type=='clerk')) {
-        
-              if ( getPosition(req.params.positionID)==null ) {
-                return res.status(404).json();
+          if ( req.body.positionID===undefined || req.body.positionID===null
+            || req.body.aisleID===undefined || req.body.aisleID===null
+            || req.body.row===undefined || req.body.row===null
+            || req.body.col===undefined || req.body.col===null
+            || isNaN(req.body.maxWeight) || req.body.maxWeight<=0
+            || isNaN(req.body.maxVolume) || req.body.maxVolume<=0
+            || req.body.positionID.length!=12
+            || req.body.aisleID.length!=4 
+            || req.body.row.length!=4
+            || req.body.col.length!=4
+            || req.body.positionID!==req.body.aisleID+req.body.row+req.body.col
+            || Object.keys(req.body).length===0 ) {
+                return res.status(422).json();
+            }
+              
+              const N = await isTherePosition({ id: req.body.positionID });
+              if (N == 1) {
+                  const position = await getPosition({ id: req.body.positionID });
+                  const data = {
+                    positionID: position.positionID,
+                    aisleID: position.aisleID,
+                    row: position.row,
+                    col: position.column,
+                    maxWeight: position.maxWeight,
+                    maxVolume: position.maxVolume,
+                    occupiedWeight: position.occupiedWeight,
+                    occupiedVolume: position.occupiedVolume,
+                    newPositionID: position.aisleID+position.row+position.col
+                  };
+                  await modifyPosition(data);
+                  const result = await getPosition({ id: req.body.newPositionID });
+                  return res.status(200).json(result);
               }
+              return res.status(404).json();
 
-               if ( isNaN(req.body.positionID) || isNaN(req.body.aisleID)
-                  || isNaN(req.body.row) || isNaN(req.body.col)
-                  || isNaN(req.body.maxWeight) || isNan(req.body.maxVolume) 
-                  || req.body.aisleID.length()!=4 || req.body.row.length()!=4
-                  || req.body.col.length()!=4
-                  || req.body.positionID!=req.body.aisleID+req.body.row+req.body.col
-                  || Object.keys(req.body).length === 0) {
-                  return res.status(422).json();
-                }
 
-              const data = {
-                positionID: req.params.positionID,
-                aisleID: req.body.aisleID,
-                row: req.body.row,
-                col: req.body.column,
-                maxWeight: req.body.maxWeight,
-                maxVolume: req.body.maxVolume,
-                occupiedWeight: req.body.occupiedWeight,
-                occupiedVolume: req.body.occupiedVolume,
-                newPositionID: req.body.aisleID+req.body.row+req.body.col
-              };
-              await modifyPosition(data);
+              
               return res.status(200).json();
 
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -171,28 +218,28 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
-      if (user.sLoggedUser() == 1 && user.type=='manager') {
-        
-              if ( getPosition(req.params.positionID)==null ) {
-                return res.status(404).json();
-              }
 
-              if ( isNaN(req.params.positionID) || isNaN(req.body.newPositionID) || Object.keys(req.body).length === 0 ) {
+              if ( req.params.positionID===undefined || req.params.positionID===null
+                || req.body.newPositionID===undefined || req.params.newPositionID===null
+                || req.params.positionID.length!=12 || req.params.newPositionID.length!=12
+                || Object.keys(req.body).length === 0 ) {
                  return res.status(422).json();
               }
+              const N = await isTherePosition({ id: req.params.positionID });
+              if (N == 1) {
+                const position = await getPosition({ id: req.params.positionID });
+                const data = {
+                  positionID: req.params.positionID,
+                  newPositionID: req.body.newPositionID,
+                  newAisleID: req.body.newPositionID.substr(0, 4),
+                  newRow: req.body.newPositionID.substr(4, 4),
+                  newCol: req.body.newPositionID.substr(8, 4)
+                };
+                await modifyPositionID(data);
+                return res.status(200).json();
+              }
+              return res.status(404).json();
 
-              const data = {
-                positionID: req.params.positionID,
-                newPositionID: req.body.newPositionID,
-                newAisleID: req.body.newPositionID.substr(0, 4),
-                newRow: req.body.newPositionID.substr(4, 4),
-                newCol: req.body.newPositionID.substr(8, 4)
-              };
-              await modifyPositionID(data);
-              return res.status(200).json();
-
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -201,17 +248,14 @@ module.exports = function (app, db) {
   //DELETE /api/position/:positionID
   app.delete('/api/position/:positionID', async (req, res) => {
     try {
-      if (user.isLoggedUser() == 1 && user.type=='manager') {
-
-              if ( isNaN(req.params.positionID) ) {
+              if ( req.params.positionID===undefined || req.params.positionID===null
+                  || req.params.positionID.length!=12 ) {
                 return res.status(422).json();
               }
 
               await deletePosition({ positionID: req.params.positionID });
               return res.status(204).json();
 
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }

@@ -35,16 +35,20 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const user = rows.map((r) => (
-          {
-            id: r.ID,
-            username: r.USERNAME,
-            name: r.NAME,
-            surname: r.SURNAME,
-            type: r.TYPE
-          }
-        ));
-        resolve(user);
+        else if (rows===undefined){
+          resolve(false);
+        } else {
+            const user = rows.map((r) => (
+            {
+              id: r.ID,
+              username: r.USERNAME,
+              name: r.NAME,
+              surname: r.SURNAME,
+              type: r.TYPE
+            }
+            ));
+            resolve(user);
+        }
       });
     });
   }
@@ -57,16 +61,21 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const user = rows.map((r) => (
-          {
-            id: r.ID,
-            username: r.USERNAME,
-            name: r.NAME,
-            surname: r.SURNAME,
-            type: r.TYPE
-          }
-        ));
-        resolve(user);
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          const user = rows.map((r) => (
+            {
+              id: r.ID,
+              username: r.USERNAME,
+              name: r.NAME,
+              surname: r.SURNAME,
+              type: r.TYPE
+            }
+          ));
+          resolve(user);
+        }
       });
     });
   }
@@ -79,15 +88,20 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const users = rows.map((r) => (
-          {
-            id: r.ID,
-            name: r.NAME,
-            surname: r.SURNAME,
-            email: r.USERNAME
-          }
-        ));
-        resolve(users);
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else {
+          const users = rows.map((r) => (
+            {
+              id: r.ID,
+              name: r.NAME,
+              surname: r.SURNAME,
+              email: r.USERNAME
+            }
+          ));
+          resolve(users);
+        }
       });
     });
   }
@@ -100,16 +114,21 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        const users = rows.map((r) => (
-          {
-            id: r.ID,
-            name: r.NAME,
-            surname: r.SURNAME,
-            email: r.USERNAME,
-            type: r.TYPE
-          }
-        ));
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else {
+          const users = rows.map((r) => (
+            {
+              id: r.ID,
+              name: r.NAME,
+              surname: r.SURNAME,
+              email: r.USERNAME,
+              type: r.TYPE
+            }
+          ));
         resolve(users);
+        }
       });
     });
   }
@@ -122,7 +141,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else {
+         resolve();
+        }
       });
     });
   }
@@ -135,7 +159,12 @@ module.exports = function (app, db) {
           reject(err);
           return;
         }
-        resolve();
+         else if (rows===undefined){
+          resolve(false);
+        }
+        else {
+         resolve();
+        }
       });
     });
   }
@@ -144,15 +173,12 @@ module.exports = function (app, db) {
   //GET /api/userinfo
   app.get('/api/userinfo', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
         const data = {
           username: this.username,
           type: this.type
         }
         const user = await getStoredUser(data);
         return res.status(200).json(user);
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(500).json();
     }
@@ -161,11 +187,8 @@ module.exports = function (app, db) {
   //GET /api/suppliers
   app.get('/api/suppliers', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
         const suppliers = await getStoredSuppliers();
         return res.status(200).json(suppliers);
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(500).json();
     }
@@ -174,11 +197,8 @@ module.exports = function (app, db) {
   //GET /api/users
   app.get('/api/users', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
         const users = await getStoredUsers();
         return res.status(200).json(users);
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(500).json();
     }
@@ -187,8 +207,6 @@ module.exports = function (app, db) {
   //POST /api/newUser
   app.post('/api/newUser', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
-        
         const dataCheck = {
           username: req.body.username,
           type: req.body.type
@@ -200,7 +218,9 @@ module.exports = function (app, db) {
 
         if ( isNaN(req.body.username) || isNaN(req.body.name)
           || isNaN(req.body.surname) || isNaN(req.body.password)
-          || isNaN(req.body.type) || req.body.password.length()<8 ) {
+          || isNaN(req.body.type) || Object.keys(req.body.password).length<8 || Object.keys(req.body).length === 0
+          || (req.body.type!="customer" && req.body.type!="qualityEmployee" 
+          && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
           return res.status(422).json();
         }
 
@@ -213,8 +233,6 @@ module.exports = function (app, db) {
         };
         await storeUser(data);
         return res.status(201).json();
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -403,19 +421,24 @@ module.exports = function (app, db) {
     }
   });
 
-  //PUT /api/user/:username
-  app.put('/api/user/:id', async (req, res) => {
+  //PUT /api/users/:username
+  app.put('/api/users/:username', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
               const user = await getStoredUser(req.params.username);
-              if ( user==null
-                || user.TYPE!=req.body.oldType ) {
+              if ( user==null || user.TYPE!=req.body.oldType ) {
                 return res.status(404).json();
               }
 
-              if ( isNaN(req.params.username) || isNaN(req.body.oldType) 
+              if ( isNaN(req.params.username) 
+                  || isNaN(req.body.oldType) 
                   || isNaN(req.body.newType)
-                  || req.body.oldType=='manager') {
+                  || req.body.oldType=='manager'
+                  || req.body.newType=='manager'
+                  || Object.keys(req.body).length === 0
+                  || (req.body.oldType!="customer" && req.body.oldType!="qualityEmployee" 
+                      && req.body.oldType!="clerk" && req.body.oldType!="deliveryEmployee" && req.body.oldType!="supplier")
+                  || (req.body.newType!="customer" && req.body.newType!="qualityEmployee" 
+                      && req.body.newType!="clerk" && req.body.newType!="deliveryEmployee" && req.body.newType!="supplier") ) {
                 return res.status(422).json();
               }
 
@@ -425,9 +448,6 @@ module.exports = function (app, db) {
               };
               await modifyRightsStoredUser(data);
               return res.status(200).json();
-
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
@@ -436,10 +456,12 @@ module.exports = function (app, db) {
   //DELETE /api/users/:username/:type
   app.delete('/api/users/:username/:type', async (req, res) => {
     try {
-      if (isLoggedUser() == 1 && this.type=='manager') {
-
-              if ( isNaN(req.params.username) || isNaN(req.params.type) 
-                  || req.params.type=='manager') {
+              if ( isNaN(req.params.username) 
+                  || isNaN(req.params.type) 
+                  || req.params.type=='manager' 
+                  || Object.keys(req.body).length === 0 
+                  || (req.body.type!="customer" && req.body.type!="qualityEmployee"
+                    && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
                 return res.status(422).json();
               }
 
@@ -449,9 +471,6 @@ module.exports = function (app, db) {
               };
               await deleteStoredUser(data);
               return res.status(204).json();
-
-      }
-      return res.status(401).json();
     } catch (err) {
       return res.status(503).json();
     }
