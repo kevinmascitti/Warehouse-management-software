@@ -184,190 +184,8 @@ module.exports = function (app, db) {
     }
   });
 
-  //GET /api/managerSessions
-  app.get('/api/managerSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/customerSessions
-  app.get('/api/customerSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/supplierSessions
-  app.get('/api/supplierSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/clerkSessions
-  app.get('/api/clerkSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/qualityEmployeeSessions
-  app.get('/api/qualityEmployeeSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/deliveryEmployeeSessions
-  app.get('/api/deliveryEmployeeSessions', async (req, res) => {
-    try {
-      const data = {
-        username: req.body.username,
-        password: req.body.password
-      };
-      const user = await getLoginInfo(data);
-      if (user!=null) {
-        this.username=user.username;
-        this.name=user.name;
-        this.surname=user.surname;
-        this.type=user.type;
-        this.logged=1;
-
-        const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        };
-        return res.status(200).json(info);
-      }
-      return res.status(401).json();
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //GET /api/logout
-  app.get('/api/logout', async (req, res) => {
-    try {
-      this.username="";
-      this.name="";
-      this.surname="";
-      this.type="";
-      this.logged=0;
-      return res.status(200).json(resBody);
-    } catch (err) {
-      return res.status(500).json();
-    }
-  });
-
-  //POST /api/user
-  app.post('/api/user', async (req, res) => {
+  //POST /api/newUser
+  app.post('/api/newUser', async (req, res) => {
     try {
       if (isLoggedUser() == 1 && this.type=='manager') {
         
@@ -375,14 +193,14 @@ module.exports = function (app, db) {
           username: req.body.username,
           type: req.body.type
         };
-        if ( getStoredUser(dataCheck)==null ) { // ????
+        const user = getStoredUser(dataCheck);
+        if ( user==null ) {
           return res.status(409).json();
         }
 
         if ( isNaN(req.body.username) || isNaN(req.body.name)
           || isNaN(req.body.surname) || isNaN(req.body.password)
           || isNaN(req.body.type) || req.body.password.length()<8 ) {
-            // check su type???
           return res.status(422).json();
         }
 
@@ -403,18 +221,200 @@ module.exports = function (app, db) {
   });
 
 
+  //POST /api/managerSessions
+  app.post('/api/managerSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/customerSessions
+  app.post('/api/customerSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/supplierSessions
+  app.post('/api/supplierSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/clerkSessions
+  app.post('/api/clerkSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/qualityEmployeeSessions
+  app.post('/api/qualityEmployeeSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/deliveryEmployeeSessions
+  app.post('/api/deliveryEmployeeSessions', async (req, res) => {
+    try {
+      const data = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      const user = await getLoginInfo(data);
+      if (user!=null) {
+        this.username=user.username;
+        this.name=user.name;
+        this.surname=user.surname;
+        this.type=user.type;
+        this.logged=1;
+
+        const info = {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        };
+        return res.status(200).json(info);
+      }
+      return res.status(401).json();
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
+  //POST /api/logout
+  app.post('/api/logout', async (req, res) => {
+    try {
+      this.username="";
+      this.name="";
+      this.surname="";
+      this.type="";
+      this.logged=0;
+      return res.status(200).json(resBody);
+    } catch (err) {
+      return res.status(500).json();
+    }
+  });
+
   //PUT /api/user/:username
   app.put('/api/user/:id', async (req, res) => {
     try {
       if (isLoggedUser() == 1 && this.type=='manager') {
-        
-              if ( getStoredUser(req.params.username)!=1
-                || getStoredUser(req.params.username).TYPE!=req.body.oldType ) {
+              const user = await getStoredUser(req.params.username);
+              if ( user==null
+                || user.TYPE!=req.body.oldType ) {
                 return res.status(404).json();
               }
 
               if ( isNaN(req.params.username) || isNaN(req.body.oldType) 
-                  || isNaN(req.body.newType) || req.body.oldType=='administrator' 
+                  || isNaN(req.body.newType)
                   || req.body.oldType=='manager') {
                 return res.status(422).json();
               }
@@ -439,7 +439,7 @@ module.exports = function (app, db) {
       if (isLoggedUser() == 1 && this.type=='manager') {
 
               if ( isNaN(req.params.username) || isNaN(req.params.type) 
-                  || req.params.type=='administrator' || req.params.type=='manager') {
+                  || req.params.type=='manager') {
                 return res.status(422).json();
               }
 
