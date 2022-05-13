@@ -16,7 +16,7 @@ module.exports = function (app, db) {
 
   function storeUser(data) {
     return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO USER(USERNAME, NAME, SURNAME, PASSWORD, TYPE) VALUES(?, ?, ?, ?, ?, ?)';
+      const sql = 'INSERT INTO USER(USERNAME, NAME, SURNAME, PASSWORD, TYPE) VALUES(?, ?, ?, ?, ?)';
       db.run(sql, [data.username, data.name, data.surname, data.password, data.type], (err) => {
         if (err) {
           reject(err);
@@ -212,13 +212,16 @@ module.exports = function (app, db) {
           type: req.body.type
         };
         const user = getStoredUser(dataCheck);
-        if ( user==null ) {
+        if ( user!==null && user!==undefined ) {
           return res.status(409).json();
         }
 
-        if ( isNaN(req.body.username) || isNaN(req.body.name)
-          || isNaN(req.body.surname) || isNaN(req.body.password)
-          || isNaN(req.body.type) || Object.keys(req.body.password).length<8 || Object.keys(req.body).length === 0
+        if ( req.body.username===null || req.body.username===undefined
+          || req.body.name===null || req.body.name===undefined
+          || req.body.surname===null || req.body.surname===undefined
+          || req.body.password===null || req.body.password===undefined
+          || req.body.type===null || req.body.type===undefined
+          || req.body.password.length<8 || Object.keys(req.body).length === 0
           || (req.body.type!="customer" && req.body.type!="qualityEmployee" 
           && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
           return res.status(422).json();
@@ -415,7 +418,7 @@ module.exports = function (app, db) {
       this.surname="";
       this.type="";
       this.logged=0;
-      return res.status(200).json(resBody);
+      return res.status(200).json();
     } catch (err) {
       return res.status(500).json();
     }
@@ -425,13 +428,13 @@ module.exports = function (app, db) {
   app.put('/api/users/:username', async (req, res) => {
     try {
               const user = await getStoredUser(req.params.username);
-              if ( user==null || user.TYPE!=req.body.oldType ) {
+              if ( user===null || user.TYPE!=req.body.oldType ) {
                 return res.status(404).json();
               }
 
-              if ( isNaN(req.params.username) 
-                  || isNaN(req.body.oldType) 
-                  || isNaN(req.body.newType)
+              if ( req.params.username===null || req.params.username===undefined
+                  || req.body.oldType===null || req.body.oldType===undefined
+                  || req.body.newType===null || req.body.newType===undefined
                   || req.body.oldType=='manager'
                   || req.body.newType=='manager'
                   || Object.keys(req.body).length === 0
@@ -456,12 +459,12 @@ module.exports = function (app, db) {
   //DELETE /api/users/:username/:type
   app.delete('/api/users/:username/:type', async (req, res) => {
     try {
-              if ( isNaN(req.params.username) 
-                  || isNaN(req.params.type) 
-                  || req.params.type=='manager' 
+              if ( req.params.username===null || req.params.username===undefined
+                  || req.params.type===null || req.params.type===undefined
+                  || req.params.type=='manager'
                   || Object.keys(req.body).length === 0 
-                  || (req.body.type!="customer" && req.body.type!="qualityEmployee"
-                    && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
+                  || (req.params.type!="customer" && req.params.type!="qualityEmployee"
+                    && req.params.type!="clerk" && req.params.type!="deliveryEmployee" && req.params.type!="supplier") ) {
                 return res.status(422).json();
               }
 
