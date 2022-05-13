@@ -11,7 +11,7 @@ module.exports = function (app, db) {
   function isLoggedUser() {
     if(logged==1)
       return 1;
-    return 0;
+    return 2;
   }
 
   function storeUser(data) {
