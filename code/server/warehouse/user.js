@@ -239,10 +239,11 @@ module.exports = function (app, db) {
           type: req.body.type
         };
         const N = await isThereUser(data);
-        if ( N==1 ) {
+        if ( N === 1 ) {
           return res.status(409).json();
         }
         const ID = await getMaxID();
+        console.log(ID)
         const store = {
           id: ID+1,
           username: req.body.username,
@@ -271,10 +272,9 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
 
-        console.log({user})
         username=user.username;
         name=user.name;
         surname=user.surname;
@@ -306,7 +306,7 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
         name=user.name;
@@ -339,7 +339,7 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
         name=user.name;
@@ -372,7 +372,7 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
         name=user.name;
@@ -405,7 +405,7 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
         name=user.name;
@@ -438,7 +438,7 @@ module.exports = function (app, db) {
         password: req.body.password
       };
       const N = await isThereUser({username: req.body.username, type: "manager"})
-      if ( N==1 ) {
+      if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
         name=user.name;
@@ -493,7 +493,7 @@ module.exports = function (app, db) {
       }
 
       const N = await isThereUser({username: req.params.username, type: req.body.oldType});
-      if ( N==0 ) {
+      if ( N === 0 ) {
         return res.status(404).json();
       }
 
