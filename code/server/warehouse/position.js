@@ -45,6 +45,36 @@ module.exports = function (app, db) {
     });
   }
 
+  function getPosition() {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT * FROM POSITION WHERE ID = ?';
+      db.all(sql, [data.id], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          const position = rows.map((r) => (
+            {
+              positionID: r.ID,
+              aisleID: r.AISLE,
+              row: r.ROW,
+              col: r.COLUMN,
+              maxWeight: r.MAXWEIGHT,
+              maxVolume: r.MAXVOLUME,
+              occupiedWeight: r.OCCUPIEDWEIGHT,
+              occupiedVolume: r.OCCUPIEDVOLUME
+            }
+          ));
+          resolve(position);
+        }
+      });
+    });
+  }
+
   function isTherePosition(data) {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT COUNT(*) AS N FROM POSITION WHERE ID = ?';
@@ -66,8 +96,8 @@ module.exports = function (app, db) {
 
   function modifyPosition(data) {
     return new Promise((resolve, reject) => {
-      const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COL = ?, MAXWEIGHT = ?, MAXVOLUME = ?, OCCUPIEDWEIGHT = ?, OCCUPIEDVOLUME = ? WHERE ID = ?';
-      db.run(sql, [data.newPositionID, data.aisleID, data.row, data.col, data.maxWeight, data.maxVolume, data.occupiedWeight, data.occupiedVolume, data.positionID], (err, rows) => {
+      const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COLUMN = ?, MAXWEIGHT = ?, MAXVOLUME = ?, OCCUPIEDWEIGHT = ?, OCCUPIEDVOLUME = ? WHERE ID = ?';
+      db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.newMaxWeight, data.newMaxVolume, data.newOccupiedWeight, data.newOccupiedVolume, data.positionID], (err, rows) => {
         if (err) {
           reject(err);
           return;
@@ -84,7 +114,7 @@ module.exports = function (app, db) {
 
   function modifyPositionID(data) {
     return new Promise((resolve, reject) => {
-      const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COL = ? WHERE ID = ?';
+      const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COLUMN = ? WHERE ID = ?';
       db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.positionID], (err, rows) => {
         if (err) {
           reject(err);
@@ -118,7 +148,6 @@ module.exports = function (app, db) {
     });
   }
 
-  
   //GET /api/positions
   app.get('/api/positions', async (req, res) => {
     try {
@@ -169,7 +198,7 @@ module.exports = function (app, db) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
-          if ( req.param.positionID===undefined || req.param.positionID===null
+          if ( req.params.positionID===undefined || req.params.positionID===null
             || req.body.newAisleID===undefined || req.body.newAisleID===null
             || req.body.newRow===undefined || req.body.newRow===null
             || req.body.newCol===undefined || req.body.newCol===null
@@ -179,70 +208,62 @@ module.exports = function (app, db) {
             || isNaN(req.body.newOccupiedVolume) || req.body.newOccupiedVolume<=0
             || req.body.newOccupiedWeight>req.body.newMaxWeight
             || req.body.newOccupiedVolume>req.body.newMaxVolume
-            || req.param.positionID.length!=12
+            || req.params.positionID.length!=12
             || req.body.newAisleID.length!=4 
             || req.body.newRow.length!=4
             || req.body.newCol.length!=4
-            || req.param.positionID!==req.body.newAisleID+req.body.newRow+req.body.newCol
             || Object.keys(req.body).length===0 ) {
                 return res.status(422).json();
             }
-              
-              const N = await isTherePosition({ id: req.param.positionID });
-              if (N == 1) {
-                  const position = await getPosition({ id: req.param.positionID });
-                  const data = {
-                    positionID: position.positionID,
-                    aisleID: position.aisleID,
-                    row: position.row,
-                    col: position.column,
-                    maxWeight: position.maxWeight,
-                    maxVolume: position.maxVolume,
-                    occupiedWeight: position.occupiedWeight,
-                    occupiedVolume: position.occupiedVolume,
-                    newPositionID: position.aisleID+position.row+position.col
-                  };
-                  await modifyPosition(data);
-                  const result = await getPosition({ id: data.newPositionID });
-                  return res.status(200).json(result);
-              }
-              return res.status(404).json();
-
-
-              
-              return res.status(200).json();
+            const N = await isTherePosition({ id: req.params.positionID });
+            const M = await isTherePosition({ id: req.body.newAisleID+req.body.newRow+req.body.newCol });
+            if ( N == 1 && M==0 ) {
+                const data = {
+                  positionID: req.params.positionID,
+                  newAisleID: req.body.newAisleID,
+                  newRow: req.body.newRow,
+                  newCol: req.body.newCol,
+                  newMaxWeight: req.body.newMaxWeight,
+                  newMaxVolume: req.body.newMaxVolume,
+                  newOccupiedWeight: req.body.newOccupiedWeight,
+                  newOccupiedVolume: req.body.newOccupiedVolume,
+                  newPositionID: req.body.newAisleID+req.body.newRow+req.body.newCol
+                };
+                await modifyPosition(data);
+                return res.status(200).json();
+            }
+            return res.status(404).json();
 
     } catch (err) {
-      return res.status(503).json();
+      return res.status(503).json(err);
     }
   });
 
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
-
               if ( req.params.positionID===undefined || req.params.positionID===null
-                || req.body.newPositionID===undefined || req.params.newPositionID===null
-                || req.params.positionID.length!=12 || req.params.newPositionID.length!=12
+                || req.body.newPositionID===undefined || req.body.newPositionID===null
+                || req.params.positionID.length!=12 || req.body.newPositionID.length!=12
                 || Object.keys(req.body).length === 0 ) {
                  return res.status(422).json();
               }
               const N = await isTherePosition({ id: req.params.positionID });
               const M = await isTherePosition({ id: req.body.newPositionID });
               if (N == 1 && M == 0) {
-                const position = await getPosition({ id: req.params.positionID });
+                console.log(N)
                 const data = {
-                  positionID: req.params.positionID,
                   newPositionID: req.body.newPositionID,
                   newAisleID: req.body.newPositionID.substr(0, 4),
                   newRow: req.body.newPositionID.substr(4, 4),
-                  newCol: req.body.newPositionID.substr(8, 4)
+                  newCol: req.body.newPositionID.substr(8, 4),
+                  positionID: req.params.positionID
                 };
+                console.log(data)
                 await modifyPositionID(data);
                 return res.status(200).json();
               }
               return res.status(404).json();
-
     } catch (err) {
       return res.status(503).json();
     }
