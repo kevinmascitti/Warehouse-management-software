@@ -63,7 +63,6 @@ module.exports = function (app, db) {
     });
 }
 
-
   function modifyPosition(data) {
     return new Promise((resolve, reject) => {
       const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COLUMN = ?, MAXWEIGHT = ?, MAXVOLUME = ?, OCCUPIEDWEIGHT = ?, OCCUPIEDVOLUME = ? WHERE ID = ?';
@@ -194,7 +193,7 @@ module.exports = function (app, db) {
             }
             const N = await isTherePosition({ id: req.params.positionID });
             const M = await isTherePosition({ id: req.body.newAisleID+req.body.newRow+req.body.newCol });
-            if ( N == 1 && M==0 ) {
+            if ( N === 1 && M === 0 ) {
                 const data = {
                   positionID: req.params.positionID,
                   newAisleID: req.body.newAisleID,
@@ -229,7 +228,7 @@ module.exports = function (app, db) {
       }
       const N = await isTherePosition({ id: req.params.positionID });
       const M = await isTherePosition({ id: req.body.newPositionID });
-      if (N == 1 && M == 0) {
+      if (N === 1 && M === 0) {
         const data = {
           newPositionID: req.body.newPositionID,
           newAisleID: req.body.newPositionID.substr(0, 4),
