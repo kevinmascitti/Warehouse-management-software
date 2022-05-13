@@ -16,11 +16,12 @@ module.exports = function (app, db) {
         let products = []
         ;
         try {
-          items = await  getProductsOrdered(o.id);
+          items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
               product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
@@ -54,11 +55,12 @@ module.exports = function (app, db) {
     for (let o of orders) {
         let products = [];
         try {
-          items = await  getProductsOrdered(o.id);
+          items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
               product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
@@ -91,11 +93,12 @@ module.exports = function (app, db) {
     for (let o of orders) {
         let products = [];
         try {
-          items = await  getProductsOrdered(o.id);
+          items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
               product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
@@ -131,11 +134,12 @@ module.exports = function (app, db) {
 
     let o = orders[0];
     try {
-      items = await  getProductsOrdered(o.id);
+      items = await  getInternalOrderProducts(o.id);
       for (let i of items) {   
         let product;         
         try {
           product = await getItemInfoForInternalOrder(i.skuid, i.quantity);
+          if (product == undefined) continue;
         } catch (err) {
           return res.status(500).json(err.message);
         }
@@ -178,9 +182,10 @@ module.exports = function (app, db) {
       };
       await storeInternalOrder(data);
 
-      //PRODUCTORDERED insertion
+      //INTERNALORDERPRODUCT insertion
       for (let p of req.body.products) {
-        await storeProductOrdered({id: internalOrderId, skuid: p.SKUId, quantity: p.qty, rfid: null});
+        await storeInternalOrderProduct({id: internalOrderId, skuid: p.SKUId, quantity: p.qty, rfid: null});
+        if (await getItemInfoForInternalOrder(p.SKUId, 0) == undefined) await storeSKU({id: p.SKUId, description: p.description, price: p.price});
       }
       return res.status(201).json();
     } catch (err) {
@@ -203,10 +208,10 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
 
     if ( req.body.newState == "COMPLETED") {
       for(let product of req.body.products) {
-        await updateProductOrdered(product.SkuID, req.params.id, product.RFID);
+        await updateInternalOrderProduct(product.SkuID, req.params.id, product.RFID);
       }
     }
-
+    storeInternalOrderProduct
     return res.status(200).json();
   } catch (err) {
     return res.status(503).json(err.message);
@@ -221,7 +226,7 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
         return res.status(422).json();
       }
       await deleteInternalOrder(req.params.id);
-      await deleteProductsOrdered(req.params.id);
+      await deleteInternalOrderProducts(req.params.id);
       return res.status(204).json();
     } catch (err) {
       return res.status(503).json();
@@ -315,9 +320,9 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     });
   }
 
-  const getProductsOrdered = async function (internalOrderId) {
+  const getInternalOrderProducts = async function (internalOrderId) {
     return new Promise((resolve, reject) => {
-      const sql = 'SELECT * FROM PRODUCTORDERED WHERE INTERNALORDERID = ?';
+      const sql = 'SELECT * FROM INTERNALORDERPRODUCT WHERE INTERNALORDERID = ?';
       db.all(sql, [internalOrderId], (err, rows) => {
         if (err) {
             reject(err);
@@ -335,7 +340,7 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     });
   }
 
-  const getItemInfoForInternalOrder = async function (sku, quantity) {
+  const getItemInfoForInternalOrder = async function (sku, quantityToReturn) {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT * FROM SKU WHERE ID = ?';
       db.get(sql, [sku], (err, data) => {
@@ -343,12 +348,16 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
           reject(err);
           return;
         }
+        if (data == undefined){
+          resolve(undefined);
+          return;
+        } 
         resolve(
           {
             SKUId: data.ID,
             description: data.DESCRIPTION,
             price: data.PRICE,
-            quantity: quantity
+            quantity: quantityToReturn
           }
         )
       });
@@ -358,7 +367,7 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
   function storeInternalOrder(data) {
     return new Promise((resolve, reject) => {
       const sql = 'INSERT INTO INTERNALORDER(ID, ISSUEDATE, STATE, CUSTOMERID) VALUES(?, ?, ?, ?)';
-      db.run(sql, [data.id, dayjs(data.issueDate).format('YYYY/MM/DD HH:MM'), data.state, data.customerId], (err) => {
+      db.run(sql, [data.id, dayjs(data.issueDate).format('YYYY/MM/DD HH:mm'), data.state, data.customerId], (err) => {
         if (err) {
           reject(err);
           return;
@@ -368,9 +377,9 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     });
   }
 
-  function storeProductOrdered(data) {
-    return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO PRODUCTORDERED(INTERNALORDERID, SKUID, QUANTITY, RFID) VALUES(?, ?, ?, ?)';
+  function storeInternalOrderProduct(data){
+     return new Promise((resolve, reject) => {
+      const sql = 'INSERT INTO INTERNALORDERPRODUCT(INTERNALORDERID, SKUID, QUANTITY, RFID) VALUES(?, ?, ?, ?)';
       db.run(sql, [data.id, data.skuid, data.quantity, data.rfid], (err) => {
         if (err) {
           reject(err);
@@ -380,6 +389,21 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       });
     });
   }
+
+  function storeSKU(data){
+    return new Promise((resolve, reject) => {
+     const sql = 'INSERT INTO SKU(ID, DESCRIPTION, PRICE, TESTDESCRIPTORS) VALUES(?, ?, ?, ?)';
+     db.run(sql, [data.id, data.description, data.price, []], (err) => {
+       if (err) {
+         reject(err);
+         return;
+       }
+       resolve();
+     });
+   });
+ }
+
+
 
   function updateStateInternalOrder(id, state) {
     return new Promise((resolve, reject) => {
@@ -395,9 +419,9 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     });
   }
 
-  function updateProductOrdered(sku, internalOrderId, rfid) {
+  function updateInternalOrderProduct(sku, internalOrderId, rfid) {
     return new Promise((resolve, reject) => {
-      const sql = 'UPDATE PRODUCTORDERED SET RFID = ? WHERE INTERNALORDERID = ? AND SKUID = ?';
+      const sql = 'UPDATE INTERNALORDERPRODUCT SET RFID = ? WHERE INTERNALORDERID = ? AND SKUID = ?';
       db.run(sql, [rfid, internalOrderId, sku], (err) => {
         if (err) {
           reject(err);
@@ -421,9 +445,9 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     })
   }
 
-  function deleteProductsOrdered(internalOrderId) {
+  function deleteInternalOrderProducts(internalOrderId) {
     return new Promise((resolve, reject) => {
-      const sql = 'DELETE FROM PRODUCTORDERED WHERE INTERNALORDERID = ?';
+      const sql = 'DELETE FROM INTERNALORDERPRODUCT WHERE INTERNALORDERID = ?';
       db.run(sql, [internalOrderId], (err) => {
         if (err) {
           reject(err);
