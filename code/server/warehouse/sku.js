@@ -2,8 +2,6 @@
 
 module.exports = function (app, db) {
 
-    // PUT /api/sku/:id/position !!!!!!!!!!!!TO BE DONE!!!!!!!!!!!!  
-
     function isThereSku(data) {
         return new Promise((resolve, reject) => {
             const sql = 'SELECT COUNT(*) AS N FROM SKU WHERE ID = ?';
@@ -94,6 +92,45 @@ module.exports = function (app, db) {
         });
     }
 
+    function modifySkuPosition(data) {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE SKU SET POSITION = ? WHERE ID = ?';
+            db.run(sql, [data.newPosition, data.id], (err, rows) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    }
+
+    function updateNewPosition(data) {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT =  OCCUPIEDWEIGHT + ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME + ? WHERE ID = ?';
+            db.run(sql, [data.availableQuantity * data.weight, data.availableQuantity * data.volume, data.newPosition], (err, rows) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    }
+
+    function updateOldPosition(data) {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT = OCCUPIEDWEIGHT - ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME - ? WHERE ID = ?';
+            db.run(sql, [data.availableQuantity * data.weight, data.availableQuantity * data.volume, data.oldPosition], (err, rows) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    }
+
     function deleteStoredSku(data) {
         return new Promise((resolve, reject) => {
             const sql = 'DELETE FROM SKU WHERE ID = ?';
@@ -175,6 +212,34 @@ module.exports = function (app, db) {
             const N = await isThereSku({ id: req.params.id });
             if (N == 1) {
                 await modifyStoredSku(data);
+                return res.status(200).json();
+            }
+            return res.status(404).json();
+        } catch (err) {
+            return res.status(500).json();
+        }
+    });
+
+    //PUT /api/sku/:id/position
+    app.put('/api/sku/:id/position', async (req, res) => { //MANCA 401 UNAUTHORIZED
+        try {
+            if (isNaN(req.params.id) || typeof req.body.position !== 'string' || req.body.position.length != 12) {
+                return res.status(422).json();
+            }
+            const N = await isThereSku({ id: req.params.id });
+            if (N == 1) {
+                const sku = await getStoredSku({ id: req.params.id });
+                const data = {
+                    id: req.params.id,
+                    newPosition: req.body.position,
+                    oldPosition: sku[0].position,
+                    weight: sku[0].weight,
+                    volume: sku[0].volume,
+                    availableQuantity: sku[0].availableQuantity
+                };
+                await modifySkuPosition(data);
+                await updateNewPosition(data);
+                await updateOldPosition(data);
                 return res.status(200).json();
             }
             return res.status(404).json();
