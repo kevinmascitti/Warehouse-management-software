@@ -305,7 +305,7 @@ module.exports = function (app, db) {
         username: req.body.username,
         password: req.body.password
       };
-      const N = await isThereUser({username: req.body.username, type: "manager"})
+      const N = await isThereUser({username: req.body.username, type: "customer"})
       if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
@@ -338,7 +338,7 @@ module.exports = function (app, db) {
         username: req.body.username,
         password: req.body.password
       };
-      const N = await isThereUser({username: req.body.username, type: "manager"})
+      const N = await isThereUser({username: req.body.username, type: "supplier"})
       if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
@@ -371,7 +371,7 @@ module.exports = function (app, db) {
         username: req.body.username,
         password: req.body.password
       };
-      const N = await isThereUser({username: req.body.username, type: "manager"})
+      const N = await isThereUser({username: req.body.username, type: "clerk"})
       if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
@@ -404,7 +404,7 @@ module.exports = function (app, db) {
         username: req.body.username,
         password: req.body.password
       };
-      const N = await isThereUser({username: req.body.username, type: "manager"})
+      const N = await isThereUser({username: req.body.username, type: "qualityEmployee"})
       if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
@@ -437,7 +437,7 @@ module.exports = function (app, db) {
         username: req.body.username,
         password: req.body.password
       };
-      const N = await isThereUser({username: req.body.username, type: "manager"})
+      const N = await isThereUser({username: req.body.username, type: "deliveryEmployee"})
       if ( N === 1 ) {
         const user = await getLoginInfo(data);
         username=user.username;
