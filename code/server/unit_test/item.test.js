@@ -33,7 +33,7 @@ const item4 = {
     supplierId: 2
 }
 
-describe("get items", () => {
+describe("items", () => {
 
     beforeEach(async () => {
         await item.deleteAllItems();
@@ -52,6 +52,7 @@ describe("get items", () => {
     testIsThereItem(item2);
     testDeleteItem(item2);
     testDuplicatedItem(item1);
+    testEditItem(item2);
 });
 
 async function testItem(i) {
@@ -123,34 +124,23 @@ async function testDeleteItem(i) {
     });
 }
 
-describe("modify items", () => {
-
-    beforeEach(async () => {
-        await item.deleteAllItems();
-
-        await item.storeItem(item1);
-        await item.storeItem(item2);
-        await item.storeItem(item3);
-    });
-
-    describe("edit item data", () => {
+    async function testEditItem(i) {
         test('editItem', async () => {
             const modifyItem = {
-                id: 1,
-                newDescription: "edited item",
+                id: i.id,
+                newDescription: "edited item ohohoh",
                 newPrice: 999.47,
             }
-
             await item.modifyStoredItem(modifyItem);
             let res = await item.getStoredItem({ id: modifyItem.id });
             expect(res).toEqual({
-                id: item2.id,
+                id: i.id,
                 description: modifyItem.newDescription,
                 price: modifyItem.newPrice,
-                SKUId: item2.SKUId,
-                supplierId: item2.supplierId
+                SKUId: i.SKUId,
+                supplierId: i.supplierId
             });
-        })
-    });
-});
+        });
+    }
 
+    
