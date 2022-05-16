@@ -6,8 +6,9 @@ app.use(express.json());
 
 const database = require('./warehouse/DB.js');
 const DB = new database();
+const db = DB.db;
 
-require('./warehouse/item')(app, DB.db);
+require('./API/item_API')(app);
 require('./warehouse/sku')(app, DB.db);
 require('./warehouse/skuitem')(app, DB.db);
 require('./warehouse/internalorder')(app, DB.db);
@@ -20,5 +21,3 @@ require('./warehouse/testResult')(app, DB.db);
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
-
-module.exports = app;
