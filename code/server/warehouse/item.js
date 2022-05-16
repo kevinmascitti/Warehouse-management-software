@@ -62,7 +62,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
             supplierId: r.SUPPLIERID
           }
         ));
-        resolve(item);
+        resolve(item[0]);
       });
     });
   }
