@@ -11,27 +11,28 @@ module.exports = function (app, db) {
     } catch (err) {
         return res.status(500).json();
     }
-    
     for (let o of orders) {
         let products = []
-        ;
         try {
           items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await getSKU (i.skuid, i.quantity);
               if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -44,33 +45,34 @@ module.exports = function (app, db) {
     return res.status(200).json(orders);
   });
 
-
   app.get('/api/internalOrdersIssued', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
         orders = await getInternalOrdersWithState(["ISSUED"]);
     } catch (err) {
         return res.status(500).json();
     }
-    
     for (let o of orders) {
-        let products = [];
+        let products = []
         try {
           items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await getSKU (i.skuid, i.quantity);
               if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -89,26 +91,28 @@ module.exports = function (app, db) {
     } catch (err) {
         return res.status(500).json();
     }
-    
     for (let o of orders) {
-        let products = [];
+        let products = []
         try {
           items = await  getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await getSKU (i.skuid, i.quantity);
               if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -120,7 +124,8 @@ module.exports = function (app, db) {
     }
     return res.status(200).json(orders);
   });
-  
+
+
   app.get('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     if (isNaN(req.params.id)) {
       return res.status(422).json();
@@ -138,18 +143,21 @@ module.exports = function (app, db) {
       for (let i of items) {   
         let product;         
         try {
-          product = await getItemInfoForInternalOrder(i.skuid, i.quantity);
+          product = await getSKU(i.skuid, i.quantity);
           if (product == undefined) continue;
         } catch (err) {
           return res.status(500).json(err.message);
         }
         if (o.state == "COMPLETED"){
-          o.products.push({
+          let skuitems = await getSKUItems(product.SKUId, o.id);
+          for (let s of skuitems) {
+            products.push({
             SKUId: product.SKUId,
             description: product.description,
             price: product.price,
-            RFID: i.rfid
+            RFID: s.rfid
           })
+            }
         }
         else o.products.push(product);
 
@@ -185,7 +193,7 @@ module.exports = function (app, db) {
       //INTERNALORDERPRODUCT insertion
       for (let p of req.body.products) {
         await storeInternalOrderProduct({id: internalOrderId, skuid: p.SKUId, quantity: p.qty, rfid: null});
-        if (await getItemInfoForInternalOrder(p.SKUId, 0) == undefined) await storeSKU({id: p.SKUId, description: p.description, price: p.price});
+        if (await getSKU(p.SKUId, 0) == undefined) await storeSKU({id: p.SKUId, description: p.description, price: p.price});
       }
       return res.status(201).json();
     } catch (err) {
@@ -201,14 +209,14 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       return res.status(422).json();
     }
     const order = await getInternalOrderWithID(req.params.id);
-    console.log(order)
     if (order.length == 0) return res.status(404).json();
 
     await updateStateInternalOrder(req.params.id, req.body.newState);
 
     if ( req.body.newState == "COMPLETED") {
       for(let product of req.body.products) {
-        await updateInternalOrderProduct(product.SkuID, req.params.id, product.RFID);
+        let item = await getSKUItem(product.RFID);
+        if(item != undefined) await updateInternalOrderProduct(product.SkuID, req.params.id, product.RFID);
       }
     }
     storeInternalOrderProduct
@@ -227,6 +235,7 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       }
       await deleteInternalOrder(req.params.id);
       await deleteInternalOrderProducts(req.params.id);
+      await deleteSkuItems(req.params.id);
       return res.status(204).json();
     } catch (err) {
       return res.status(503).json();
@@ -332,7 +341,6 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
           {
             skuid : r.SKUID,
             quantity : r.QUANTITY,
-            rfid: r.RFID
           }
         )));
         return;
@@ -340,7 +348,7 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
     });
   }
 
-  const getItemInfoForInternalOrder = async function (sku, quantityToReturn) {
+  const getSKU = async function (sku, quantityToReturn) {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT * FROM SKU WHERE ID = ?';
       db.get(sql, [sku], (err, data) => {
@@ -363,6 +371,28 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       });
     });
   }
+
+  const getSKUItems = async function (skuid, internalOrderId) {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT * FROM SKUITEM WHERE SKUID = ? AND INTERNALORDERID = ?';
+      db.all(sql, [skuid, internalOrderId], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(rows.map((r) => (
+          {
+            rfid: r.RFID,
+            SKUId: r.SKUID,
+            available: r.AVAILABLE,
+            dateOfStock: r.DATEOFSTOCK,
+            internalOrderId: r.INTERNALORDERID,
+            restockOrderId: r.RESTOCKORDERID
+          }))
+        )
+      });
+    });
+  }
   
   function storeInternalOrder(data) {
     return new Promise((resolve, reject) => {
@@ -379,8 +409,8 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
 
   function storeInternalOrderProduct(data){
      return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO INTERNALORDERPRODUCT(INTERNALORDERID, SKUID, QUANTITY, RFID) VALUES(?, ?, ?, ?)';
-      db.run(sql, [data.id, data.skuid, data.quantity, data.rfid], (err) => {
+      const sql = 'INSERT INTO INTERNALORDERPRODUCT(INTERNALORDERID, SKUID, QUANTITY) VALUES(?, ?, ?)';
+      db.run(sql, [data.id, data.skuid, data.quantity], (err) => {
         if (err) {
           reject(err);
           return;
@@ -408,7 +438,6 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
   function updateStateInternalOrder(id, state) {
     return new Promise((resolve, reject) => {
       const sql = 'UPDATE INTERNALORDER SET STATE = ? WHERE ID = ?';
-      console.log(id, state)
       db.run(sql, [state, id], (err) => {
         if (err) {
           reject(err);
@@ -421,8 +450,8 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
 
   function updateInternalOrderProduct(sku, internalOrderId, rfid) {
     return new Promise((resolve, reject) => {
-      const sql = 'UPDATE INTERNALORDERPRODUCT SET RFID = ? WHERE INTERNALORDERID = ? AND SKUID = ?';
-      db.run(sql, [rfid, internalOrderId, sku], (err) => {
+      const sql = 'INSERT INTO SKUITEM (RFID, SKUID, AVAILABLE, DATEOFSTOCK, INTERNALORDERID) VALUES (?, ?, ?, ?, ?)';
+      db.run(sql, [rfid, sku, 1, dayjs().format('YYYY/MM/DD HH:mm'), internalOrderId], (err) => {
         if (err) {
           reject(err);
           return;
@@ -457,5 +486,41 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       });
     })
   }
+}
 
+function getSKUItem(rfid) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM SKUITEM WHERE RFID = ?';
+    db.get(sql, [rfid], (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (data == undefined){
+        resolve(undefined);
+        return;
+      } 
+      resolve({
+        rfid: data.RFID,
+        skuid: data.SKUID,
+        available: data.AVAILABLE,
+        dateOfStock: data.DATEOFSTOCK,
+        internalOrderId: data.INTERNALORDERID,
+        restockOrderId: data.RESTOCKORDERID
+      });
+    });
+  })
+}
+
+function deleteSkuItems(internalOrderId) {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM SKUITEM WHERE INTERNALORDERID = ?';
+    db.run(sql, [internalOrderId], (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  })
 }
