@@ -38,6 +38,18 @@ const modifyItem1 = {
     newPrice: 2.99,
 };
 
+const modifyItem2 = {
+    id: 2,
+    newDescription: "another item from test API",
+    newPrice: 2.99,
+};
+
+const modifyItemWrong = {
+    id: 'ciao, mi presento: non sono un numero',
+    newDescription: "another item from test API",
+    newPrice: 2.99,
+};
+
 describe('test item apis', () => {
 
     before(async () => {
@@ -51,9 +63,11 @@ describe('test item apis', () => {
     storeItem(500, item2); //DUPLICATO ==> ERRORE 
     storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
     getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
-    modifyItem(200, modifyItem1); //modifico item1 e controllo modifiche
+    modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
     deleteItem(204, item2); //elimino item1
     getNonExistingItem(404, item2); //controllo che sia stato eliminato
+    modifyItem(404, modifyItem2); //item2 non esiste piu
+    modifyItem(422, modifyItemWrong); //FORMATO SBAGLIATO ==> ERRORE 
 });
 
 function storeItem(expectedHTTPStatus, data) {
@@ -109,16 +123,31 @@ function getNonExistingItem(expectedHTTPStatus, data) {
     });
 }
 
+function modifyItemAndCheck(expectedHTTPStatus, data) {
+    it('modify item', function (done) {
+        agent.put('/api/item/' + data.id)
+            .send(data)
+            .then(function (res) {
+                res.should.have.status(expectedHTTPStatus);
+                agent.get('/api/items/' + data.id)
+                    .then(function (r) {
+                        r.should.have.status(expectedHTTPStatus);
+                        r.body.id.should.equal(data.id);
+                        r.body.description.should.equal(data.newDescription);
+                        r.body.price.should.equal(data.newPrice);
+                        done();
+                    });
+            });
+    });
+}
+
 function modifyItem(expectedHTTPStatus, data) {
     it('modify item', function (done) {
         agent.put('/api/item/' + data.id)
             .send(data)
-            .then(function (r) {
-                r.should.have.status(expectedHTTPStatus);
-                agent.get('/api/items/' + data.id)
-                    .then(function (r) {
-                        done();
-                    });
+            .then(function (res) {
+                res.should.have.status(expectedHTTPStatus);
+                done();
             });
     });
 }
