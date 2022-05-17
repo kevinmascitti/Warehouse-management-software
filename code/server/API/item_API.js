@@ -20,10 +20,10 @@ module.exports = function (app) {
       if (isNaN(req.params.id)) {
         return res.status(422).json();
       }
-      const N = await isThereItem({ id: req.params.id });
+      const N = await item.isThereItem({ id: req.params.id });
       if (N == 1) {
-        const item = await getStoredItem({ id: req.params.id });
-        return res.status(200).json(item);
+        const i = await item.getStoredItem({ id: req.params.id });
+        return res.status(200).json(i);
       }
       return res.status(404).json();
     } catch (err) {
@@ -44,7 +44,7 @@ module.exports = function (app) {
         SKUId: req.body.SKUId,
         supplierId: req.body.supplierId
       };
-      await storeItem(data);
+      await item.storeItem(data);
       return res.status(201).json();
       //return res.status(404).json();
     } catch (err) {
@@ -63,9 +63,9 @@ module.exports = function (app) {
         newDescription: req.body.newDescription,
         newPrice: req.body.newPrice,
       };
-      const N = await isThereItem({ id: req.params.id });
+      const N = await item.isThereItem({ id: req.params.id });
       if (N == 1) {
-        await modifyStoredItem(data);
+        await item.modifyStoredItem(data);
         return res.status(200).json();
       }
       return res.status(404).json();
@@ -80,7 +80,7 @@ module.exports = function (app) {
       if (isNaN(req.params.id)) {
         return res.status(422).json();
       }
-      await deleteStoredItem({ id: req.params.id });
+      await item.deleteStoredItem({ id: req.params.id });
       return res.status(204).json();
     } catch (err) {
       return res.status(500).json();
