@@ -1,6 +1,9 @@
 'use strict';
 const dayjs = require('dayjs');
 const intord = require('../warehouse/internalorder');
+const sku = require('../warehouse/sku');
+const skuitem = require('../warehouse/skuitem');
+
 
 module.exports = function (app) {
   //GET
@@ -9,28 +12,30 @@ module.exports = function (app) {
     try {
         orders = await intord.getInternalOrders();
     } catch (err) {
-        return res.status(500).json();
+        return res.status(500).json(err.message);
     }
-    
     for (let o of orders) {
         let products = []
-        ;
         try {
-          items = await  intord.getProductsOrdered(o.id);
+          items = await  intord.getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await intord.getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await intord.getSKU (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await intord.getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -43,32 +48,34 @@ module.exports = function (app) {
     return res.status(200).json(orders);
   });
 
-
   app.get('/api/internalOrdersIssued', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
         orders = await intord.getInternalOrdersWithState(["ISSUED"]);
     } catch (err) {
         return res.status(500).json();
     }
-    
     for (let o of orders) {
-        let products = [];
+        let products = []
         try {
-          items = await  intord.getProductsOrdered(o.id);
+          items = await  intord.getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await intord.getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await intord.getSKU (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await intord.getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -87,25 +94,28 @@ module.exports = function (app) {
     } catch (err) {
         return res.status(500).json();
     }
-    
     for (let o of orders) {
-        let products = [];
+        let products = []
         try {
-          items = await  intord.getProductsOrdered(o.id);
+          items = await  intord.getInternalOrderProducts(o.id);
           for (let i of items) {   
             let product;         
             try {
-              product = await intord.getItemInfoForInternalOrder (i.skuid, i.quantity);
+              product = await intord.getSKU (i.skuid, i.quantity);
+              if (product == undefined) continue;
             } catch (err) {
               return res.status(500).json(err.message);
             }
             if (o.state == "COMPLETED"){
-              products.push({
-                SKUId: product.SKUId,
-                description: product.description,
-                price: product.price,
-                RFID: i.rfid
-              })
+              let skuitems = await intord.getSKUItems(product.SKUId, o.id);
+              for (let s of skuitems) {
+                products.push({
+                 SKUId: product.SKUId,
+                 description: product.description,
+                 price: product.price,
+                 RFID: s.rfid
+                })
+              }
             }
             else products.push(product);
 
@@ -117,7 +127,8 @@ module.exports = function (app) {
     }
     return res.status(200).json(orders);
   });
-  
+
+
   app.get('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     if (isNaN(req.params.id)) {
       return res.status(422).json();
@@ -131,21 +142,25 @@ module.exports = function (app) {
 
     let o = orders[0];
     try {
-      items = await  intord.getProductsOrdered(o.id);
+      items = await  intord.getInternalOrderProducts(o.id);
       for (let i of items) {   
         let product;         
         try {
-          product = await intord.getItemInfoForInternalOrder(i.skuid, i.quantity);
+          product = await intord.getSKU(i.skuid, i.quantity);
+          if (product == undefined) continue;
         } catch (err) {
           return res.status(500).json(err.message);
         }
         if (o.state == "COMPLETED"){
-          o.products.push({
+          let skuitems = await intord.getSKUItems(product.SKUId, o.id);
+          for (let s of skuitems) {
+            o.products.push({
             SKUId: product.SKUId,
             description: product.description,
             price: product.price,
-            RFID: i.rfid
+            RFID: s.rfid
           })
+            }
         }
         else o.products.push(product);
 
@@ -178,9 +193,10 @@ module.exports = function (app) {
       };
       await intord.storeInternalOrder(data);
 
-      //PRODUCTORDERED insertion
+      //INTERNALORDERPRODUCT insertion
       for (let p of req.body.products) {
-        await intord.storeProductOrdered({id: internalOrderId, skuid: p.SKUId, quantity: p.qty, rfid: null});
+        await intord.storeInternalOrderProduct({id: internalOrderId, skuid: p.SKUId, quantity: p.qty});
+        if (await sku.isThereSku(p.SKUId, 0) == undefined) await intord.storeSKU({id: p.SKUId, description: p.description, price: p.price});
       }
       return res.status(201).json();
     } catch (err) {
@@ -196,17 +212,16 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
       return res.status(422).json();
     }
     const order = await intord.getInternalOrderWithID(req.params.id);
-    console.log(order)
     if (order.length == 0) return res.status(404).json();
 
     await intord.updateStateInternalOrder(req.params.id, req.body.newState);
 
     if ( req.body.newState == "COMPLETED") {
       for(let product of req.body.products) {
-        await intord.updateProductOrdered(product.SkuID, req.params.id, product.RFID);
+        let item = await intord.getSKUItem(product.RFID);
+        if(item == undefined) await intord.addSkuItem(product.SkuID, req.params.id, product.RFID);
       }
     }
-
     return res.status(200).json();
   } catch (err) {
     return res.status(503).json(err.message);
@@ -221,12 +236,13 @@ app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZE
         return res.status(422).json();
       }
       await intord.deleteInternalOrder(req.params.id);
-      await intord.deleteProductsOrdered(req.params.id);
+      await intord.deleteInternalOrderProducts(req.params.id);
+      await intord.deleteSkuItems(req.params.id);
       return res.status(204).json();
     } catch (err) {
       return res.status(503).json();
     }
-  });  
+  });   
 
 
 }

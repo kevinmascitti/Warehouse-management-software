@@ -39,13 +39,13 @@ exports.getInternalOrders = async function () {
         return;
       }
       const orders = rows.map((r) => (
-        {
-          sku: r.ID,
-          issueDate: r.ISSUEDATE,
-          state: r.STATE,
-          products: [],
-          customerId: r.CUSTOMERID
-        }
+          {
+            id: r.ID,
+            issueDate: r.ISSUEDATE,
+            state: r.STATE,
+            products: [],
+            customerId: r.CUSTOMERID
+          }
 
       ))
       resolve(orders);
@@ -62,13 +62,13 @@ exports.getInternalOrders = async function () {
         return;
       }
       const orders = rows.map((r) => (
-        {
-          sku: r.ID,
-          issueDate: r.ISSUEDATE,
-          state: r.STATE,
-          products: [],
-          customerId: r.CUSTOMERID
-        }
+          {
+            id: r.ID,
+            issueDate: r.ISSUEDATE,
+            state: r.STATE,
+            products: [],
+            customerId: r.CUSTOMERID
+          }
 
       ))
       resolve(orders);
@@ -76,19 +76,18 @@ exports.getInternalOrders = async function () {
   });
 }
 
- exports.getProductsOrdered = async function (internalOrderId) {
+ exports.getInternalOrderProducts = async function (internalOrderId) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM PRODUCTORDERED WHERE INTERNALORDERID = ?';
+    const sql = 'SELECT * FROM INTERNALORDERPRODUCT WHERE INTERNALORDERID = ?';
     db.all(sql, [internalOrderId], (err, rows) => {
       if (err) {
-        reject(err);
-        return;
+          reject(err);
+          return;
       }
       resolve(rows.map((r) => (
         {
-          skuid: r.SKUID,
-          quantity: r.QUANTITY,
-          rfid: r.RFID
+          skuid : r.SKUID,
+          quantity : r.QUANTITY,
         }
       )));
       return;
@@ -96,7 +95,7 @@ exports.getInternalOrders = async function () {
   });
 }
 
- exports.getItemInfoForInternalOrder = async function (sku, quantity) {
+exports.getSKU = async function (sku, quantityToReturn) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM SKU WHERE ID = ?';
     db.get(sql, [sku], (err, data) => {
@@ -104,22 +103,47 @@ exports.getInternalOrders = async function () {
         reject(err);
         return;
       }
+      if (data == undefined){
+        resolve(undefined);
+        return;
+      } 
       resolve(
         {
           SKUId: data.ID,
           description: data.DESCRIPTION,
           price: data.PRICE,
-          quantity: quantity
+          quantity: quantityToReturn
         }
       )
     });
   });
 }
+exports.getSKUItems = async function (skuid, internalOrderId) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM SKUITEM WHERE SKUID = ? AND INTERNALORDERID = ?';
+    db.all(sql, [skuid, internalOrderId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(rows.map((r) => (
+        {
+          rfid: r.RFID,
+          SKUId: r.SKUID,
+          available: r.AVAILABLE,
+          dateOfStock: r.DATEOFSTOCK,
+          internalOrderId: r.INTERNALORDERID,
+          restockOrderId: r.RESTOCKORDERID
+        }))
+      )
+    });
+  });
+}
 
- exports.storeInternalOrder= (data) => {
+exports.storeInternalOrder = async function(data) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO INTERNALORDER(ID, ISSUEDATE, STATE, CUSTOMERID) VALUES(?, ?, ?, ?)';
-    db.run(sql, [data.id, dayjs(data.issueDate).format('YYYY/MM/DD HH:MM'), data.state, data.customerId], (err) => {
+    db.run(sql, [data.id, dayjs(data.issueDate).format('YYYY/MM/DD HH:mm'), data.state, data.customerId], (err) => {
       if (err) {
         reject(err);
         return;
@@ -129,23 +153,37 @@ exports.getInternalOrders = async function () {
   });
 }
 
-exports.storeProductOrdered = (data)  =>{
+exports.storeInternalOrderProduct = async function(data){
+   return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO INTERNALORDERPRODUCT(INTERNALORDERID, SKUID, QUANTITY) VALUES(?, ?, ?)';
+    db.run(sql, [data.id, data.skuid, data.quantity], (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+exports.storeSKU = async function(data){
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO PRODUCTORDERED(INTERNALORDERID, SKUID, QUANTITY, RFID) VALUES(?, ?, ?, ?)';
-    db.run(sql, [data.id, data.skuid, data.quantity, data.rfid], (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    });
-  });
+   const sql = 'INSERT INTO SKU(ID, DESCRIPTION, PRICE, TESTDESCRIPTORS) VALUES(?, ?, ?, ?)';
+   db.run(sql, [data.id, data.description, data.price, []], (err) => {
+     if (err) {
+       reject(err);
+       return;
+     }
+     resolve();
+   });
+ });
 }
 
-exports.updateStateInternalOrder = (id, state) => {
+
+
+exports.updateStateInternalOrder = async function(id, state) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE INTERNALORDER SET STATE = ? WHERE ID = ?';
-    console.log(id, state)
     db.run(sql, [state, id], (err) => {
       if (err) {
         reject(err);
@@ -156,10 +194,10 @@ exports.updateStateInternalOrder = (id, state) => {
   });
 }
 
- exports.updateProductOrdered = (sku, internalOrderId, rfid) => {
+exports.addSkuItem = async function(skuid, internalOrderId, rfid) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE PRODUCTORDERED SET RFID = ? WHERE INTERNALORDERID = ? AND SKUID = ?';
-    db.run(sql, [rfid, internalOrderId, sku], (err) => {
+    const sql = 'INSERT INTO SKUITEM (RFID, SKUID, AVAILABLE, DATEOFSTOCK, INTERNALORDERID) VALUES (?, ?, ?, ?, ?)';
+    db.run(sql, [rfid, skuid, 1, dayjs().format('YYYY/MM/DD HH:mm'), internalOrderId], (err) => {
       if (err) {
         reject(err);
         return;
@@ -169,7 +207,7 @@ exports.updateStateInternalOrder = (id, state) => {
   });
 }
 
- exports.deleteInternalOrder = (id) => {
+exports.deleteInternalOrder = async function(id) {
   return new Promise((resolve, reject) => {
     const sql = 'DELETE FROM INTERNALORDER WHERE ID = ?';
     db.run(sql, [id], (err) => {
@@ -182,9 +220,9 @@ exports.updateStateInternalOrder = (id, state) => {
   })
 }
 
- exports.deleteProductsOrdered = (internalOrderId) => {
+exports.deleteInternalOrderProducts = async function(internalOrderId) {
   return new Promise((resolve, reject) => {
-    const sql = 'DELETE FROM PRODUCTORDERED WHERE INTERNALORDERID = ?';
+    const sql = 'DELETE FROM INTERNALORDERPRODUCT WHERE INTERNALORDERID = ?';
     db.run(sql, [internalOrderId], (err) => {
       if (err) {
         reject(err);
@@ -193,4 +231,41 @@ exports.updateStateInternalOrder = (id, state) => {
       resolve();
     });
   })
+}
+
+exports.getSKUItem = async function(rfid) {
+return new Promise((resolve, reject) => {
+  const sql = 'SELECT * FROM SKUITEM WHERE RFID = ?';
+  db.get(sql, [rfid], (err, data) => {
+    if (err) {
+      reject(err);
+      return;
+    }
+    if (data == undefined){
+      resolve(undefined);
+      return;
+    } 
+    resolve({
+      rfid: data.RFID,
+      skuid: data.SKUID,
+      available: data.AVAILABLE,
+      dateOfStock: data.DATEOFSTOCK,
+      internalOrderId: data.INTERNALORDERID,
+      restockOrderId: data.RESTOCKORDERID
+    });
+  });
+})
+}
+
+exports.deleteSkuItems = async function(internalOrderId) {
+return new Promise((resolve, reject) => {
+  const sql = 'DELETE FROM SKUITEM WHERE INTERNALORDERID = ?';
+  db.run(sql, [internalOrderId], (err) => {
+    if (err) {
+      reject(err);
+      return;
+    }
+    resolve();
+  });
+})
 }
