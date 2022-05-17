@@ -46,7 +46,6 @@ module.exports = function (app) {
       };
       await item.storeItem(data);
       return res.status(201).json();
-      //return res.status(404).json();
     } catch (err) {
       return res.status(500).json();
     }
