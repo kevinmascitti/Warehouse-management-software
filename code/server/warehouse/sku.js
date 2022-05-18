@@ -160,3 +160,15 @@ exports.deleteStoredSku = (data) => {
         });
     });
 }
+
+exports.deleteAllSkus = () => {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM SKU';
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve();
+      });
+    });
+  }

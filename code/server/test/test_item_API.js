@@ -101,12 +101,12 @@ function getMultipleItems(expectedHTTPStatus, data) {
         agent.get('/api/items')
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
-                for (let i = 0; i < r.body.lengt; ++i) {
-                    r.body.id[i].should.equal(data[i].id);
-                    r.body.description[i].should.equal(data[i].description);
-                    r.body.price[i].should.equal(data[i].price);
-                    r.body.SKUId[i].should.equal(data[i].SKUId);
-                    r.body.supplierId[i].should.equal(data[i].supplierId);
+                for (let i = 0; i < r.body.length; ++i) {
+                    r.body[i].id.should.equal(data[i].id);
+                    r.body[i].description.should.equal(data[i].description);
+                    r.body[i].price.should.equal(data[i].price);
+                    r.body[i].SKUId.should.equal(data[i].SKUId);
+                    r.body[i].supplierId.should.equal(data[i].supplierId);
                 }
                 done();
             });
@@ -124,7 +124,7 @@ function getNonExistingItem(expectedHTTPStatus, data) {
 }
 
 function modifyItemAndCheck(expectedHTTPStatus, data) {
-    it('modify item', function (done) {
+    it('modify item and check', function (done) {
         agent.put('/api/item/' + data.id)
             .send(data)
             .then(function (res) {

@@ -1,6 +1,6 @@
 'use strict';
 const skuitem = require('../warehouse/skuitem');
-const skuitem = require('../warehouse/sku');
+const sku = require('../warehouse/sku');
 
 module.exports = function (app) {
 
@@ -34,24 +34,24 @@ module.exports = function (app) {
     //GET /api/skuitems/:rfid
     app.get('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
-            if (isNaN(req.params.rfid)) {
+            if (isNaN(req.params.rfid) || req.params.rfid.length != 32) {
                 return res.status(422).json();
             }
             const N = await skuitem.isThereSkuitem({ rfid: req.params.rfid });
             if (N == 1) {
-                const skuitem = await skuitem.getStoredSkuitem({ rfid: req.params.rfid });
-                return res.status(200).json(skuitem);
+                const skui = await skuitem.getStoredSkuitem({ rfid: req.params.rfid });
+                return res.status(200).json(skui);
             }
             return res.status(404).json();
         } catch (err) {
-            return res.status(500).json();
+            return res.status(500).json(err);
         }
     });
 
     //POST /api/skuitem
     app.post('/api/skuitem', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
-            if (isNaN(req.body.SKUId) || !req.body.RFID) {
+            if (isNaN(req.body.SKUId) || req.body.RFID.length != 32 || isNaN(Date.parse(req.body.DateOfStock))) {
                 return res.status(422).json();
             }
             const data = {
@@ -62,7 +62,7 @@ module.exports = function (app) {
             const N = await sku.isThereSku({ id: req.body.SKUId });
             if (N == 1) {
                 await skuitem.storeSkuitem(data);
-                return res.status(200).json();
+                return res.status(201).json();
             }
             return res.status(404).json();
         } catch (err) {
@@ -73,7 +73,10 @@ module.exports = function (app) {
     //PUT /api/skuitems/:rfid
     app.put('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
-            if (isNaN(req.params.rfid) || (req.body.newAvailable != 0 && req.body.newAvailable != 1)) {
+            if (isNaN(req.params.rfid) || req.params.rfid.length != 32 
+            || (req.body.newAvailable != 0 && req.body.newAvailable != 1)
+            || isNaN(req.body.newRFID) || req.body.newRFID.length != 32 
+            || isNaN(Date.parse(req.body.newDateOfStock))) {
                 return res.status(422).json();
             }
             const data = {
@@ -96,7 +99,7 @@ module.exports = function (app) {
     //DELETE /api/skuitems/:rfid
     app.delete('/api/skuitems/:rfid', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
-            if (isNaN(req.params.rfid)) {
+            if (isNaN(req.params.rfid) || req.params.rfid.length != 32) {
                 return res.status(422).json();
             }
             await skuitem.deleteStoredSkuitem({ rfid: req.params.rfid });
