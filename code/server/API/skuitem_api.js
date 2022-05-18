@@ -1,5 +1,6 @@
 'use strict';
 const skuitem = require('../warehouse/skuitem');
+const skuitem = require('../warehouse/sku');
 
 module.exports = function (app) {
 
@@ -19,7 +20,7 @@ module.exports = function (app) {
             if (isNaN(req.params.id)) {
                 return res.status(422).json();
             }
-            const N = await skuitem.isThereSku({ id: req.params.id });
+            const N = await sku.isThereSku({ id: req.params.id });
             if (N == 1) {
                 const skuitems = await skuitem.getStoredSkuitemsForSkuid({ id: req.params.id });
                 return res.status(200).json(skuitems);
@@ -58,7 +59,7 @@ module.exports = function (app) {
                 skuid: req.body.SKUId,
                 dateofstock: req.body.DateOfStock,
             };
-            const N = await skuitem.isThereSku({ id: req.body.SKUId });
+            const N = await sku.isThereSku({ id: req.body.SKUId });
             if (N == 1) {
                 await skuitem.storeSkuitem(data);
                 return res.status(200).json();
