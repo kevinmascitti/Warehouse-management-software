@@ -28,6 +28,26 @@ exports.getOrders = async function(internalOrderId) {
   })
   }
 
+  exports.getProducts = async function(restockOrderId) {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT * FROM RESTOCKORDERPRODUCT WHERE RESTOCKORDERID = ?';
+      db.all(sql, [restockOrderId], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        rows=rows.map((r) => ({
+          id: r.ID,
+          restockOrderId: r.RESTOCKORDERID,
+          SKUId: r.SKUID,
+          quantity: r.quantity
+        }))
+        resolve(rows);
+      });
+    })
+    }
+  
+
   exports.storeOrder = async function(data) {
     return new Promise((resolve, reject) => {
       const sql = 'INSERT INTO RESTOCKORDER(ID, ISSUEDATE, STATE, SUPPLIERID) VALUES(?, ?, ?, ?)';
@@ -41,10 +61,10 @@ exports.getOrders = async function(internalOrderId) {
     })
   }
   
-  exports.storeOrderProduct = async function(data) {
+  exports.storeProduct = async function(data) {
     return new Promise((resolve, reject) => {
       const sql = 'INSERT INTO RESTOCKORDERPRODUCT(RESTOCKORDERID, SKUID, QUANTITY) VALUES(?, ?, ?)';
-      db.run(sql, [data.restockOrderId, data.skuId, data.quantity], (err, rows) => {
+      db.run(sql, [data.restockOrderId, data.SKUId, data.quantity], (err, rows) => {
         if (err) {
           reject(err);
           return;

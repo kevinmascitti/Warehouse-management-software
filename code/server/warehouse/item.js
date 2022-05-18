@@ -11,7 +11,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT COUNT(*) AS N FROM ITEM WHERE ID = ?';
       db.all(sql, [data.id], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -24,7 +23,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM ITEM';
       db.run(sql, [], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -37,7 +35,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'INSERT INTO ITEM(ID, DESCRIPTION, PRICE, SKUID, SUPPLIERID) VALUES(?, ?, ?, ?, ?)';
       db.run(sql, [data.id, data.description, data.price, data.SKUId, data.supplierId], (err) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -50,7 +47,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT * FROM ITEM WHERE ID = ?';
       db.all(sql, [data.id], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -72,7 +68,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT * FROM ITEM';
       db.all(sql, [], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -94,7 +89,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'UPDATE ITEM SET DESCRIPTION = ?, PRICE = ? WHERE ID = ?';
       db.run(sql, [data.newDescription, data.newPrice, data.id], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -108,7 +102,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM ITEM WHERE ID = ?';
       db.run(sql, [data.id], (err, rows) => {
-        /* istanbul ignore if */
         if (err) {
           reject(err); return;
         }
@@ -118,4 +111,5 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   }
 
 
+  // exports.supplierAlreadySellItemOrSku <-- Mi serve restock order per fare questa
   

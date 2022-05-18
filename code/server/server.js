@@ -18,3 +18,5 @@ require('./API/testResult_API')(app);
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+
+module.exports = app;
