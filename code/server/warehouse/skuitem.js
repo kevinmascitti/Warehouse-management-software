@@ -143,3 +143,16 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
             });
         });
     }
+
+
+    exports.setRestockOrder = (data) => {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE SKUITEM SET RESTOCKORDERID = ? WHERE RFID = ?';
+            db.run(sql, [data.restockOrderId, data.rfid], (err, rows) => {
+                if (err) {
+                    reject(err); return;
+                }
+                resolve();
+            });
+        });
+    }
