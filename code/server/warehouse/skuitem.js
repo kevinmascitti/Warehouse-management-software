@@ -124,3 +124,22 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           });
         });
       }
+
+      exports.getStoredSkuitemsForReturnOrder = (data) => {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM SKUITEM WHERE RESTOCKORDERID = ?';
+            db.all(sql, [data.id], (err, rows) => {
+                if (err) {
+                    reject(err); return;
+                }
+                const skuitems = rows.map((r) => (
+                    {
+                        RFID: r.RFID,
+                        SKUId: r.SKUID,
+                        DateOfStock: r.DATEOFSTOCK
+                    }
+                ));
+                resolve(skuitems);
+            });
+        });
+    }

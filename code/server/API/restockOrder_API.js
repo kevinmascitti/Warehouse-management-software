@@ -2,28 +2,27 @@
 const dayjs = require('dayjs');
 const resOrd = require('../warehouse/restockorder');
 const sku = require('../warehouse/sku');
-const skuItem = require('../warehouse/skuitem');
+const skuIt = require('../warehouse/skuitem');
 
 module.exports = function (app) {
     //GET
     app.get('/api/restockOrders', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        let orders, items;
+        let orders;
         try {
             orders = await resOrd.getOrders();
         } catch (err) {
             return res.status(500).json(err.message);
         }
         for (let o of orders) {
-            let products = []
             try {
-                items = await resOrd.getProducts(o.id);
+                let items = await resOrd.getProducts(o.id);
                 for (let i of items) {
                     let product;
                     try {
                         if (await sku.isThereSku({ id: i.SKUId }) == 1) {
                             product = await sku.getStoredSku({id: i.SKUId})
                             product = product[0]
-                            products.push({
+                            o.products.push({
                                 SKUId: i.SKUId,
                                 description: product.description,
                                 price: product.price,
@@ -33,25 +32,18 @@ module.exports = function (app) {
                     } catch (err) {
                         return res.status(500).json(err.message);
                     }
-/*
-                    if (o.state == "COMPLETED") {
-                        let skuitems = await intord.getSKUItems(product.SKUId, o.id);
-                        for (let s of skuitems) {
-                            products.push({
-                                SKUId: product.SKUId,
-                                description: product.description,
-                                price: product.price,
-                                RFID: s.rfid
-                            })
-                        }
-                    }
-                    else products.push(product);
-*/
+                }
+                if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
+                items = await skuIt.getStoredSkuitemsForReturnOrder({id: o.id});
+                for (let i of items) {
+                    o.skuItems.push({
+                        SKUId: i.SKUId,
+                        rfid: i.rfid
+                    })
                 }
             } catch (err) {
                 return res.status(500).json(err.message);
             }
-            o.products = products;
         }
         return res.status(200).json(orders);
     });
