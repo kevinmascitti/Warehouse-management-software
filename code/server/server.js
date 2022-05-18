@@ -8,6 +8,7 @@ require('./API/item_API')(app);
 require('./API/sku_API')(app);
 require('./API/skuitem_api')(app);
 require('./API/internalOrder_API')(app);
+require('./API/restockOrder_API')(app);
 require('./API/position_API')(app);
 require('./API/user_API')(app);
 require('./API/testDescriptor_API')(app);

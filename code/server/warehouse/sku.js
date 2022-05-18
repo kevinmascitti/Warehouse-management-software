@@ -31,6 +31,20 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     });
 }
 
+exports.storeSkuWithId = (data) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO SKU(ID, DESCRIPTION, WEIGHT, VOLUME, NOTES, POSITION, AVAILABLEQUANTITY, PRICE, TESTDESCRIPTORS) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        db.run(sql, [data.id, data.description, data.weight, data.volume, data.notes, "", data.availableQuantity, data.price, "[]"], (err) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve();
+        });
+    });
+}
+
+
 exports.getStoredSku= (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM SKU WHERE ID = ?';
