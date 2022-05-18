@@ -181,14 +181,16 @@ module.exports = function (app) {
     });
 
 
-    app.put('/api/restockOrders/:id/skuItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    app.put('/api/restockOrders/:id/returnItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
         }try {
             let order = await resOrd.getOrderById({ id: req.params.id });
             if (order == undefined) return res.status(404).json();
+            console.log(req.body.skuItems)
             for (let item of req.body.skuItems) {
-                if (await skuIt.isThereSkuitem() == 0) await skuIt.storeSkuitem({rfid: item.rfid, skuid: item.skuid, dateofstock: dayjs().format('YYYY/MM/DD HH:mm')});
+                console.log(item.rfid)
+                if (await skuIt.isThereSkuitem({rfid: item.rfid}) == 0) await skuIt.storeSkuitem({rfid: item.rfid, skuid: item.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm')});
                 await skuIt.setRestockOrder({rfid: item.rfid, restockOrderId: order.id});
             }
             return res.status(200).json();
