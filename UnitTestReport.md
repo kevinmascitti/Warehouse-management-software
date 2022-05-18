@@ -142,7 +142,7 @@ Version:
 |*| (minint, 0) | * | *  |Invalid|T1(5,-9.99,"description",1,2) -> Error|
 |*| * | (minint, 0) | *  |Invalid|T1(5,9.99,"description",-1,2) -> Error|
 |*| * | * | (minint, 0)  |Invalid|T1(5,9.99,"description",1,-2) -> Error|
-|(0, maxint)| (0, maxint) | (0, maxint) | (0, maxint)  |Invalid|T1(5,9.99,"description",1,2) -> Ok|
+|(0, maxint)| (0, maxint) | (0, maxint) | (0, maxint)  |Valid|T1(5,9.99,"description",1,2) -> Ok|
 
 
 
