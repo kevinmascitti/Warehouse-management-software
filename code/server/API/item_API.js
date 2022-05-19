@@ -17,7 +17,8 @@ module.exports = function (app) {
   //GET /api/items/:id
   app.get('/api/items/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id)) {
+      if (isNaN(req.params.id)
+      || req.params.id < 0) {
         return res.status(422).json();
       }
       const N = await item.isThereItem({ id: req.params.id });
@@ -66,7 +67,10 @@ module.exports = function (app) {
   //PUT /api/item/:id
   app.put('/api/item/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id) || isNaN(req.body.newPrice)) {
+      if (isNaN(req.params.id) 
+      || isNaN(req.body.newPrice)
+      || req.params.id < 0
+      || req.body.newPrice < 0) {
         return res.status(422).json();
       }
       const data = {
@@ -88,7 +92,8 @@ module.exports = function (app) {
   //DELETE /api/items/:id
   app.delete('/api/items/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id)) {
+      if (isNaN(req.params.id)
+      || req.params.id < 0) {
         return res.status(422).json();
       }
       await item.deleteStoredItem({ id: req.params.id });
