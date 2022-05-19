@@ -125,7 +125,11 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 ### 
 
+//ho aggiunto quelli interessanti, poi metteremo i nomi dei test che li coprono
+
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-|                            |           |
+| NFR4 (structure of position id) |           |
+| NFR6 (structure of RFID) |           |
+| NFR9 (date format) |           |
 
