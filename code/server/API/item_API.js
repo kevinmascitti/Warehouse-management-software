@@ -17,7 +17,8 @@ module.exports = function (app) {
   //GET /api/items/:id
   app.get('/api/items/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id)) {
+      if (isNaN(req.params.id)
+      || req.params.id < 0) {
         return res.status(422).json();
       }
       const N = await item.isThereItem({ id: req.params.id });
@@ -34,7 +35,19 @@ module.exports = function (app) {
   //POST /api/item
   app.post('/api/item', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.body.SKUId) || isNaN(req.body.supplierId) || isNaN(req.body.id)) {
+      if (isNaN(req.body.price) 
+      || isNaN(req.body.SKUId) 
+      || isNaN(req.body.supplierId) 
+      || isNaN(req.body.id)
+      || req.body.price < 0
+      || req.body.SKUId < 0
+      || req.body.supplierId < 0
+      || req.body.id < 0) {
+        return res.status(422).json();
+      }
+      let N = await item.supplierAlreadySellItemWithSkuid(req.body.SKUId,req.body.supplierId);
+      let M = await item.supplierAlreadySellThisItem(req.body.id,req.body.supplierId);
+      if(N>0 || M>0){
         return res.status(422).json();
       }
       const data = {
@@ -54,7 +67,10 @@ module.exports = function (app) {
   //PUT /api/item/:id
   app.put('/api/item/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id) || isNaN(req.body.newPrice)) {
+      if (isNaN(req.params.id) 
+      || isNaN(req.body.newPrice)
+      || req.params.id < 0
+      || req.body.newPrice < 0) {
         return res.status(422).json();
       }
       const data = {
@@ -76,7 +92,8 @@ module.exports = function (app) {
   //DELETE /api/items/:id
   app.delete('/api/items/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.params.id)) {
+      if (isNaN(req.params.id)
+      || req.params.id < 0) {
         return res.status(422).json();
       }
       await item.deleteStoredItem({ id: req.params.id });

@@ -119,3 +119,21 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
       });
     });
   }
+
+  exports.deleteAllPositions = () => {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM POSITION';
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve();
+        }
+      });
+    });
+  }
