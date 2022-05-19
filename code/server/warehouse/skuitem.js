@@ -137,7 +137,8 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
                     {
                         RFID: r.RFID,
                         SKUId: r.SKUID,
-                        DateOfStock: r.DATEOFSTOCK
+                        DateOfStock: r.DATEOFSTOCK,
+                        return: r.RETURN
                     }
                 ));
                 resolve(skuitems);
@@ -157,3 +158,50 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
             });
         });
     }
+
+
+          /* istanbul ignore next */ //ESCLUDO DA COVERAGE
+          exports.setReturn = (data) => {
+            return new Promise((resolve, reject) => {
+                console.log("abenes")
+                const sql = 'UPDATE SKUITEM SET RESTOCKORDERID = ?, RETURN = ? WHERE RFID = ?';
+                db.run(sql, [data.restockOrderId, data.return, data.rfid], (err, rows) => {
+                    if (err) {
+                        reject(err); return;
+                    }
+                    resolve();
+                });
+            });
+        }
+
+
+             /* istanbul ignore next */ //ESCLUDO DA COVERAGE
+             exports.setAvailabe = (data) => {
+                return new Promise((resolve, reject) => {
+                    const sql = 'UPDATE SKUITEM SET AVAILABLE = 1 WHERE RFID = ?';
+                    db.run(sql, [data.rfid], (err, rows) => {
+                        if (err) {
+                            reject(err); return;
+                        }
+                        resolve();
+                    });
+                });
+            }
+
+
+             /* istanbul ignore next */ //ESCLUDO DA COVERAGE
+             exports.getItemsToReturn = (data) => {
+                return new Promise((resolve, reject) => {
+                    const sql = 'SELECT * FROM SKUITEM WHERE RESTOCKORDERID = ? AND RETURN = 1';
+                    db.all(sql, [data.restockOrderId], (err, rows) => {
+                        if (err) {
+                            reject(err); return;
+                        }
+                        let skuitems = rows.map((r) => ({
+                            SKUId: r.SKUID,
+                            rfid: r.RFID
+                        }))
+                        resolve(skuitems);
+                    });
+                });
+            }
