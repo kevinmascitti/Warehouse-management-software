@@ -1,5 +1,6 @@
 'use strict';
 const testD = require('../warehouse/testDescriptor');
+const skuI = require('../warehouse/sku');
 
 module.exports = function (app) {
 
@@ -19,14 +20,17 @@ module.exports = function (app) {
             const testDescriptor = await testD.getStoredTestDescriptor({ id: req.params.id });
             return res.status(200).json(testDescriptor);
         }
-        
         return res.status(404).json();
     });
 
-    //POST /api/testDescriptors
-    app.post('/api/testDescriptors', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    //POST /api/testDescriptor
+    app.post('/api/testDescriptor', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.body.idSKU)) {
             return res.status(422).json();
+        }
+        const N = await skuI.isThereSku({id: req.body.idSKU});
+        if(N == 0){
+            return res.status(422).json({error: "SKU does not exist"});
         }
         const data = {
             name: req.body.name,
@@ -38,8 +42,8 @@ module.exports = function (app) {
         //return res.status(404).json();
     });
 
-    //PUT /api/testDescriptors/:id
-    app.put('/api/testDescriptors/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    //PUT /api/testDescriptor/:id
+    app.put('/api/testDescriptor/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id) || isNaN(req.body.newIdSKU)) {
             return res.status(422).json();
         }
@@ -57,8 +61,8 @@ module.exports = function (app) {
         return res.status(404).json();
     });
 
-    //DELETE /api/testDescriptors/:id
-    app.delete('/api/testDescriptors/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    //DELETE /api/testDescriptor/:id
+    app.delete('/api/testDescriptor/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id)) {
             return res.status(422).json();
         }

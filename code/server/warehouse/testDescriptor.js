@@ -5,6 +5,18 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     if (err) throw err;
 });
 
+exports.deleteAllTestDescriptors = () => {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM TESTDESCRIPTOR';
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve();
+      });
+    });
+  }
+
 exports.getStoredTestDescriptors = () => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM TESTDESCRIPTOR';
