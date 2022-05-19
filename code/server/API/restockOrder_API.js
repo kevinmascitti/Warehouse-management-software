@@ -132,7 +132,7 @@ module.exports = function (app) {
 
 
     //POST
-    app.post('/api/restockOrders', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    app.post('/api/restockOrder', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
             if (!dayjs(req.body.issueDate).isValid() || !Array.isArray(req.body.products) || isNaN(req.body.supplierId)) {
                 return res.status(422).json(err);
@@ -166,7 +166,7 @@ module.exports = function (app) {
 
 
     //PUT
-    app.put('/api/restockOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    app.put('/api/restockOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
         }try {
@@ -181,7 +181,7 @@ module.exports = function (app) {
     });
 
 
-    app.put('/api/restockOrders/:id/returnItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    app.put('/api/restockOrder/:id/returnItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
         }try {
@@ -202,7 +202,7 @@ module.exports = function (app) {
 
 
 
-    app.put('/api/restockOrders/:id/transportNote', async (req, res) => { //MANCA 401 UNAUTHORIZED
+    app.put('/api/restockOrder/:id/transportNote', async (req, res) => { //MANCA 401 UNAUTHORIZED
         if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
         }try {
@@ -217,7 +217,7 @@ module.exports = function (app) {
     });
 
     //DELETE
-  app.delete('/api/restockOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+  app.delete('/api/restockOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
       if (isNaN(req.params.id)) {
         return res.status(422).json();
