@@ -6,7 +6,7 @@ Version:
 
 # Contents
 
-- [Dependency graph](#dependency graph)
+- [Dependency graph](#Dependencygraph)
 
 - [Integration approach](#integration)
 
