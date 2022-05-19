@@ -5,20 +5,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     if (err) throw err;
 });
 
-
-exports.isThereSkuitem = (data) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT COUNT(*) AS N FROM SKUITEM WHERE RFID = ?';
-        db.all(sql, [data.rfid], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(rows[0].N);
-        });
-    });
-}
-
 exports.isThereTestDescriptor = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT COUNT(*) AS N FROM TESTDESCRIPTOR WHERE ID = ?';

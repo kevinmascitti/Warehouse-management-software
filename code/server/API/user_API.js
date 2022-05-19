@@ -60,6 +60,7 @@ module.exports = function (app) {
           || typeof req.body.surname !== 'string'
           || typeof req.body.password !== 'string'
           || typeof req.body.type !== 'string'
+          || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
           || req.body.password.length<8 || Object.keys(req.body).length === 0
           || (req.body.type!="customer" && req.body.type!="qualityEmployee" 
           && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
@@ -96,6 +97,7 @@ module.exports = function (app) {
   app.post('/api/managerSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -130,6 +132,7 @@ module.exports = function (app) {
   app.post('/api/customerSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -163,6 +166,7 @@ module.exports = function (app) {
   app.post('/api/supplierSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -196,6 +200,7 @@ module.exports = function (app) {
   app.post('/api/clerkSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -229,6 +234,7 @@ module.exports = function (app) {
   app.post('/api/qualityEmployeeSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -262,6 +268,7 @@ module.exports = function (app) {
   app.post('/api/deliveryEmployeeSessions', async (req, res) => {
     try {
       if( typeof req.body.username !== 'string'
+       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
@@ -314,6 +321,7 @@ module.exports = function (app) {
         || typeof req.params.username !== 'string'
         || typeof req.body.oldType !== 'string'
         || typeof req.body.newType !== 'string'
+        || !req.params.username.match("^[\w]+@[\w]+\.[\w]+$")
         || req.body.oldType=="manager"
         || req.body.newType=="manager"
         || Object.keys(req.body).length === 0
@@ -347,6 +355,7 @@ module.exports = function (app) {
           || req.params.type===null || req.params.type===undefined
           || typeof req.params.username !== 'string'
           || typeof req.params.type !== 'string'
+          || !req.params.username.match("^[\w]+@[\w]+\.[\w]+$")
           || req.params.type=="manager"
           || Object.keys(req.params).length === 0
           || (req.params.type!="customer" && req.params.type!="qualityEmployee"

@@ -181,5 +181,20 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     });
   }
 
-  
-  
+  exports.deleteAllUsers = () => {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM USER WHERE TYPE != "manager"';
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+         else if (rows===undefined){
+          resolve(false);
+        }
+        else {
+         resolve();
+        }
+      });
+    });
+  }

@@ -1,11 +1,12 @@
 'use strict';
 const testR = require('../warehouse/testResult');
+const skuI = require('../warehouse/skuitem');
 
 module.exports = function (app) {
 
     //GET /api/skuitems/:rfid/testResults
     app.get('/api/skuitems/:rfid/testResults', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        const N = await testR.isThereSkuitem({ rfid: req.params.rfid });
+        const N = await skuI.isThereSkuitem({ rfid: req.params.rfid });
         if (N > 0) {
             const testResults = await testR.getStoredTestResults({ rfid: req.params.rfid });
             return res.status(200).json(testResults);
