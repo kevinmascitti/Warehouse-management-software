@@ -111,5 +111,26 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   }
 
 
-  // exports.supplierAlreadySellItemOrSku <-- Mi serve restock order per fare questa
-  
+   exports.supplierAlreadySellItemWithSkuid = (skuid,supplierid) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT COUNT(*) AS N FROM RESTOCKORDER, RESTOCKORDERPRODUCT WHERE RESTOCKORDER.ID = RESTOCKORDERPRODUCT.RESTOCKORDERID AND RESTOCKORDERPRODUCT.SKUID = ? AND RESTOCKORDER.SUPPLIERID = ?';
+      db.all(sql, [skuid, supplierid], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve(rows[0].N);
+      });
+    });
+   }
+
+   exports.supplierAlreadySellThisItem = (id,supplierid) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT COUNT(*) AS N FROM ITEM WHERE ITEM.ID = ? AND ITEM.SUPPLIERID = ?';
+      db.all(sql, [id, supplierid], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve(rows[0].N);
+      });
+    });
+   }

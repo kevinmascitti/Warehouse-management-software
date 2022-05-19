@@ -125,6 +125,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         });
       }
 
+      /* istanbul ignore next */ //ESCLUDO DA COVERAGE
       exports.getStoredSkuitemsForReturnOrder = (data) => {
         return new Promise((resolve, reject) => {
             const sql = 'SELECT * FROM SKUITEM WHERE RESTOCKORDERID = ?';
@@ -144,7 +145,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         });
     }
 
-
+      /* istanbul ignore next */ //ESCLUDO DA COVERAGE
     exports.setRestockOrder = (data) => {
         return new Promise((resolve, reject) => {
             const sql = 'UPDATE SKUITEM SET RESTOCKORDERID = ? WHERE RFID = ?';
