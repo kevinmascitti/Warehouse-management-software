@@ -1,8 +1,8 @@
 'use strict';
 const dayjs = require('dayjs');
 const resOrd = require('../warehouse/restockorder');
-const sku = require('../warehouse/sku');
-const skuIt = require('../warehouse/skuitem');
+const skuFunctions = require('../warehouse/sku');
+const skuItemFunctions = require('../warehouse/skuitem');
 
 module.exports = function (app) {
     //GET
@@ -19,8 +19,8 @@ module.exports = function (app) {
                 for (let i of items) {
                     let product;
                     try {
-                        if (await sku.isThereSku({ id: i.SKUId }) == 1) {
-                            product = await sku.getStoredSku({ id: i.SKUId })
+                        if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
+                            product = await skuFunctions.getStoredSku({ id: i.SKUId })
                             product = product[0]
                             o.products.push({
                                 SKUId: i.SKUId,
@@ -34,7 +34,7 @@ module.exports = function (app) {
                     }
                 }
                 if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
-                items = await skuIt.getStoredSkuitemsForReturnOrder({ id: o.id });
+                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.id });
                 for (let i of items) {
                     o.skuItems.push({
                         SKUId: i.SKUId,
@@ -62,8 +62,8 @@ module.exports = function (app) {
                 for (let i of items) {
                     let product;
                     try {
-                        if (await sku.isThereSku({ id: i.SKUId }) == 1) {
-                            product = await sku.getStoredSku({ id: i.SKUId })
+                        if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
+                            product = await skuFunctions.getStoredSku({ id: i.SKUId })
                             product = product[0]
                             o.products.push({
                                 SKUId: i.SKUId,
@@ -100,8 +100,8 @@ module.exports = function (app) {
             for (let i of items) {
                 let product;
                 try {
-                    if (await sku.isThereSku({ id: i.SKUId }) == 1) {
-                        product = await sku.getStoredSku({ id: i.SKUId })
+                    if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
+                        product = await skuFunctions.getStoredSku({ id: i.SKUId })
                         product = product[0]
                         order.products.push({
                             SKUId: i.SKUId,
@@ -115,7 +115,7 @@ module.exports = function (app) {
                 }
             }
             if (order.state != 'ISSUED' || order.state != 'DELIVERY') {
-                items = await skuIt.getStoredSkuitemsForReturnOrder({ id: order.id });
+                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: order.id });
                 for (let i of items) {
                     order.skuItems.push({
                         SKUId: i.SKUId,
@@ -127,6 +127,32 @@ module.exports = function (app) {
             return res.status(500).json(err.message);
         }
         return res.status(200).json(order);
+    })
+
+
+
+    app.get('/api/restockOrders/:id/returnItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
+        if (isNaN(req.params.id)) {
+            return res.status(422).json();
+        }
+        let order;
+        let itemsToReturn = [];
+        try {
+            order = await resOrd.getOrderById({ id: req.params.id });
+            if (order == undefined) return res.status(404).json();
+            if (order.state != "COMPLETEDRETURN") return res.status(422).json();
+        } catch (err) {
+            return res.status(500).json(err.message);
+        }
+        try {
+            let items = await skuItemFunctions.getItemsToReturn({restockOrderId: order.id});
+            for (let i of items) {
+                itemsToReturn.push(i)
+            }
+        } catch (err) {
+            return res.status(500).json(err.message);
+        }
+        return res.status(200).json(itemsToReturn);
     })
 
 
@@ -155,7 +181,7 @@ module.exports = function (app) {
             //PRODUCT + SKU insertion
             for (let p of req.body.products) {
                 await resOrd.storeProduct({ restockOrderId: restockOrderId, SKUId: p.SKUId, quantity: p.qty });
-                if (await sku.isThereSku({ id: p.SKUId }) == 0) await sku.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: p.qty, price: p.price })
+                if (await skuFunctions.isThereSku({ id: p.SKUId }) == 0) await skuFunctions.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: p.qty, price: p.price })
             }
             return res.status(201).json();
         } catch (err) {
@@ -190,8 +216,8 @@ module.exports = function (app) {
             console.log(req.body.skuItems)
             for (let item of req.body.skuItems) {
                 console.log(item.rfid)
-                if (await skuIt.isThereSkuitem({rfid: item.rfid}) == 0) await skuIt.storeSkuitem({rfid: item.rfid, skuid: item.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm')});
-                await skuIt.setRestockOrder({rfid: item.rfid, restockOrderId: order.id});
+                if (await skuItemFunctions.isThereSkuitem({rfid: item.rfid}) == 0) await skuItemFunctions.storeSkuitem({rfid: item.rfid, skuid: item.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm')});
+                await skuItemFunctions.setRestockOrder({rfid: item.rfid, restockOrderId: order.id});
             }
             return res.status(200).json();
         } catch (err) {

@@ -1,5 +1,4 @@
 'use strict';
-const dayjs = require('dayjs');
 
 const sqlite = require('sqlite3');
 const db = new sqlite.Database('ezwhDB.db', (err) => {
