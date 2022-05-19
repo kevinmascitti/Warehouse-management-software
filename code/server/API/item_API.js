@@ -34,7 +34,19 @@ module.exports = function (app) {
   //POST /api/item
   app.post('/api/item', async (req, res) => { //MANCA 401 UNAUTHORIZED
     try {
-      if (isNaN(req.body.SKUId) || isNaN(req.body.supplierId) || isNaN(req.body.id)) {
+      if (isNaN(req.body.price) 
+      || isNaN(req.body.SKUId) 
+      || isNaN(req.body.supplierId) 
+      || isNaN(req.body.id)
+      || req.body.price < 0
+      || req.body.SKUId < 0
+      || req.body.supplierId < 0
+      || req.body.id < 0) {
+        return res.status(422).json();
+      }
+      let N = await item.supplierAlreadySellItemWithSkuid(req.body.SKUId,req.body.supplierId);
+      let M = await item.supplierAlreadySellThisItem(req.body.id,req.body.supplierId);
+      if(N>0 || M>0){
         return res.status(422).json();
       }
       const data = {

@@ -60,7 +60,7 @@ describe('test item apis', () => {
     storeItem(201, item1); //item1 inserito
     getItem(200, item1); //ritornato correttamente
     storeItem(201, item2); //item2 inserito
-    storeItem(500, item2); //DUPLICATO ==> ERRORE 
+    storeItem(422, item2); //DUPLICATO ==> STESSO ITEM GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
     storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
     getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
     modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
