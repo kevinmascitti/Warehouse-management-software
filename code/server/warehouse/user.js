@@ -180,6 +180,3 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
       });
     });
   }
-
-  
-  

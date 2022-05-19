@@ -26,6 +26,7 @@ module.exports = function (app) {
           || typeof req.body.aisleID !== 'string'
           || typeof req.body.row !== 'string'
           || typeof req.body.col !== 'string'
+          || !req.body.positionID.match("^[0-9]*$")
           || req.body.positionID.length!=12
           || req.body.aisleID.length!=4 
           || req.body.row.length!=4
@@ -70,6 +71,10 @@ module.exports = function (app) {
             || typeof req.body.col !== 'string'
             || req.body.newOccupiedWeight>req.body.newMaxWeight
             || req.body.newOccupiedVolume>req.body.newMaxVolume
+            || !req.params.positionID.match("^[0-9]*$")
+            || !req.body.newAisleID.match("^[0-9]*$")
+            || !req.body.newRow.match("^[0-9]*$")
+            || !req.body.newCol.match("^[0-9]*$")
             || req.params.positionID.length!=12
             || req.body.newAisleID.length!=4 
             || req.body.newRow.length!=4
@@ -108,6 +113,8 @@ module.exports = function (app) {
         || req.body.newPositionID===undefined || req.body.newPositionID===null
         || typeof req.params.positionID !== 'string'
         || typeof req.body.newPositionID !== 'string'
+        || !req.params.positionID.match("^[0-9]*$")
+        || !req.body.newPositionID.match("^[0-9]*$")
         || req.params.positionID.length!=12 || req.body.newPositionID.length!=12
         || Object.keys(req.body).length === 0 ) {
         return res.status(422).json();
@@ -136,6 +143,7 @@ module.exports = function (app) {
     try {
       if ( req.params.positionID===undefined || req.params.positionID===null
           || typeof req.params.positionID !== 'string'
+          || !req.params.positionID.match("^[0-9]*$")
           || req.params.positionID.length!=12 ) {
           return res.status(422).json();
       }
