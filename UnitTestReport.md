@@ -249,23 +249,23 @@ Version:
 
 | Unit name | Jest test case |
 |--|--|
-|Item|get item|
-|Item|get items|
-|Item|get not inserted item|
-|Item|duplicated item|
-|Item|item present|
-|Item|item not present|
-|Item|delete item|
-|Item|edit item|
-|Skuitem|get skuitem|
-|Skuitem|get available skuitem by skuid|
-|Skuitem|get skuitems|
-|Skuitem|get not inserted skuitem|
-|Skuitem|duplicated skuitem|
-|Skuitem|skuitem present|
-|Skuitem|skuitem not present|
-|Skuitem|delete skuitem|
-|Skuitem| editSkutem|
+|Item (DAO)|get item|
+|Item (DAO)|get items|
+|Item (DAO)|get not inserted item|
+|Item (DAO)|duplicated item|
+|Item (DAO)|item present|
+|Item (DAO)|item not present|
+|Item (DAO)|delete item|
+|Item (DAO)|edit item|
+|Skuitem (DAO)|get skuitem|
+|Skuitem (DAO)|get available skuitem by skuid|
+|Skuitem (DAO)|get skuitems|
+|Skuitem (DAO)|get not inserted skuitem|
+|Skuitem (DAO)|duplicated skuitem|
+|Skuitem (DAO)|skuitem present|
+|Skuitem (DAO)|skuitem not present|
+|Skuitem (DAO)|delete skuitem|
+|Skuitem (DAO)| editSkutem|
 
 ### Code coverage report
 
