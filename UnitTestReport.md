@@ -149,6 +149,95 @@ Version:
 
 
 
+
+
+
+
+
+
+### **Class *skuitem* - method *getStoredSkuitem***
+
+
+
+**Criteria for method *getStoredSkuitem*:**
+	
+- Length of RFID
+
+**Predicates for method *getStoredSkuitem*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Length of RFID  | 32     |
+|                          | !=32     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Lenght of RFID        |  12345678123456781234567812345678 (32 digits) |
+|   Length of RFID        |  123456781234567812345678123456781  (33 digits)|
+|   Length of RFID        |  1234567812345678123456781234567  (31 digits)|
+
+
+
+**Combination of predicates**:
+
+
+| Length of RFID | Valid / Invalid | Description of the test case |
+|-------|-------|-------|
+|32 digits|Valid|T1(12345678123456781234567812345678) -> Ok|
+|31 digits|Invalid|T1(1234567812345678123456781234567) -> Error|
+|33 digits|Invalid|T1(123456781234567812345678123456781) -> Error|
+
+
+ ### **Class *skuitem* - method *storeSkuitem***
+
+ **Criteria for method *storeSkuitem*:**
+	
+- Length of RFID
+- Value of Available
+- Sign of skuId
+- Format of DateOfStock
+
+**Predicates for method *storeSkuitem*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Length of RFID  | 32     |
+|                          | !=32     |
+| Value of Available  | == 0 OR == 1     |
+|                          | !=0 AND !=1     |
+| Sign of skuId  | (minint, 0)     |
+|                          |(0, maxint)     |
+| Format of DateOfStock  | valid date     |
+|                          |invalid date     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Lenght of RFID        |  12345678123456781234567812345678 (32 digits) |
+|   Length of RFID        |  123456781234567812345678123456781  (33 digits)|
+|   Length of RFID        |  1234567812345678123456781234567  (31 digits)|
+|   Sign of skuId        |  1               |
+|   Sign of skuId        |  -1               |
+
+
+**Combination of predicates**:
+
+
+| Length of RFID | Value of Available | Sign of skuid | Format of DateOfStock | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|-----|------|
+|!=32 | * | * | *  |Invalid|T1(46473847434,1,1,19/05/2022) -> Error|
+|*| !=0 AND !=1 | * | *  |Invalid|T2(12345678123456781234567812345678,5,1,19/05/2022) -> Error|
+|*| * | (minint, 0) | *  |Invalid|T3(12345678123456781234567812345678,1,-1,19/05/2022) -> Error|
+|*| * | * | invalid DateOfStock  |Invalid|T4(12345678123456781234567812345678,1,1,1932/2205/2022) -> Error|
+|==32| ==0 OR ==1 | (0, maxint) | valid DateOfStock  |Valid|T5(12345678123456781234567812345678,0,1,19/05/2022) -> Ok|
+
+
+
 # White Box Unit Tests
 
 ### Test cases definition
@@ -168,6 +257,15 @@ Version:
 |Item|item not present|
 |Item|delete item|
 |Item|edit item|
+|Skuitem|get skuitem|
+|Skuitem|get available skuitem by skuid|
+|Skuitem|get skuitems|
+|Skuitem|get not inserted skuitem|
+|Skuitem|duplicated skuitem|
+|Skuitem|skuitem present|
+|Skuitem|skuitem not present|
+|Skuitem|delete skuitem|
+|Skuitem| editSkutem|
 
 ### Code coverage report
 

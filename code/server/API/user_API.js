@@ -18,8 +18,8 @@ module.exports = function (app) {
           username: this.username,
           type: this.type
         }
-        const user = await user.getStoredUser(data);
-        return res.status(200).json(user);
+        const u = await user.getStoredUser(data);
+        return res.status(200).json(u);
       }
       return res.status(404).json();
     } catch (err) {
@@ -105,18 +105,18 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "manager"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
+        const u = await user.getLoginInfo(data);
 
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
@@ -139,17 +139,17 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "customer"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        const u = await user.getLoginInfo(data);
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
@@ -172,17 +172,17 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "supplier"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        const u = await user.getLoginInfo(data);
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
@@ -205,17 +205,17 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "clerk"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        const u = await user.getLoginInfo(data);
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
@@ -238,17 +238,17 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "qualityEmployee"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        const u = await user.getLoginInfo(data);
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
@@ -271,17 +271,17 @@ module.exports = function (app) {
       };
       const N = await user.isThereUser({username: req.body.username, type: "deliveryEmployee"})
       if ( N === 1 ) {
-        const user = await user.getLoginInfo(data);
-        username=user.username;
-        name=user.name;
-        surname=user.surname;
-        type=user.type;
+        const u = await user.getLoginInfo(data);
+        username=u.username;
+        name=u.name;
+        surname=u.surname;
+        type=u.type;
         logged=1;
 
         const info = {
-          id: user.id,
-          username: user.username,
-          name: user.name
+          id: u.id,
+          username: u.username,
+          name: u.name
         };
         return res.status(200).json(info);
       }
