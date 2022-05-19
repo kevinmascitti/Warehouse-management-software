@@ -106,7 +106,7 @@ describe('test skuitem apis', () => {
     modifySkuitem(422, modifySkuitemWrong2); //FORMATO SBAGLIATO ==> ERRORE 
 
     function storeSkuitemNotAssociatedToSku(expectedHTTPStatus, data) {
-        it('store skuitem', function (done) {
+        it('store skuitem not associated to sku', function (done) {
             agent.post('/api/skuitem')
                 .send(data)
                 .then(function (res) {
@@ -186,7 +186,7 @@ describe('test skuitem apis', () => {
     }
 
     function modifySkuitem(expectedHTTPStatus, data) {
-        it('modify item', function (done) {
+        it('modify skuitem', function (done) {
             agent.put('/api/skuitems/' + data.RFID)
                 .send(data)
                 .then(function (res) {

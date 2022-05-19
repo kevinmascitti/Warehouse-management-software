@@ -25,11 +25,8 @@ Version:
      
 # Integration approach
 
-    <Write here the integration sequence you adopted, in general terms (top down, bottom up, mixed) and as sequence
-    (ex: step1: class A, step 2: class A+B, step 3: class A+B+C, etc)> 
-    <Some steps may  correspond to unit testing (ex step1 in ex above), presented in other document UnitTestReport.md>
-    <One step will  correspond to API testing>
-    
+    We basically applied an incremental integration with a bottom up approach, as our first step consisted in unit tests on the functions which query directly the database and afterward we moved onto integration tests at the API level, which obviously depend on the DB.
+    We preferred the bottom up approach over the top down one since in this way we observed directly the lower levels (i.e., the queries on the database) earlier in the process, without having the strict need to have immediately both all the APIs and the services to the DB fully working.
 
 
 #  Integration Tests
@@ -37,36 +34,59 @@ Version:
    <define below a table for each integration step. For each integration step report the group of classes under test, and the names of
      Jest test cases applied to them, and the mock ups used, if any> Jest test cases should be here code/server/unit_test
 
-## Step 1
-| Classes  | mock up used |Jest test cases |
-|--|--|--|
-||||
+## Step 1: testing the DB
+
+| Unit name | Jest test case |
+|--|--|
+|Item (DAO)|get item|
+|Item (DAO)|get items|
+|Item (DAO)|get not inserted item|
+|Item (DAO)|duplicated item|
+|Item (DAO)|item present|
+|Item (DAO)|item not present|
+|Item (DAO)|delete item|
+|Item (DAO)|edit item|
+|Skuitem (DAO)|get skuitem|
+|Skuitem (DAO)|get available skuitem by skuid|
+|Skuitem (DAO)|get skuitems|
+|Skuitem (DAO)|get not inserted skuitem|
+|Skuitem (DAO)|duplicated skuitem|
+|Skuitem (DAO)|skuitem present|
+|Skuitem (DAO)|skuitem not present|
+|Skuitem (DAO)|delete skuitem|
+|Skuitem (DAO)| editSkutem|
 
 
-## Step 2
-| Classes  | mock up used |Jest test cases |
-|--|--|--|
-||||
-
-
-## Step n 
-
-   
-| Classes  | mock up used |Jest test cases |
-|--|--|--|
-||||
-
+## Step 2: testing the APIs
+| Unit name  |Mocha test cases |
+|--|--|
+|skuitem_API|store skuitem not associated to sku|
+|skuitem_API|store skuitem|
+|skuitem_API|get skuitem|
+|skuitem_API|get multiple skuitems|
+|skuitem_API|get non existing skuitem|
+|skuitem_API|modify skuitem and check|
+|skuitem_API|modify skuitem|
+|skuitem_API|delete skuitem|
+|item_API|store item|
+|item_API|get item|
+|item_API|get multiple items|
+|item_API|get non existing item|
+|item_API|modify item and check|
+|item_API|modify item|
+|item_API|delete item|
 
 
 
 # API testing - Scenarios
+
+//POTREMMO TOGLIERE QUESTA PARTE
 
 
 <If needed, define here additional scenarios for the application. Scenarios should be named
  referring the UC in the OfficialRequirements that they detail>
 
 ## Scenario UCx.y
-
 | Scenario |  name |
 | ------------- |:-------------:| 
 |  Precondition     |  |
