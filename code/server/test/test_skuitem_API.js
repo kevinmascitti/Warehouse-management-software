@@ -8,6 +8,7 @@ var agent = chai.request.agent(app);
 
 const skuitem = require('../warehouse/skuitem');
 const sku = require('../warehouse/sku');
+const { response } = require('express');
 
 const skuitem1 = {
     RFID: "12345678901234567890123456789014",
@@ -20,7 +21,7 @@ const skuitem2 = {
     RFID: "99945678901234567890123456789014",
     SKUId: 767667, //lo riassegno nel before()
     Available: 0,
-    DateOfStock: "2021/11/29 12:30"
+    DateOfStock: null //null IS A VALID DATE!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 const skuitem3 = {
@@ -80,7 +81,7 @@ const setAvailableSkuitem2 = {
     "RFID": "99945678901234567890123456789014",
     "newRFID": "99945678901234567890123456789014",
     "newAvailable": 1,
-    "newDateOfStock": "2021/11/29 12:30",
+    "newDateOfStock": null,
 };
 
 const setAvailableSkuitem5 = {
@@ -94,7 +95,7 @@ const modifySkuitem2 = {
     "RFID": "99945678901234567890123456789014",
     "newRFID": "10000678901234567890123456789015",
     "newAvailable": 1,
-    "newDateOfStock": "2028/11/29 19:30",
+    "newDateOfStock": null,
 };
 
 const modifySkuitem5 = {
@@ -189,7 +190,9 @@ describe('test skuitem apis', () => {
                     r.body.RFID.should.equal(data.RFID);
                     r.body.SKUId.should.equal(data.SKUId);
                     r.body.Available.should.equal(data.Available);
-                    r.body.DateOfStock.should.equal(data.DateOfStock);
+                    if(r.body.DateOfStock != null || data.DateOfStock != null){
+                        r.body.DateOfStock.should.equal(data.DateOfStock);
+                    }
                     done();
                 });
         });
@@ -203,7 +206,9 @@ describe('test skuitem apis', () => {
                     for (let i = 0; i < r.body.length; ++i) {
                         r.body[i].RFID.should.equal(data[i].RFID);
                         r.body[i].SKUId.should.equal(data[i].SKUId);
-                        r.body[i].DateOfStock.should.equal(data[i].DateOfStock);
+                        if(r.body[i].DateOfStock != null || data[i].DateOfStock != null){
+                            r.body[i].DateOfStock.should.equal(data[i].DateOfStock);
+                        }
                         r.body[i].Available.should.equal(data[i].Available);
                     }
                     done();
@@ -219,7 +224,9 @@ describe('test skuitem apis', () => {
                     for (let i = 0; i < r.body.length; ++i) {
                         r.body[i].RFID.should.equal(data[i].RFID);
                         r.body[i].SKUId.should.equal(data[i].SKUId);
-                        r.body[i].DateOfStock.should.equal(data[i].DateOfStock);
+                        if(r.body[i].DateOfStock != null || data[i].DateOfStock != null){
+                            r.body[i].DateOfStock.should.equal(data[i].DateOfStock);
+                        }
                     }
                     done();
                 });
@@ -247,7 +254,9 @@ describe('test skuitem apis', () => {
                             r.should.have.status(expectedHTTPStatus);
                             r.body.RFID.should.equal(data.newRFID);
                             r.body.Available.should.equal(data.newAvailable);                            r.body.Available.should.equal(data.newAvailable);
-                            r.body.DateOfStock.should.equal(data.newDateOfStock);
+                            if(r.body.DateOfStock != null || data.newDateOfStock != null){
+                                r.body.DateOfStock.should.equal(data.newDateOfStock);
+                            }
                             done();
                         });
                 });
