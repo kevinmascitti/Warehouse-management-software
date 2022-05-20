@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const dayjs = require('dayjs');
 chai.use(chaiHttp);
 chai.should();
 
@@ -8,6 +9,7 @@ var agent = chai.request.agent(app);
 
 const item = require('../warehouse/item');
 const skuItem = require('../warehouse/skuitem')
+const restockOrder = require('../warehouse/restockorder')
 
 //ITEM
 const item1 = {
@@ -54,16 +56,44 @@ const modifyItemWrong = {
 
 //SKUITEM
 const skuItem1 = {
-    SKUId:12,
-    rfid:"12345678901234567890123456789016"
+    skuid:12,
+    rfid:"12345678901234567890123456789016",
+    dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
 
-describe('test item apis', () => {
+const skuItem2 = {
+    skuid:180,
+    rfid:"12345678901234567890123456789017",
+    dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
+}
+
+
+//RESTOCKORDERS
+ const restockOrder1 = {
+    id: 1,
+    issueDate: dayjs().format("YYYY/MM/DD HH:mm"),
+    state : "ISSUED",
+    products: [],
+    supplierId : 1,
+    transportNote:{"deliveryDate":"2021/12/29"},
+    skuItems : []
+}
+
+describe('test restockorder apis', () => {
 
     before(async () => {
         await item.deleteAllItems();
-    });
+        await skuItem.deleteAllSkuitems();
+        await restockOrder.deleteAll();
 
+        await item.storeItem(item1);
+        await item.storeItem(item2);
+        await skuItem.storeSkuitem(skuItem1);
+        await skuItem.storeSkuitem(skuItem2);
+        await restockOrder.storeOrder(restockOrder1);
+    });
+    getRestockOrders(200); //ritorna ordine
+    /*
     getNonExistingItem(404, item1); //item1 non esiste ancora nel DB
     storeItem(201, item1); //item1 inserito
     getItem(200, item1); //ritornato correttamente
@@ -76,95 +106,21 @@ describe('test item apis', () => {
     getNonExistingItem(404, item2); //controllo che sia stato eliminato
     modifyItem(404, modifyItem2); //item2 non esiste piu
     modifyItem(422, modifyItemWrong); //FORMATO SBAGLIATO ==> ERRORE 
+    */
 });
 
-function storeItem(expectedHTTPStatus, data) {
-    it('store item', function (done) {
-        agent.post('/api/item')
-            .send(data)
-            .then(function (res) {
-                res.should.have.status(expectedHTTPStatus);
-                done();
-            });
-    });
-}
 
-function getItem(expectedHTTPStatus, data) {
-    it('get item', function (done) {
-        agent.get('/api/items/' + data.id)
+function getRestockOrders(expectedHTTPStatus) {
+    it('get restock orders', function (done) {
+        agent.get('/api/RestockOrders/')
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
-                r.body.id.should.equal(data.id);
-                r.body.description.should.equal(data.description);
-                r.body.price.should.equal(data.price);
-                r.body.SKUId.should.equal(data.SKUId);
-                r.body.supplierId.should.equal(data.supplierId);
-                done();
-            });
-    });
-}
-
-function getMultipleItems(expectedHTTPStatus, data) {
-    it('get multiple items', function (done) {
-        agent.get('/api/items')
-            .then(function (r) {
-                r.should.have.status(expectedHTTPStatus);
-                for (let i = 0; i < r.body.length; ++i) {
-                    r.body[i].id.should.equal(data[i].id);
-                    r.body[i].description.should.equal(data[i].description);
-                    r.body[i].price.should.equal(data[i].price);
-                    r.body[i].SKUId.should.equal(data[i].SKUId);
-                    r.body[i].supplierId.should.equal(data[i].supplierId);
-                }
-                done();
-            });
-    });
-}
-
-function getNonExistingItem(expectedHTTPStatus, data) {
-    it('get non existing item', function (done) {
-        agent.get('/api/items/' + data.id)
-            .then(function (r) {
-                r.should.have.status(expectedHTTPStatus);
-                done();
-            });
-    });
-}
-
-function modifyItemAndCheck(expectedHTTPStatus, data) {
-    it('modify item and check', function (done) {
-        agent.put('/api/item/' + data.id)
-            .send(data)
-            .then(function (res) {
-                res.should.have.status(expectedHTTPStatus);
-                agent.get('/api/items/' + data.id)
-                    .then(function (r) {
-                        r.should.have.status(expectedHTTPStatus);
-                        r.body.id.should.equal(data.id);
-                        r.body.description.should.equal(data.newDescription);
-                        r.body.price.should.equal(data.newPrice);
-                        done();
-                    });
-            });
-    });
-}
-
-function modifyItem(expectedHTTPStatus, data) {
-    it('modify item', function (done) {
-        agent.put('/api/item/' + data.id)
-            .send(data)
-            .then(function (res) {
-                res.should.have.status(expectedHTTPStatus);
-                done();
-            });
-    });
-}
-
-function deleteItem(expectedHTTPStatus, data) {
-    it('delete item', function (done) {
-        agent.delete('/api/items/' + data.id)
-            .then(function (r) {
-                r.should.have.status(expectedHTTPStatus);
+                r.body[0].id.should.equal(restockOrder1.id);
+                r.body[0].state.should.equal(restockOrder1.state);
+                r.body[0].products.should.length == 0
+                r.body[0].supplierId.should.equal(restockOrder1.supplierId);
+                r.body[0].transportNote == null
+                r.body[0].skuItems.should.length == 0
                 done();
             });
     });
