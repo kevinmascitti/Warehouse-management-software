@@ -56,6 +56,10 @@ describe('test item apis', () => {
         await item.deleteAllItems();
     });
 
+    after(async () => {
+        await item.deleteAllItems();
+    });
+
     getNonExistingItem(404, item1); //item1 non esiste ancora nel DB
     storeItem(201, item1); //item1 inserito
     getItem(200, item1); //ritornato correttamente

@@ -74,7 +74,7 @@ module.exports = function (app) {
             }
             return res.status(404).json();
         } catch (err) {
-            return res.status(500).json();
+            return res.status(503).json();
         }
     });
 
@@ -105,7 +105,7 @@ module.exports = function (app) {
             }
             return res.status(404).json();
         } catch (err) {
-            return res.status(500).json();
+            return res.status(503).json();
         }
     });
 
@@ -120,7 +120,7 @@ module.exports = function (app) {
             await skuitem.deleteStoredSkuitem({ rfid: req.params.rfid });
             return res.status(204).json();
         } catch (err) {
-            return res.status(500).json();
+            return res.status(503).json();
         }
     });
 
