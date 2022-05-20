@@ -58,6 +58,7 @@ We preferred the bottom up approach over the top down one since in this way we o
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |
 |--|--|
+|Skuitem (DAO)| get multiple skuitems with a certain skuid and available|
 |skuitem_API|store skuitem not associated to sku|
 |skuitem_API|store skuitem|
 |skuitem_API|get skuitem|
