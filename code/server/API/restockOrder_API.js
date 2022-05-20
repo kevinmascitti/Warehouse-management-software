@@ -1,7 +1,7 @@
 'use strict';
 const dayjs = require('dayjs');
 const resOrd = require('../warehouse/restockorder');
-const skuFunctions = require('../warehouse/sku');
+const itemFunctions = require('../warehouse/item');
 const skuItemFunctions = require('../warehouse/skuitem');
 
 module.exports = function (app) {
@@ -19,8 +19,8 @@ module.exports = function (app) {
                 for (let i of items) {
                     let product;
                     try {
-                        if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
-                            product = await skuFunctions.getStoredSku({ id: i.SKUId })
+                        if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
+                            product = await itemFunctions.getStoredItem({ id: i.id })
                             product = product[0]
                             o.products.push({
                                 SKUId: i.SKUId,
@@ -62,8 +62,8 @@ module.exports = function (app) {
                 for (let i of items) {
                     let product;
                     try {
-                        if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
-                            product = await skuFunctions.getStoredSku({ id: i.SKUId })
+                        if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
+                            product = await itemFunctions.getStoredItem({ id: i.id })
                             product = product[0]
                             o.products.push({
                                 SKUId: i.SKUId,
@@ -100,8 +100,8 @@ module.exports = function (app) {
             for (let i of items) {
                 let product;
                 try {
-                    if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
-                        product = await skuFunctions.getStoredSku({ id: i.SKUId })
+                    if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
+                        product = await itemFunctions.getStoredItem({ id: i.id })
                         product = product[0]
                         order.products.push({
                             SKUId: i.SKUId,
@@ -181,7 +181,12 @@ module.exports = function (app) {
             //PRODUCT + SKU insertion
             for (let p of req.body.products) {
                 await resOrd.storeProduct({ restockOrderId: restockOrderId, SKUId: p.SKUId, quantity: p.qty });
-                if (await skuFunctions.isThereSku({ id: p.SKUId }) == 0) await skuFunctions.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: p.qty, price: p.price })
+                let id = 0;
+                let items = await itemFunctions.getStoredItems();
+                for (let i of items) {
+                    if (i.id >= id) id = i.id + 1;
+                }
+                await itemFunctions.storeItem({ id: id, description: p.description, price: p.price, SKUId: p.SKUId, supplierId: o.supplierId})
             }
             return res.status(201).json();
         } catch (err) {
