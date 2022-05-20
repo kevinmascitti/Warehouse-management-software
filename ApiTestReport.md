@@ -21,7 +21,7 @@ Version:
 
 # Dependency graph 
 
-<report the here the dependency graph of the classes in EzWH, using plantuml or other tool>
+<img src="photos_for_tests_documents/depencies.png" width="600">
      
 # Integration approach
 
