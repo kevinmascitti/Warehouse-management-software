@@ -59,7 +59,7 @@ module.exports = function (app) {
             || isNaN(req.body.RFID)
             || req.body.RFID.length != 32 
             || req.body.RFID < 0
-            || isNaN(Date.parse(req.body.DateOfStock))) {
+            || (isNaN(Date.parse(req.body.DateOfStock)) && req.body.DateOfStock != null)) {
                 return res.status(422).json();
             }
             const data = {
@@ -88,7 +88,8 @@ module.exports = function (app) {
             || isNaN(req.body.newRFID) 
             || req.body.newRFID.length != 32 
             || req.body.newRFID < 0
-            || isNaN(Date.parse(req.body.newDateOfStock))) {
+            || (isNaN(Date.parse(req.body.newDateOfStock)) && req.body.newDateOfStock != null)) {
+
                 return res.status(422).json();
             }
             const data = {

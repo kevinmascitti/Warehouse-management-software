@@ -12,8 +12,6 @@ Version:
 
 - [Tests](#tests)
 
-- [Scenarios](#scenarios)
-
 - [Coverage of scenarios and FR](#scenario-coverage)
 - [Coverage of non-functional requirements](#nfr-coverage)
 
@@ -21,7 +19,7 @@ Version:
 
 # Dependency graph 
 
-<img src="photos_for_tests_documents/dependencies.png" width="600">
+<img src="photos_for_tests_documents/dependencies.png" width="1200">
      
 # Integration approach
 
@@ -38,28 +36,29 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Unit name | Jest test case |
 |--|--|
-|Item (DAO)|get item|
-|Item (DAO)|get items|
-|Item (DAO)|get not inserted item|
-|Item (DAO)|duplicated item|
-|Item (DAO)|item present|
-|Item (DAO)|item not present|
-|Item (DAO)|delete item|
-|Item (DAO)|edit item|
-|Skuitem (DAO)|get skuitem|
-|Skuitem (DAO)|get available skuitem by skuid|
-|Skuitem (DAO)|get skuitems|
-|Skuitem (DAO)|get not inserted skuitem|
-|Skuitem (DAO)|duplicated skuitem|
-|Skuitem (DAO)|skuitem present|
-|Skuitem (DAO)|skuitem not present|
-|Skuitem (DAO)|delete skuitem|
-|Skuitem (DAO)| editSkutem|
+|item (DAO)|get item|
+|item (DAO)|get items|
+|item (DAO)|get not inserted item|
+|item (DAO)|duplicated item|
+|item (DAO)|item present|
+|item (DAO)|item not present|
+|item (DAO)|delete item|
+|item (DAO)|edit item|
+|skuitem (DAO)|get skuitem|
+|skuitem (DAO)|get available skuitem by skuid|
+|skuitem (DAO)|get skuitems|
+|skuitem (DAO)|get not inserted skuitem|
+|skuitem (DAO)|duplicated skuitem|
+|skuitem (DAO)|skuitem present|
+|skuitem (DAO)|skuitem not present|
+|skuitem (DAO)|delete skuitem|
+|skuitem (DAO)| editSkutem|
 
 
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |
 |--|--|
+|skuitem_API| get multiple skuitems with a certain skuid and available|
 |skuitem_API|store skuitem not associated to sku|
 |skuitem_API|store skuitem|
 |skuitem_API|get skuitem|
@@ -76,24 +75,6 @@ We preferred the bottom up approach over the top down one since in this way we o
 |item_API|modify item|
 |item_API|delete item|
 
-
-
-# API testing - Scenarios
-
-//POTREMMO TOGLIERE QUESTA PARTE
-
-
-<If needed, define here additional scenarios for the application. Scenarios should be named
- referring the UC in the OfficialRequirements that they detail>
-
-## Scenario UCx.y
-| Scenario |  name |
-| ------------- |:-------------:| 
-|  Precondition     |  |
-|  Post condition     |   |
-| Step#        | Description  |
-|  1     |  ... |  
-|  2     |  ... |
 
 
 
