@@ -20,8 +20,8 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
 
  exports.storeSku = (data) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO SKU(DESCRIPTION, WEIGHT, VOLUME, NOTES, POSITION, AVAILABLEQUANTITY, PRICE, TESTDESCRIPTORS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
-        db.run(sql, [data.description, data.weight, data.volume, data.notes, "", data.availableQuantity, data.price, "[]"], (err) => {
+        const sql = 'INSERT INTO SKU(DESCRIPTION, WEIGHT, VOLUME, NOTES, AVAILABLEQUANTITY, PRICE) VALUES(?, ?, ?, ?, ?, ?)';
+        db.run(sql, [data.description, data.weight, data.volume, data.notes, data.availableQuantity, data.price], (err) => {
             if (err) {
                 reject(err);
                 return;
@@ -65,7 +65,7 @@ exports.getStoredSku= (data) => {
                     testDescriptors: r.TESTDESCRIPTORS
                 }
             ));
-            resolve(sku);
+            resolve(sku[0]);
         });
     });
 }
@@ -122,10 +122,68 @@ exports.modifySkuPosition = (data) => {
     });
 }
 
+exports.getSkuPosition = (id) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT POSITION.ID AS POSID, OCCUPIEDWEIGHT, OCCUPIEDVOLUME, MAXWEIGHT, MAXVOLUME FROM SKU, POSITION WHERE SKU.POSITION = POSITION.ID AND SKU.ID = ?';
+        db.all(sql, [id], (err, rows) => {
+            if (err) {
+                reject(err); return;
+            }
+            const skuPos = rows.map((r) => (
+                {
+                    id: r.POSID,
+                    occupiedWeight: r.OCCUPIEDWEIGHT,
+                    occupiedVolume: r.OCCUPIEDVOLUME,
+                    maxWeight: r.MAXWEIGHT,
+                    maxVolume: r.MAXVOLUME
+                }
+            ));
+            resolve(skuPos);
+        });
+    });
+}
+
+exports.getPositionInfos = (position) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT OCCUPIEDWEIGHT, OCCUPIEDVOLUME, MAXWEIGHT, MAXVOLUME FROM POSITION WHERE ID = ?';
+        db.all(sql, [position], (err, rows) => {
+            if (err) {
+                reject(err); return;
+            }
+            const infos = rows.map((r) => (
+                {
+                    occupiedWeight: r.OCCUPIEDWEIGHT,
+                    occupiedVolume: r.OCCUPIEDVOLUME,
+                    maxWeight: r.MAXWEIGHT,
+                    maxVolume: r.MAXVOLUME
+                }
+            ));
+            resolve(infos);
+        });
+    });
+}
+
+exports.isPositionAlreadyAssignedToOtherSku = (id, position) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT COUNT(*) AS N FROM SKU WHERE POSITION = ? AND ID != ?';
+        db.all(sql, [position, id], (err, rows) => {
+            if (err) {
+                reject(err); return;
+            }
+            if(rows[0].N == 0){
+                resolve(false);
+            }
+            else{
+                resolve(true);   
+            }
+        });
+    });
+}
+
 exports.updateNewPosition = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT =  OCCUPIEDWEIGHT + ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME + ? WHERE ID = ?';
-        db.run(sql, [data.availableQuantity * data.weight, data.availableQuantity * data.volume, data.newPosition], (err, rows) => {
+        db.run(sql, [data.weight, data.volume, data.newPosition], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
@@ -138,7 +196,7 @@ exports.updateNewPosition = (data) => {
 exports.updateOldPosition = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT = OCCUPIEDWEIGHT - ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME - ? WHERE ID = ?';
-        db.run(sql, [data.availableQuantity * data.weight, data.availableQuantity * data.volume, data.oldPosition], (err, rows) => {
+        db.run(sql, [data.weight, data.volume, data.oldPosition], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
@@ -164,6 +222,18 @@ exports.deleteStoredSku = (data) => {
 exports.deleteAllSkus = () => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM SKU';
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve();
+      });
+    });
+  }
+
+  exports.resetSkuAutoIncrement = () => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='SKU'";
       db.run(sql, [], (err, rows) => {
         if (err) {
           reject(err); return;

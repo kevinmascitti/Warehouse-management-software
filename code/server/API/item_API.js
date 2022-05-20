@@ -60,7 +60,7 @@ module.exports = function (app) {
       await item.storeItem(data);
       return res.status(201).json();
     } catch (err) {
-      return res.status(500).json();
+      return res.status(503).json();
     }
   });
 
@@ -85,7 +85,7 @@ module.exports = function (app) {
       }
       return res.status(404).json();
     } catch (err) {
-      return res.status(500).json();
+      return res.status(503).json();
     }
   });
 
@@ -99,7 +99,7 @@ module.exports = function (app) {
       await item.deleteStoredItem({ id: req.params.id });
       return res.status(204).json();
     } catch (err) {
-      return res.status(500).json();
+      return res.status(503).json();
     }
   });
 

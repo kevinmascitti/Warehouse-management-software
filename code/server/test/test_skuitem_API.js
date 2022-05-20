@@ -8,7 +8,6 @@ var agent = chai.request.agent(app);
 
 const skuitem = require('../warehouse/skuitem');
 const sku = require('../warehouse/sku');
-const { response } = require('express');
 
 const skuitem1 = {
     RFID: "12345678901234567890123456789014",
@@ -124,6 +123,7 @@ describe('test skuitem apis', () => {
     before(async () => {
         await skuitem.deleteAllSkuitems();
         await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
         await sku.storeSku(sku1);
         await sku.storeSku(sku2);
         let skus = await sku.getStoredSkus();
@@ -137,11 +137,17 @@ describe('test skuitem apis', () => {
         wrongSkuitem2.SKUId = this.SKUId1;
     });
 
+    after(async () => {
+        await skuitem.deleteAllSkuitems();
+        await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
+    });
+
     getNonExistingSkuitem(404, skuitem1); //skuitem1 non esiste ancora nel DB
     storeSkuitemNotAssociatedToSku(404, skuitem1); //NON puo essere inserito: manca lo sku corrispondente
     storeSkuitem(201, skuitem2); //inserito correttamente
     getSkuitem(200, skuitem2); //ritornato correttamente
-    storeSkuitem(500, skuitem2); //DUPLICATO ==> ERRORE 
+    storeSkuitem(503, skuitem2); //DUPLICATO ==> ERRORE 
     storeSkuitem(422, wrongSkuitem1); //FORMATO RFID SBAGLIATO ==> ERRORE 
     storeSkuitem(422, wrongSkuitem2); //FORMATO DATA SBAGLIATO ==> ERRORE 
     storeSkuitem(201, skuitem3); //inserito correttamente
