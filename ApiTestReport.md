@@ -36,29 +36,29 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Unit name | Jest test case |
 |--|--|
-|Item (DAO)|get item|
-|Item (DAO)|get items|
-|Item (DAO)|get not inserted item|
-|Item (DAO)|duplicated item|
-|Item (DAO)|item present|
-|Item (DAO)|item not present|
-|Item (DAO)|delete item|
-|Item (DAO)|edit item|
-|Skuitem (DAO)|get skuitem|
-|Skuitem (DAO)|get available skuitem by skuid|
-|Skuitem (DAO)|get skuitems|
-|Skuitem (DAO)|get not inserted skuitem|
-|Skuitem (DAO)|duplicated skuitem|
-|Skuitem (DAO)|skuitem present|
-|Skuitem (DAO)|skuitem not present|
-|Skuitem (DAO)|delete skuitem|
-|Skuitem (DAO)| editSkutem|
+|item (DAO)|get item|
+|item (DAO)|get items|
+|item (DAO)|get not inserted item|
+|item (DAO)|duplicated item|
+|item (DAO)|item present|
+|item (DAO)|item not present|
+|item (DAO)|delete item|
+|item (DAO)|edit item|
+|skuitem (DAO)|get skuitem|
+|skuitem (DAO)|get available skuitem by skuid|
+|skuitem (DAO)|get skuitems|
+|skuitem (DAO)|get not inserted skuitem|
+|skuitem (DAO)|duplicated skuitem|
+|skuitem (DAO)|skuitem present|
+|skuitem (DAO)|skuitem not present|
+|skuitem (DAO)|delete skuitem|
+|skuitem (DAO)| editSkutem|
 
 
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |
 |--|--|
-|Skuitem (DAO)| get multiple skuitems with a certain skuid and available|
+|skuitem_API| get multiple skuitems with a certain skuid and available|
 |skuitem_API|store skuitem not associated to sku|
 |skuitem_API|store skuitem|
 |skuitem_API|get skuitem|
