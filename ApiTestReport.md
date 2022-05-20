@@ -21,7 +21,7 @@ Version:
 
 # Dependency graph 
 
-<img src="photos_for_tests_documents/depencies.png" width="600">
+<img src="photos_for_tests_documents/dependencies.png" width="600">
      
 # Integration approach
 
