@@ -12,8 +12,6 @@ Version:
 
 - [Tests](#tests)
 
-- [Scenarios](#scenarios)
-
 - [Coverage of scenarios and FR](#scenario-coverage)
 - [Coverage of non-functional requirements](#nfr-coverage)
 
@@ -21,7 +19,7 @@ Version:
 
 # Dependency graph 
 
-<img src="photos_for_tests_documents/dependencies.png" width="600">
+<img src="photos_for_tests_documents/dependencies.png" width="1200">
      
 # Integration approach
 
@@ -76,24 +74,6 @@ We preferred the bottom up approach over the top down one since in this way we o
 |item_API|modify item|
 |item_API|delete item|
 
-
-
-# API testing - Scenarios
-
-//POTREMMO TOGLIERE QUESTA PARTE
-
-
-<If needed, define here additional scenarios for the application. Scenarios should be named
- referring the UC in the OfficialRequirements that they detail>
-
-## Scenario UCx.y
-| Scenario |  name |
-| ------------- |:-------------:| 
-|  Precondition     |  |
-|  Post condition     |   |
-| Step#        | Description  |
-|  1     |  ... |  
-|  2     |  ... |
 
 
 
