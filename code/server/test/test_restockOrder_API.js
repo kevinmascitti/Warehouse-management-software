@@ -71,7 +71,7 @@ const skuItem2 = {
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
 const setReturnForSku2 = {
-    rfid:"12345678901234567890123456789016",
+    rfid:"12345678901234567890123456789017",
     restockOrderId: 2
 }
 
@@ -97,12 +97,18 @@ const restockOrder2 = {
     skuItems : []
 }
 
+const stateOrder2 = {
+    id: 2,
+    state: "COMPLETED"
+}
+
 describe('test restockorder apis', () => {
 
     before(async () => {
         await item.deleteAllItems();
         await skuItem.deleteAllSkuitems();
         await restockOrder.deleteAll();
+        await restockOrder.deleteAllProducts();
 
         await item.storeItem(item1);
         await item.storeItem(item2);
@@ -111,24 +117,11 @@ describe('test restockorder apis', () => {
         await restockOrder.storeOrder(restockOrder1);
 
         await restockOrder.storeOrder(restockOrder2);
+        await restockOrder.setNewState(stateOrder2);
         await skuItem.setRestockOrder(setReturnForSku1);
         await skuItem.setRestockOrder(setReturnForSku2);
     });
     getRestockOrders(200); //ritorna ordine
-    /*
-    getNonExistingItem(404, item1); //item1 non esiste ancora nel DB
-    storeItem(201, item1); //item1 inserito
-    getItem(200, item1); //ritornato correttamente
-    storeItem(201, item2); //item2 inserito
-    storeItem(422, item2); //DUPLICATO ==> STESSO ITEM GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
-    storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
-    getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
-    modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
-    deleteItem(204, item2); //elimino item1
-    getNonExistingItem(404, item2); //controllo che sia stato eliminato
-    modifyItem(404, modifyItem2); //item2 non esiste piu
-    modifyItem(422, modifyItemWrong); //FORMATO SBAGLIATO ==> ERRORE 
-    */
 });
 
 
@@ -136,13 +129,26 @@ function getRestockOrders(expectedHTTPStatus) {
     it('get restock orders', function (done) {
         agent.get('/api/RestockOrders/')
             .then(function (r) {
+                console.log(r.body)
+                console.log(r.body[1].skuItems)
+                //console.log([{SKUId: skuItem1.skuid, rfid: skuItem1.rfid}, {SKUId: skuItem2.skuid, rfid: skuItem2.rfid}])
                 r.should.have.status(expectedHTTPStatus);
                 r.body[0].id.should.equal(restockOrder1.id);
                 r.body[0].state.should.equal(restockOrder1.state);
-                r.body[0].products.should.length == 0
+                r.body[0].products.length.should.equal(0)
                 r.body[0].supplierId.should.equal(restockOrder1.supplierId);
-                r.body[0].transportNote == null
-                r.body[0].skuItems.should.length == 0
+                (r.body[0].transportNote == undefined).should.equal(true)
+                r.body[0].skuItems.length.should.equal(0)
+                
+                r.body[1].id.should.equal(restockOrder2.id);
+                r.body[1].state.should.equal(restockOrder2.state);
+                r.body[1].products.length.should.equal(0)
+                r.body[1].supplierId.should.equal(restockOrder2.supplierId);
+                (r.body[1].transportNote == undefined).should.equal(true)
+                r.body[1].skuItems[0].SKUId.should.equal(skuItem1.skuid)
+                r.body[1].skuItems[0].rfid.should.equal(skuItem1.rfid)
+                r.body[1].skuItems[1].SKUId.should.equal(skuItem2.skuid)
+                r.body[1].skuItems[1].rfid.should.equal(skuItem2.rfid)
                 done();
             });
     });

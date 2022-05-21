@@ -19,7 +19,7 @@ exports.getOrders = async function () {
         state: r.STATE,
         products: [],
         supplierId: r.SUPPLIERID,
-        transportNote: r.STATE != 'ISSUED' ? r.TRANSPORTNOTE : undefined,
+        transportNote: (r.STATE != 'ISSUED' && r.TRANSPORTNOTE != null) ? r.TRANSPORTNOTE : undefined,
         skuItems: []
       }))
       resolve(rows);
@@ -178,7 +178,7 @@ exports.deleteProducts = async function (data) {
 
 exports.deleteAll = async function () {
   return new Promise((resolve, reject) => {
-    const sql = 'DELETE FROM RESTOCKORDER; DELETE FROM RESTOCKORDERPRODUCT;';
+    const sql = 'DELETE FROM RESTOCKORDER';
     db.run(sql, [], (err, rows) => {
       if (err) {
         reject(err);
@@ -188,3 +188,18 @@ exports.deleteAll = async function () {
     });
   })
 }
+
+exports.deleteAllProducts = async function () {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM RESTOCKORDERPRODUCT;';
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  })
+}
+
+
