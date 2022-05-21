@@ -7,6 +7,7 @@ const app = require('../server');
 var agent = chai.request.agent(app);
 
 const sku = require('../warehouse/sku');
+const positionF = require('../warehouse/position');
 
 const sku1 = {
     "description" : "first new sku",
@@ -15,6 +16,7 @@ const sku1 = {
     "notes" : "first SKU",
     "price" : 10.99,
     "availableQuantity" : 50,
+    position : null,
     "testDescriptors" : []
 }
 
@@ -25,16 +27,40 @@ const sku2 = {
     "notes" : "second SKU",
     "price" : 10.99,
     "availableQuantity" : 50,
+    position : null,
     "testDescriptors" : []
 }
 
 const sku3 = {
     "description" : "third new sku",
-    "weight" : 100,
-    "volume" : 50,
+    "weight" : 60,
+    "volume" : 60,
     "notes" : "tihrd SKU",
     "price" : 10.99,
     "availableQuantity" : 50,
+    position : null,
+    "testDescriptors" : []
+}
+
+const sku4 = {
+    "description" : "fourth new sku",
+    "weight" : 70,
+    "volume" : 70,
+    "notes" : "fourth SKU",
+    "price" : 40.99,
+    "availableQuantity" : 40,
+    position : null,
+    "testDescriptors" : []
+}
+
+const sku5_is_HUGE = { //TOO BIG TO BE STORED
+    "description" : "fourth new sku",
+    "weight" : 101, 
+    "volume" : 376,
+    "notes" : "fourth SKU",
+    "price" : 40.99,
+    "availableQuantity" : 40,
+    position : null,
     "testDescriptors" : []
 }
 
@@ -56,33 +82,40 @@ const wrongSku2 = {
     price: -0.01 //DEVE ESSERE NON NEGATIVO
 }
 
-const setAvailableSkuitem2 = {
-    "RFID": "99945678901234567890123456789014",
-    "newRFID": "99945678901234567890123456789014",
-    "newAvailable": 1,
-    "newDateOfStock": null,
+const modifySku1_without_tds = {
+    "newDescription" : "MODIFIED BY MEEE",
+    "newWeight" : 99,
+    "newVolume" : 99,
+    "newNotes" : "first MODIFIED SKU, WITHOUT TESTDESCRIPTORS",
+    "newPrice" : 90.99,
+    "newAvailableQuantity" : 90
 };
 
-const setAvailableSkuitem5 = {
-    "RFID": "55945678901234567890123456789014",
-    "newRFID": "55945678901234567890123456789014",
-    "newAvailable": 1,
-    "newDateOfStock": "2021/11/29 12:30",
+const modifySku2_with_tds = {
+    "newDescription" : "MODIFIED BY MEEE",
+    "newWeight" : 989,
+    "newVolume" : 989,
+    "newNotes" : "first MODIFIED SKU, WITH TESTDESCRIPTORS",
+    "newPrice" : 98.98,
+    "newAvailableQuantity" : 98,
+    "newTestDescriptors" : [98,99,100]
 };
 
-const modifySkuitem2 = {
-    "RFID": "99945678901234567890123456789014",
-    "newRFID": "10000678901234567890123456789015",
-    "newAvailable": 1,
-    "newDateOfStock": null,
-};
+const modifySku3Position = {
+    "position": "333333333333"
+}
 
-const modifySkuitem5 = {
-    "RFID": "55945678901234567890123456789014",
-    "newRFID": "55945678901234567890123456789014",
-    "newAvailable": 1,
-    "newDateOfStock": "2028/11/29 19:30",
-};
+const modifySku4Position = {
+    "position": "444444444444"
+}
+
+const modifySku5Position = {
+    "position": "555555555555"
+}
+
+const notExistingPosition = {
+    "position": "999999999999"
+}
 
 const modifySkuitemWrong = {
     "RFID": "0000037374", //ha meno di 32 caratteri!!
@@ -100,16 +133,67 @@ const modifySkuitemWrong2 = {
 
 describe('test sku apis', () => {
 
+    let position3 = {
+        "positionID": "333333333333",
+        "aisleID": "3333",
+        "row": "3333",
+        "col": "3333",
+        "maxWeight": 100,
+        "maxVolume": 100,
+        "occupiedWeight": 30,
+        "occupiedVolume": 30
+    }
+    
+    let position4 = {
+        "positionID": "444444444444",
+        "aisleID": "4444",
+        "row": "4444",
+        "col": "4444",
+        "maxWeight": 100,
+        "maxVolume": 100,
+        "occupiedWeight": 0,
+        "occupiedVolume": 0
+    }
+    
+    let position5 = {
+        "positionID": "555555555555",
+        "aisleID": "5555",
+        "row": "5555",
+        "col": "5555",
+        "maxWeight": 100,
+        "maxVolume": 100,
+        "occupiedWeight": 0,
+        "occupiedVolume": 0
+    }
+    
+    let position6 = {
+        "positionID": "666666666666",
+        "aisleID": "6666",
+        "row": "6666",
+        "col": "6666",
+        "maxWeight": 100,
+        "maxVolume": 100,
+        "occupiedWeight": 0,
+        "occupiedVolume": 0
+    }
+    
+
     before(async () => {
         await sku.deleteAllSkus();
         await sku.resetSkuAutoIncrement();
+        await positionF.deleteAllPositions();
         await sku.storeSku(sku1);
         await sku.storeSku(sku2);
+        await positionF.storePosition(position3);
+        await positionF.storePosition(position4);
+        await positionF.storePosition(position5);
+        await positionF.storePosition(position6);
     });
 
     after(async () => {
         await sku.deleteAllSkus();
         await sku.resetSkuAutoIncrement();
+       // await positionF.deleteAllPositions();
     });
 
     getNonExistingSku(404, 3); //sku3 NON esiste ancora nel DB
@@ -125,7 +209,17 @@ describe('test sku apis', () => {
     storeSku(422, wrongSku1); //FORMATO weight SBAGLIATO ==> ERRORE 
     storeSku(422, wrongSku2); //FORMATO price SBAGLIATO ==> ERRORE 
     getMultipleSkus(200, [sku1, sku2, sku3]); //sku1 e skuitem3 e sku3 ritornati
-    //modifySkuitemAndCheck(200, setAvailableSkuitem5); //modifico skuitem5 (setto available) e controllo modifiche
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku3,3,modifySku3Position,position3);
+    storeSku(201, sku4); //inserito correttamente
+    addOrModifySkuPositionButSomeProblem(422,4,modifySku3Position); //ERRORE, posizione gia assegnata a un diverso sku!!!!
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku4,4,modifySku4Position,position4);
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku4,4,modifySku4Position,position4); //riassegno a stessa posizione => OK
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku4,4,modifySku5Position,position4);
+    storeSku(201, sku5_is_HUGE); //inserito correttamente
+    addOrModifySkuPositionButSomeProblem(422,5,modifySku5Position); //ERRORE, sku is just HUGE OMG
+    addOrModifySkuPositionButSomeProblem(404,8,modifySku5Position); //ERRORE, sku with id 8 NOT EXISTS
+    addOrModifySkuPositionButSomeProblem(404,4,notExistingPosition); //ERRORE, position entered NOT EXISTS
+    //modifySkuAndCheck(200, modifySku1_without_tds,1); //modifico sku1 senza aggiungere test descriptors e controllo modifiche
     //getMultipleSkuitemsWithSkuidAndAvailable(200,[skuitem2,skuitem5]); //torna solo quelli con il dato SKUID e AVAILABLE=1
     //modifySkuitemAndCheck(200, modifySkuitem2); //modifico skuitem2 e controllo modifiche
     deleteSku(422, sku2.notes); //FORMATO ID ERRATO: NON NUMERICO!!
@@ -135,17 +229,6 @@ describe('test sku apis', () => {
     //modifySkuitem(404, modifySkuitem2); //skuitem2 non esiste piu
     //modifySkuitem(422, modifySkuitemWrong); //FORMATO SBAGLIATO ==> ERRORE 
     //modifySkuitem(422, modifySkuitemWrong2); //FORMATO SBAGLIATO ==> ERRORE 
-
-    function storeSkuitemNotAssociatedToSku(expectedHTTPStatus, data) {
-        it('store skuitem not associated to sku', function (done) {
-            agent.post('/api/skuitem')
-                .send(data)
-                .then(function (res) {
-                    res.should.have.status(expectedHTTPStatus);
-                    done();
-                });
-        });
-    }
 
     function storeSku(expectedHTTPStatus, data) {
         it('store sku', function (done) {
@@ -167,6 +250,11 @@ describe('test sku apis', () => {
                     r.body.weight.should.equal(data.weight);
                     r.body.volume.should.equal(data.volume);
                     r.body.availableQuantity.should.equal(data.availableQuantity);
+                    r.body.notes.should.equal(data.notes);
+                    r.body.price.should.equal(data.price);
+                    if(r.body.position != null){
+                        r.body.position.should.equal(data.position);
+                    }
                     if(r.body.testDescriptors.length != 0){
                         r.body.testDescriptors.should.equal(data.testDescriptors);
                     }
@@ -186,25 +274,13 @@ describe('test sku apis', () => {
                         r.body[i].weight.should.equal(data[i].weight);
                         r.body[i].volume.should.equal(data[i].volume);
                         r.body[i].availableQuantity.should.equal(data[i].availableQuantity);
+                        r.body[i].notes.should.equal(data[i].notes);
+                        r.body[i].price.should.equal(data[i].price);
+                        if(r.body[i].position){
+                            r.body[i].position.should.equal(data[i].position);
+                        }
                         if(r.body[i].testDescriptors.length != 0){
                             r.body[i].testDescriptors.should.equal(data[i].testDescriptors);
-                        }
-                    }
-                    done();
-                });
-        });
-    }
-
-    function getMultipleSkuitemsWithSkuidAndAvailable(expectedHTTPStatus, data) {
-        it('get multiple skuitems with a certain skuid and available', function (done) {
-            agent.get('/api/skuitems/sku/'+skuitem2.SKUId)
-                .then(function (r) {
-                    r.should.have.status(expectedHTTPStatus);
-                    for (let i = 0; i < r.body.length; ++i) {
-                        r.body[i].RFID.should.equal(data[i].RFID);
-                        r.body[i].SKUId.should.equal(data[i].SKUId);
-                        if(r.body[i].DateOfStock != null || data[i].DateOfStock != null){
-                            r.body[i].DateOfStock.should.equal(data[i].DateOfStock);
                         }
                     }
                     done();
@@ -222,19 +298,24 @@ describe('test sku apis', () => {
         });
     }
 
-    function modifySkuitemAndCheck(expectedHTTPStatus, data) {
-        it('modify skuitem and check', function (done) {
-            agent.put('/api/skuitems/' + data.RFID)
+    function modifySkuAndCheck(expectedHTTPStatus, data, id) {
+        it('modify sku and check', function (done) {
+            agent.put('/api/sku/' + id)
                 .send(data)
                 .then(function (res) {
+                    //503!!!!!!!!!!!!!!
                     res.should.have.status(expectedHTTPStatus);
-                    agent.get('/api/skuitems/' + data.newRFID)
+                    agent.get('/api/skus/' + id)
                         .then(function (r) {
                             r.should.have.status(expectedHTTPStatus);
-                            r.body.RFID.should.equal(data.newRFID);
-                            r.body.Available.should.equal(data.newAvailable);                            r.body.Available.should.equal(data.newAvailable);
-                            if(r.body.DateOfStock != null || data.newDateOfStock != null){
-                                r.body.DateOfStock.should.equal(data.newDateOfStock);
+                            r.body.description.should.equal(data.newDescription);
+                            r.body.weight.should.equal(data.newWeight);
+                            r.body.volume.should.equal(data.newVolume);
+                            r.body.availableQuantity.should.equal(data.newAvailableQuantity);
+                            r.body.notes.should.equal(data.newNotes);
+                            r.body.price.should.equal(data.newPrice);
+                            if(r.body.testDescriptors.length != 0){
+                                r.body.testDescriptors.should.equal(data.newTestDescriptors);
                             }
                             done();
                         });
@@ -242,14 +323,65 @@ describe('test sku apis', () => {
         });
     }
 
-    function modifySkuitem(expectedHTTPStatus, data) {
-        it('modify skuitem', function (done) {
+    function modifySku(expectedHTTPStatus, data) {
+        it('modify sku', function (done) {
             agent.put('/api/skuitems/' + data.RFID)
                 .send(data)
                 .then(function (res) {
                     res.should.have.status(expectedHTTPStatus);
                     done();
                 });
+        });
+    }
+
+    function addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(expectedHTTPStatus, sku, id, pos, posObj) {
+        it('add or modify sku position and check new and old positions capacities', function (done) {
+            agent.put('/api/sku/'+id+'/position')
+                .send(pos)
+                .then(function (res) {
+                    res.should.have.status(expectedHTTPStatus);
+                    agent.get('/api/skus/' + id)
+                        .then(function (r) {
+                            r.should.have.status(expectedHTTPStatus);
+                            r.body.description.should.equal(sku.description);
+                            r.body.weight.should.equal(sku.weight);
+                            r.body.volume.should.equal(sku.volume);
+                            r.body.availableQuantity.should.equal(sku.availableQuantity);
+                            r.body.notes.should.equal(sku.notes);
+                            r.body.price.should.equal(sku.price);
+                            if(r.body.position != null){
+                                r.body.position.should.equal(pos.position);
+                            }
+                            if(r.body.testDescriptors.length != 0){
+                                r.body.testDescriptors.should.equal(data.newTestDescriptors);
+                            }
+                            //controllo se capacita modificate correttamente
+                            positionF.getPosition({positionID: pos.position}).then(function(p){
+                                p.occupiedWeight.should.equal(posObj.occupiedWeight+sku.weight);
+                                p.occupiedVolume.should.equal(posObj.occupiedVolume+sku.volume);
+                            });
+                            done();
+                        });
+                });
+        });
+    }
+
+    function addOrModifySkuPositionButSomeProblem(expectedHTTPStatus, id, pos) {
+        it('add or modify sku position but problem: not exist OR not capable OR already assigned', function (done) {
+            agent.put('/api/sku/'+id+'/position')
+                .send(pos)
+                .then(function (res) {
+                    //422!!!!!!!!
+                    res.should.have.status(expectedHTTPStatus);
+                    done();
+                });
+        });
+    }
+
+    function checkIfPositionCapacityModifiedCorrectly(oldW, oldV, newW, newV, skuW, skuV) {
+        it('check if position capacity is modified correctly when moving sku', function (done) {
+            (oldW - newW).should.equal(skuW);
+            (oldV - newV).should.equal(skuV);
         });
     }
 
