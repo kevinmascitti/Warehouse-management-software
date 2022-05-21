@@ -44,12 +44,12 @@
 //     testPosition(position1);
 //     testPosition(position2);
 //     testNotExistPosition(position3);
-//     testPositions();
+//     testPositions([position1,position2]);
 //     testIsNotTherePosition(position3);
 //     testIsTherePosition(position2);
 //     testDuplicatedPosition(position1);
 //     testDeletePosition(position2);
-//     testIsNotTherePosiiton(position2);
+//     testIsNotTherePosition(position2);
 //     testModifyPosition(position1);
 //     testModifyPositionID(position1);
 // });
@@ -70,10 +70,10 @@
 //     });
 // }
 
-// async function testPositions() {
+// async function testPositions(data) {
 //     test('get positions', async () => {
-//         let res = await item.getPositions();
-//         expect(res).toEqual([position1,position2]);
+//         let res = await position.getPositions();
+//         expect(res).toEqual(data);
 //     });
 // }
 
@@ -111,7 +111,7 @@
 
 // async function testDeletePosition(i) {
 //     test('delete position', async () => {
-//         let res0 = await item.getPosition({ positionID: i.positionID });
+//         let res0 = await position.getPosition({ positionID: i.positionID });
 //         expect(res0).toEqual({
 //             positionID: i.positionID,
 //             aisleID: i.aisleID,
