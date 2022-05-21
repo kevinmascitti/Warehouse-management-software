@@ -67,9 +67,9 @@ describe('test user apis', () => {
 
 async function testUser(i) {
     test('get user', async () => {
-        let res = await user.getStoredUser({ id: i.id });
+        let res = await user.getStoredUser({ username: i.username });
         expect(res).toEqual({
-            id: i.positionID,
+            id: i.id,
             username: i.username,
             name: i.name,
             surname: i.surname,
@@ -94,7 +94,7 @@ async function testSuppliers(data) {
 
 async function testNotExistUser(i) {
     test('get not inserted user', async () => {
-        let res = await user.getUser({ id: i.id });
+        let res = await user.getStoredUser({ username: i.username });
         expect(res).toEqual(undefined);
     });
 }
@@ -119,14 +119,14 @@ async function testIsThereUser(i) {
 
 async function testIsNotThereUser(i) {
     test('user not present', async () => {
-        let res = await position.isThereUser({ id: i.id });
+        let res = await user.isThereUser({ id: i.id });
         expect(res).toEqual(0);
     });
 }
 
 async function testDeleteUser(i) {
     test('delete user', async () => {
-        let res0 = await user.getUser({ id: i.id });
+        let res0 = await user.getStoredUser({ id: i.id });
         expect(res0).toEqual({
             id: i.id,
             username: i.username,
@@ -134,58 +134,28 @@ async function testDeleteUser(i) {
             surname: i.surname,
             type: i.type
         });
-        let res1 = await user.deleteUser({ id: i.id });
+        let res1 = await user.deleteStoredUser({ username: i.username, type: i.type});
         expect(res1).toEqual(undefined);
-        let res2 = await user.getUser({id: i.id});
+        let res2 = await user.getStoredUser({username: i.username});
         expect(res2).toEqual(undefined);
     });
 }
 
-async function testModifyPosition(i) {
-    test('modify position', async () => {
-        const modifyPosition = {
-            positionID: "111111111111",
-            newAisleID: "1111",
-            newRow: "1111",
-            newCol: "1111",
-            newMaxWeight: 200,
-            newMaxVolume: 600,
-            newOccupiedWeight: 200,
-            newOccupiedVolume: 100
+async function testModifyUser(i) {
+    test('modify user', async () => {
+        const modifyUser = {
+            username: "clerk99@ezwh.com",
+            oldType: "clerk",
+            newType: "deliveryEmployee"
         }
-        await position.modifyPosition(modifyItem);
-        let res = await position.getPosition({ positionID: modifyPosition.positionID });
+        await user.modifyRightsStoredUser(modifyUser);
+        let res = await user.getStoredUser({ username: modifyUser.username });
         expect(res).toEqual({
-            positionID: "111111111111",
-            aisleID: "1111",
-            row: "1111",
-            col: "1111",
-            maxWeight: 200,
-            maxVolume: 600,
-            occupiedWeight: 200,
-            occupiedVolume: 100
-        });
-    });
-}
-
-async function testModifyPositionID(i) {
-    test('modify positionID', async () => {
-        const modifyPositionID = {
-            positionID: "111111111111",
-            newPositionID: "222222222222"
-        }
-        await position.modifyPositionID(modifyPositionID);
-        let res0 = await position.getPosition({ positionID: modifyPositionID.positionID });
-        let res1 = await position.getPosition({ positionID: modifyPositionID.newPositionID });
-        expect(res1).toEqual({
-            positionID: "222222222222",
-            aisleID: "2222",
-            row: "2222",
-            col: "2222",
-            maxWeight: res0.maxWeight,
-            maxVolume: res0.maxVolume,
-            occupiedWeight: res0.occupiedWeight,
-            occupiedVolume: res0.occupiedVolume
+            id: res.id,
+            username: "clerk99@ezwh.com",
+            name: res.name,
+            surname: res.surname,
+            type: modifyUser.newType
         });
     });
 }

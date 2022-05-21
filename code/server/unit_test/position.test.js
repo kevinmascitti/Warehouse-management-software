@@ -141,7 +141,7 @@
 //             newOccupiedWeight: 200,
 //             newOccupiedVolume: 100
 //         }
-//         await position.modifyPosition(modifyItem);
+//         await position.modifyPosition(modifyPosition);
 //         let res = await position.getPosition({ positionID: modifyPosition.positionID });
 //         expect(res).toEqual({
 //             positionID: "111111111111",
