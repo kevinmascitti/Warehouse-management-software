@@ -36,6 +36,7 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Unit name | Jest test case |
 |--|--|
+|item (DAO)|supplier already sells this item|
 |item (DAO)|get item|
 |item (DAO)|get items|
 |item (DAO)|get not inserted item|
@@ -44,6 +45,16 @@ We preferred the bottom up approach over the top down one since in this way we o
 |item (DAO)|item not present|
 |item (DAO)|delete item|
 |item (DAO)|edit item|
+|sku (DAO)|sku position already assigned to another sku|
+|sku (DAO)|modify position of an sku|
+|sku (DAO)|editSku without test descriptors|
+|sku (DAO)|editSku with test descriptors|
+|sku (DAO)|get sku|
+|sku (DAO)|get skus|
+|sku (DAO)|get not inserted sku|
+|sku (DAO)|sku present|
+|sku (DAO)|sku not present|
+|sku (DAO)|delete sku|
 |skuitem (DAO)|get skuitem|
 |skuitem (DAO)|get available skuitem by skuid|
 |skuitem (DAO)|get skuitems|

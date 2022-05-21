@@ -17,10 +17,10 @@ const skuitem1 = {
 }
 
 const skuitem2 = {
-    RFID: "99945678901234567890123456789014",
-    SKUId: 767667, //lo riassegno nel before()
-    Available: 0,
-    DateOfStock: null //null IS A VALID DATE!!!!!!!!!!!!!!!!!!!!!!!!!
+    "RFID": "99945678901234567890123456789014",
+    "SKUId": 767667, //lo riassegno nel before()
+    "Available": 0,
+    "DateOfStock": null //null IS A VALID DATE!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 const skuitem3 = {

@@ -1,4 +1,4 @@
-const testD = require('../warehouse/testDescriptor');
+/*const testD = require('../warehouse/testDescriptor');
 
 
 const testD1 = {
@@ -136,4 +136,4 @@ async function testDeleteTestDescriptor(i) {
         });
     }
 
-    
+   */ 
