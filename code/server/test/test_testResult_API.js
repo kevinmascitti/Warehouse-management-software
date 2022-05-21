@@ -1,5 +1,4 @@
-
-/*const chai = require('chai');
+const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
@@ -75,9 +74,8 @@ const modifyWrongResult = {
 
 describe('test testResult api', () => {
 
-    let rfid = '';
-
     before(async () => {
+
         rfid = await testR.getStoredTestResult({rfid: "55555678901234567890123456789015", id: 1});
         await testR.deleteAlltestResults();
     });
@@ -188,4 +186,4 @@ function deletetestR(expectedHTTPStatus, data) {
                 done();
             });
     });
-}*/
+}
