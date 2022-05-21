@@ -15,8 +15,8 @@
 //     col: "5555",
 //     maxWeight: 500,
 //     maxVolume: 600,
-//     occupiedWeight: 200,
-//     occupiedVolume: 300
+//     occupiedWeight: 0,
+//     occupiedVolume: 0
 // }
 
 // const position2 = {
@@ -26,8 +26,8 @@
 //     col: "6666",
 //     maxWeight: 400,
 //     maxVolume: 300,
-//     occupiedWeight: 100,
-//     occupiedVolume: 100
+//     occupiedWeight: 0,
+//     occupiedVolume: 0
 // }
 
 // const wrongPosID = {
@@ -37,8 +37,8 @@
 //     col: "7777",
 //     maxWeight: 400,
 //     maxVolume: 300,
-//     occupiedWeight: 100,
-//     occupiedVolume: 100
+//     occupiedWeight: 0,
+//     occupiedVolume: 0
 // }
 
 // const wrongPosFields = {
@@ -48,8 +48,8 @@
 //     col: 7777,
 //     maxWeight: "400",
 //     maxVolume: 300,
-//     occupiedWeight: 100,
-//     occupiedVolume: 100
+//     occupiedWeight: 0,
+//     occupiedVolume: 0
 // }
 
 // const modifyPosition = {
