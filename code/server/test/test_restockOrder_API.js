@@ -118,7 +118,6 @@ function getRestockOrders(expectedHTTPStatus) {
             .then(function (r) {
                 console.log(r.body)
                 console.log(r.body[1].skuItems)
-                //console.log([{SKUId: skuItem1.skuid, rfid: skuItem1.rfid}, {SKUId: skuItem2.skuid, rfid: skuItem2.rfid}])
                 r.should.have.status(expectedHTTPStatus);
                 r.body[0].id.should.equal(restockOrder1.id);
                 r.body[0].state.should.equal(restockOrder1.state);

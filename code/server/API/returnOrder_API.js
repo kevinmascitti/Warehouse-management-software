@@ -1,6 +1,7 @@
 'use strict';
 const dayjs = require('dayjs');
 const returnOrderFunctions = require('../warehouse/returnorder');
+const restockOrderFunctions = require('../warehouse/restockorder');
 const skuFunctions = require('../warehouse/sku');
 const skuItemFunctions = require('../warehouse/skuitem');
 
@@ -15,11 +16,11 @@ module.exports = function (app) {
         }
         for (let o of orders) {
             try {
-                let items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.restockOrderId })
+                let items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.id })
                 for (let i of items) {
-                    if (i.return == 1 && await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
+                    if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
                         let sku = await skuFunctions.getStoredSku({ id: i.SKUId })
-                        o.products.push({ SKUId: i.SKUId, description: sku[0].description, price: sku[0].price, rfid: i.RFID });
+                        o.products.push({ SKUId: i.SKUId, description: sku.description, price: sku.price, RFID: i.rfid });
                     }
                 }
             } catch (err) {
@@ -36,23 +37,25 @@ module.exports = function (app) {
         }
         let order;
         try {
-            order = await returnOrderFunctions.getOrderById({ id: req.params.id });
-            console.log(order)
-            if (order == undefined) return res.status(404).json();
+            order = await returnOrderFunctions.getOrderById({id: req.params.id});
         } catch (err) {
             return res.status(500).json(err.message);
         }
         try {
-            let items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: order.restockOrderId })
-            console.log(items)
+            let items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: order.id })
             for (let i of items) {
-                if (i.return == 1 && await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
+                if (await skuFunctions.isThereSku({ id: i.SKUId }) == 1) {
                     let sku = await skuFunctions.getStoredSku({ id: i.SKUId })
-                    order.products.push({ SKUId: i.SKUId, description: sku[0].description, price: sku[0].price, rfid: i.RFID });
+                    order.products.push({ SKUId: i.SKUId, description: sku.description, price: sku.price, RFID: i.rfid });
                 }
             }
         } catch (err) {
             return res.status(500).json(err.message);
+        }
+        order = {
+            returnDate: order.returnDate,
+            products: order.products,
+            restockOrderId: order.restockOrderId
         }
         return res.status(200).json(order);
     });
@@ -64,30 +67,34 @@ module.exports = function (app) {
             if (!dayjs(req.body.returnDate).isValid() || !Array.isArray(req.body.products) || isNaN(req.body.restockOrderId)) {
                 return res.status(422).json(err);
             }
+
             //create proper ID for table insertion
             let orders = await returnOrderFunctions.getOrders();
-            let restockOrderId = 0;
+            let returnOrderId = 0;
             for (let o of orders) {
-                if (o.id >= restockOrderId) restockOrderId = o.id + 1;
+                if (o.id >= returnOrderId) returnOrderId = o.id + 1;
+            }
+            let isThereRestock = await restockOrderFunctions.getOrderById({id: req.body.restockOrderId});
+            if (isThereRestock == undefined) {
+                return res.status(404).json(err);
             }
             //RETURNORDER insertion
             const data = {
-                id: restockOrderId,
-                returnDate: req.body.returnDate,
+                id: returnOrderId,
+                returnDate: dayjs(req.body.returnDate).format("YYYY/MM/DD HH:mm"),
                 restockOrderId: req.body.restockOrderId
             };
             await returnOrderFunctions.storeOrder(data);
             //PRODUCT + SKU insertion
             for (let p of req.body.products) {
-                console.log
                 if (await skuFunctions.isThereSku({ id: p.SKUId }) == 0) await skuFunctions.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: null, price: p.price })
                 if (await skuItemFunctions.isThereSkuitem({ rfid: p.RFID }) == 0) await skuItemFunctions.storeSkuitem({ rfid: p.RFID, skuid: p.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm') })
                 await skuItemFunctions.setReturn({rfid: p.RFID, restockOrderId: restockOrderId, return: 1})
             }
             return res.status(201).json();
         } catch (err) {
-            if (res.statusCode != 422) res.status(500).json(err.message);
-            else return res.status(422).json();
+            if (res.statusCode != 422 && res.statusCode != 404) res.status(500).json(err.message);
+            else return res.status(res.statusCode ).json();
         }
     });
 

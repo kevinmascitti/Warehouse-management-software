@@ -128,17 +128,17 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
       /* istanbul ignore next */ //ESCLUDO DA COVERAGE
       exports.getStoredSkuitemsForReturnOrder = (data) => {
         return new Promise((resolve, reject) => {
-            const sql = 'SELECT * FROM SKUITEM WHERE RESTOCKORDERID = ?';
+            const sql = 'SELECT * FROM SKUITEM WHERE RETURNORDERID = ?';
             db.all(sql, [data.id], (err, rows) => {
                 if (err) {
                     reject(err); return;
                 }
                 const skuitems = rows.map((r) => (
                     {
-                        RFID: r.RFID,
+                        rfid: r.RFID,
                         SKUId: r.SKUID,
                         DateOfStock: r.DATEOFSTOCK,
-                        return: r.RETURN
+                        returnOrderID: r.RETURNORDERID
                     }
                 ));
                 resolve(skuitems);
@@ -163,9 +163,8 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           /* istanbul ignore next */ //ESCLUDO DA COVERAGE
           exports.setReturn = (data) => {
             return new Promise((resolve, reject) => {
-                console.log("abenes")
-                const sql = 'UPDATE SKUITEM SET RESTOCKORDERID = ?, RETURN = ? WHERE RFID = ?';
-                db.run(sql, [data.restockOrderId, data.return, data.rfid], (err, rows) => {
+                const sql = 'UPDATE SKUITEM SET RESTOCKORDERID = ?, RETURNORDERID = ? WHERE RFID = ?';
+                db.run(sql, [data.restockOrderId, data.returnOrderId, data.rfid], (err, rows) => {
                     if (err) {
                         reject(err); return;
                     }

@@ -55,7 +55,7 @@ exports.getOrderById = async function (params) {
 
 exports.storeOrder = async function (data) {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO RETURNORDER VALUES (?, ?, ?)';
+        const sql = 'INSERT INTO RETURNORDER(ID,RETURNDATE,RESTOCKORDERID) VALUES (?, ?, ?)';
         db.run(sql, [data.id, data.returnDate, data.restockOrderId], (err, data) => {
             if (err) {
                 reject(err);
@@ -79,3 +79,30 @@ exports.deleteOrder = async function (data) {
         })
     });
 }
+
+
+exports.deleteOrders = async function (data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM RETURNORDER';
+        db.run(sql, [], (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve();
+        })
+    });
+}
+
+
+exports.resetAutoIncrement = () => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='RETURNORDER'";
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve();
+      });
+    });
+  }

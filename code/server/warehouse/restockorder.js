@@ -204,3 +204,15 @@ exports.deleteAllProducts = async function () {
 }
 
 
+
+exports.resetAutoIncrement = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='RESTOCKORDER'";
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
+}
