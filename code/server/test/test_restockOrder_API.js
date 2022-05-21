@@ -60,11 +60,19 @@ const skuItem1 = {
     rfid:"12345678901234567890123456789016",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
+const setReturnForSku1 = {
+    rfid:"12345678901234567890123456789016",
+    restockOrderId: 2
+}
 
 const skuItem2 = {
     skuid:180,
     rfid:"12345678901234567890123456789017",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
+}
+const setReturnForSku2 = {
+    rfid:"12345678901234567890123456789016",
+    restockOrderId: 2
 }
 
 
@@ -76,6 +84,16 @@ const skuItem2 = {
     products: [],
     supplierId : 1,
     transportNote:{"deliveryDate":"2021/12/29"},
+    skuItems : []
+}
+
+const restockOrder2 = {
+    id: 2,
+    issueDate: dayjs().format("YYYY/MM/DD HH:mm"),
+    state : "COMPLETED",
+    products: [],
+    supplierId : 10,
+    transportNote:{"deliveryDate":"quandoVuoi"},
     skuItems : []
 }
 
@@ -91,6 +109,10 @@ describe('test restockorder apis', () => {
         await skuItem.storeSkuitem(skuItem1);
         await skuItem.storeSkuitem(skuItem2);
         await restockOrder.storeOrder(restockOrder1);
+
+        await restockOrder.storeOrder(restockOrder2);
+        await skuItem.setRestockOrder(setReturnForSku1);
+        await skuItem.setRestockOrder(setReturnForSku2);
     });
     getRestockOrders(200); //ritorna ordine
     /*
