@@ -28,32 +28,6 @@ const item2 = {
     supplierId: 2
 };
 
-const wrongItem = {
-    id: "DOVREBBE ESSERE UN NUMERO",
-    description: "another item from test API",
-    price: "8.88 SONO UNA STRINGA",
-    SKUId: 2,
-    supplierId: 2
-};
-
-const modifyItem1 = {
-    id: 1,
-    newDescription: "another item from test API",
-    newPrice: 2.99,
-};
-
-const modifyItem2 = {
-    id: 2,
-    newDescription: "another item from test API",
-    newPrice: 2.99,
-};
-
-const modifyItemWrong = {
-    id: 'ciao, mi presento: non sono un numero',
-    newDescription: "another item from test API",
-    newPrice: 2.99,
-};
-
 //SKUITEM
 const skuItem1 = {
     skuid:12,
@@ -74,7 +48,6 @@ const setReturnForSku2 = {
     rfid:"12345678901234567890123456789017",
     restockOrderId: 2
 }
-
 
 //RESTOCKORDERS
  const restockOrder1 = {
@@ -102,12 +75,18 @@ const stateOrder2 = {
     state: "COMPLETED"
 }
 
+const setRestockOrderProduct1 = {
+    itemId: 1,
+    restockOrderId: 2,
+    quantity: 10
+}
+/*
 describe('test restockorder apis', () => {
 
     before(async () => {
         await item.deleteAllItems();
         await skuItem.deleteAllSkuitems();
-        await restockOrder.deleteAll();
+        await restockOrder.deleteAllOrders();
         await restockOrder.deleteAllProducts();
 
         await item.storeItem(item1);
@@ -121,9 +100,17 @@ describe('test restockorder apis', () => {
         await skuItem.setRestockOrder(setReturnForSku1);
         await skuItem.setRestockOrder(setReturnForSku2);
     });
+
+    after(async () => {
+        await item.deleteAllItems();
+        await skuItem.deleteAllSkuitems();
+        await restockOrder.deleteAllOrders();
+        await restockOrder.deleteAllProducts();
+    });
+
+    //TESTS
     getRestockOrders(200); //ritorna ordine
 });
-
 
 function getRestockOrders(expectedHTTPStatus) {
     it('get restock orders', function (done) {
@@ -152,4 +139,4 @@ function getRestockOrders(expectedHTTPStatus) {
                 done();
             });
     });
-}
+}*/

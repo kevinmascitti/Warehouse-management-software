@@ -19,11 +19,11 @@ module.exports = function (app) {
                 for (let i of items) {
                     let product;
                     try {
-                        if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
-                            product = await itemFunctions.getStoredItem({ id: i.id })
+                        if (await itemFunctions.isThereItem({ id: i.itemId }) == 1) {
+                            product = await itemFunctions.getStoredItem({ id: i.itemId })
                             product = product[0]
                             o.products.push({
-                                SKUId: i.SKUId,
+                                SKUId: product.SKUId,
                                 description: product.description,
                                 price: product.price,
                                 qty: i.quantity
@@ -75,6 +75,14 @@ module.exports = function (app) {
                     } catch (err) {
                         return res.status(500).json(err.message);
                     }
+                }
+                if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
+                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.id });
+                for (let i of items) {
+                    o.skuItems.push({
+                        SKUId: i.SKUId,
+                        rfid: i.RFID
+                    })
                 }
             } catch (err) {
                 return res.status(500).json(err.message);

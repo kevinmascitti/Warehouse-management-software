@@ -45,7 +45,7 @@ exports.getOrderById = async function (params) {
         state: data.STATE,
         products: [],
         supplierId: data.SUPPLIERID,
-        transportNote: data.STATE != 'ISSUED' ? data.TRANSPORTNOTE : undefined,
+        transportNote: (data.STATE != 'ISSUED' && data.TRANSPORTNOTE != null) ? data.TRANSPORTNOTE : undefined,
         skuItems: []
       }
       resolve(row);
@@ -67,6 +67,7 @@ exports.getOrdersIssued = async function () {
         state: r.STATE,
         products: [],
         supplierId: r.SUPPLIERID,
+        transportNote: (r.STATE != 'ISSUED' && r.TRANSPORTNOTE != null) ? r.TRANSPORTNOTE : undefined,
         skuItems: []
       }))
       resolve(rows);
@@ -86,7 +87,7 @@ exports.getProducts = async function (restockOrderId) {
       rows = rows.map((r) => ({
         id: r.ID,
         restockOrderId: r.RESTOCKORDERID,
-        SKUId: r.SKUID,
+        itemId: r.ITEMID,
         quantity: r.QUANTITY
       }))
       resolve(rows);
@@ -110,8 +111,8 @@ exports.storeOrder = async function (data) {
 
 exports.storeProduct = async function (data) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO RESTOCKORDERPRODUCT(RESTOCKORDERID, SKUID, QUANTITY) VALUES(?, ?, ?)';
-    db.run(sql, [data.restockOrderId, data.SKUId, data.quantity], (err, rows) => {
+    const sql = 'INSERT INTO RESTOCKORDERPRODUCT(RESTOCKORDERID, ITEMID, QUANTITY) VALUES(?, ?, ?)';
+    db.run(sql, [data.restockOrderId, data.itemId, data.quantity], (err, rows) => {
       if (err) {
         reject(err);
         return;
@@ -176,7 +177,7 @@ exports.deleteProducts = async function (data) {
 }
 
 
-exports.deleteAll = async function () {
+exports.deleteAllOrders = async function () {
   return new Promise((resolve, reject) => {
     const sql = 'DELETE FROM RESTOCKORDER';
     db.run(sql, [], (err, rows) => {
