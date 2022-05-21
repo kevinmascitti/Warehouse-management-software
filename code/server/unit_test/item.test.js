@@ -40,7 +40,7 @@ describe("items", () => {
 
         await item.storeItem(item1);
         await item.storeItem(item2);
-        await item.storeItem(item3);
+        await item.storeItem(item3); //ha supplier diverso dai primi due
     });
 
     testItem(item1);
@@ -53,6 +53,8 @@ describe("items", () => {
     testDeleteItem(item2);
     testDuplicatedItem(item1);
     testEditItem(item2);
+    testSupplierAlreadySellThisItem(item1,1,1);
+    testSupplierAlreadySellThisItem(item1,45,0);
 });
 
 async function testItem(i) {
@@ -143,4 +145,9 @@ async function testDeleteItem(i) {
         });
     }
 
-    
+    async function testSupplierAlreadySellThisItem(i,suppid,expectedRes) {
+        test('supplier already sells this item', async () => {
+            let res = await item.supplierAlreadySellThisItem(i.id,suppid);
+            expect(res).toEqual(expectedRes);
+        });
+    }

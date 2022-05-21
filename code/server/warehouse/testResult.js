@@ -5,19 +5,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     if (err) throw err;
 });
 
-exports.isThereTestDescriptor = (data) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT COUNT(*) AS N FROM TESTDESCRIPTOR WHERE ID = ?';
-        db.all(sql, [data.id], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(rows[0].N);
-        });
-    });
-}
-
 exports.isThereTestResult = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT COUNT(*) AS N FROM TESTRESULT WHERE ID = ?';

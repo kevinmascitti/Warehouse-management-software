@@ -249,23 +249,35 @@ Version:
 
 | Unit name | Jest test case |
 |--|--|
-|Item (DAO)|get item|
-|Item (DAO)|get items|
-|Item (DAO)|get not inserted item|
-|Item (DAO)|duplicated item|
-|Item (DAO)|item present|
-|Item (DAO)|item not present|
-|Item (DAO)|delete item|
-|Item (DAO)|edit item|
-|Skuitem (DAO)|get skuitem|
-|Skuitem (DAO)|get available skuitem by skuid|
-|Skuitem (DAO)|get skuitems|
-|Skuitem (DAO)|get not inserted skuitem|
-|Skuitem (DAO)|duplicated skuitem|
-|Skuitem (DAO)|skuitem present|
-|Skuitem (DAO)|skuitem not present|
-|Skuitem (DAO)|delete skuitem|
-|Skuitem (DAO)| editSkutem|
+|item (DAO)|get item|
+|item (DAO)|get items|
+|item (DAO)|get not inserted item|
+|item (DAO)|duplicated item|
+|item (DAO)|item present|
+|item (DAO)|item not present|
+|item (DAO)|delete item|
+|item (DAO)|edit item|
+|item (DAO)|supplier already sells this item|
+|skuitem (DAO)|get skuitem|
+|skuitem (DAO)|get available skuitem by skuid|
+|skuitem (DAO)|get skuitems|
+|skuitem (DAO)|get not inserted skuitem|
+|skuitem (DAO)|duplicated skuitem|
+|skuitem (DAO)|skuitem present|
+|skuitem (DAO)|skuitem not present|
+|skuitem (DAO)|delete skuitem|
+|skuitem (DAO)| editSkutem|
+|sku (DAO)|sku position already assigned to another sku|
+|sku (DAO)|modify position of an sku|
+|sku (DAO)|editSku without test descriptors|
+|sku (DAO)|editSku with test descriptors|
+|sku (DAO)|get sku|
+|sku (DAO)|get skus|
+|sku (DAO)|get not inserted sku|
+|sku (DAO)|sku present|
+|sku (DAO)|sku not present|
+|sku (DAO)|delete sku|
+
 
 ### Code coverage report
 
