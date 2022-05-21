@@ -82,11 +82,13 @@ module.exports = function (app) {
                 newVolume: req.body.newVolume,
                 newNotes: req.body.newNotes,
                 newPrice: req.body.newPrice,
-                newAvailableQuantity: req.body.newAvailableQuantity
+                newAvailableQuantity: req.body.newAvailableQuantity,
+                newTestDescriptors: req.body.newTestDescriptors
             };
             const N = await sku.isThereSku({ id: req.params.id });
             if (N == 1) {
                 let skuPosition = await sku.getSkuPosition(req.params.id);
+                
                 if(skuPosition.id.length == 32) {
                     const sk = await sku.getStoredSku({ id: req.params.id });
                     let oldAvailableQuantity = sk.availableQuantity;
@@ -140,8 +142,12 @@ module.exports = function (app) {
                 if(posAlreadyAssigned) {
                     return res.status(422).json();
                 }
+                
                 let positionObject = await sku.getPositionInfos(req.body.position);
                 const sk = await sku.getStoredSku({ id: req.params.id });
+                if(sk.position == req.body.position){
+                    return res.status(200).json(); //posizione rimane uguale!!!
+                }
                 if(sk.volume > positionObject.maxVolume - positionObject.occupiedVolume
                     || sk.weight > positionObject.maxWeight - positionObject.occupiedWeight){
                         return res.status(422).json();
@@ -155,8 +161,8 @@ module.exports = function (app) {
                     availableQuantity: sk.availableQuantity
                 };
                 await sku.modifySkuPosition(data);
-                await sku.updateNewPosition(data);
                 await sku.updateOldPosition(data);
+                await sku.updateNewPosition(data);
                 return res.status(200).json();
             }
             return res.status(404).json();
