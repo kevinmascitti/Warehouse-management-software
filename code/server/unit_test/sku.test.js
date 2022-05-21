@@ -71,18 +71,23 @@ describe("skuitems", () => {
 async function testSku(s,sid) {
     test('get sku', async () => {
         let res = await skuFunctions.getStoredSku({ id: sid });
-        s.id = sid;
         expect(res).toEqual(s);
     });
 }
 
 async function testSkus(skulist) {
     test('get skus', async () => {
-        for (let i=0; i<skulist.length; ++i){
-            skulist[i].id=i+1;
-        }
         let res = await skuFunctions.getStoredSkus();
-        expect(res).toEqual(skulist);
+        for (let i=0; i<skulist.length; ++i){
+            expect(res[i].availableQuantity).toEqual(skulist[i].availableQuantity);
+            expect(res[i].description).toEqual(skulist[i].description);
+            expect(res[i].notes).toEqual(skulist[i].notes);
+            expect(res[i].position).toEqual(skulist[i].position);
+            expect(res[i].price).toEqual(skulist[i].price);
+            expect(res[i].testDescriptors).toEqual(skulist[i].testDescriptors);
+            expect(res[i].volume).toEqual(skulist[i].volume);
+            expect(res[i].weight).toEqual(skulist[i].weight);
+        }
     });
 }
 
@@ -110,7 +115,6 @@ async function testIsNotThereSku(id) {
 async function testDeleteSku(s, sid) {
     test('delete sku', async () => {
         let res0 = await skuFunctions.getStoredSku({ id: sid });
-        s.id=sid;
         expect(res0).toEqual(s);
         let res1 = await skuFunctions.deleteStoredSku({ id: sid });
         expect(res1).toEqual(undefined);
@@ -134,7 +138,6 @@ async function testEditSkuWithTestDescriptors(s,sid) {
         await skuFunctions.modifyStoredSku(modifySku);
         let res = await skuFunctions.getStoredSku({ id: sid });
         expect(res).toEqual({
-            id: sid,
             "description" : "a newwwwwwww sku",
             "weight" : 800,
             "volume" : 20,
@@ -161,7 +164,6 @@ async function testEditSkuWithoutTestDescriptors(s,sid) {
         await skuFunctions.modifyStoredSku(modifySku);
         let res = await skuFunctions.getStoredSku({ id: sid });
         expect(res).toEqual({
-            id: sid,
             "description" : "a newwwwwwww sku",
             "weight" : 800,
             "volume" : 20,
@@ -177,7 +179,6 @@ async function testEditSkuWithoutTestDescriptors(s,sid) {
 async function testModifySkuPosition(s, sid, pos) {
     test('modify position of an sku', async () => {
         let res0 = await skuFunctions.getStoredSku({ id: sid });
-        s.id=sid;
         expect(res0).toEqual(s);
         await skuFunctions.modifySkuPosition({ id: sid, newPosition: pos });
         let res1 = await skuFunctions.getStoredSku({ id: sid });

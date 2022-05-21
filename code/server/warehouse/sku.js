@@ -53,7 +53,6 @@ exports.getStoredSku= (data) => {
             }
             const sku = rows.map((r) => (
                 {
-                    id: r.ID,
                     description: r.DESCRIPTION,
                     weight: r.WEIGHT,
                     volume: r.VOLUME,
