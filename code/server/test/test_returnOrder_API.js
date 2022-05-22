@@ -211,6 +211,7 @@ describe('test RETURN ORDER apis', () => {
         await sku.resetSkuAutoIncrement();
         await returnOrder.resetAutoIncrement();
         await restockOrder.resetAutoIncrement();
+        await restockOrder.resetProductAutoIncrement();
 
         await sku.storeSku(sku1)
         await sku.storeSku(sku2)
@@ -234,6 +235,11 @@ describe('test RETURN ORDER apis', () => {
            await restockOrder.deleteAllOrders();
            await restockOrder.deleteAllProducts();
            await returnOrder.deleteOrders();
+
+           await sku.resetSkuAutoIncrement();
+           await returnOrder.resetAutoIncrement();
+           await restockOrder.resetAutoIncrement();
+           await restockOrder.resetProductAutoIncrement();
        });
 
     //TESTS
