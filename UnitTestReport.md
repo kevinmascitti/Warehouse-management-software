@@ -155,6 +155,70 @@ Version:
 
 
 
+### **Class *sku* - method *storeSku***
+
+ **Criteria for method *storeSku*:**
+	
+- Sign of weight
+- Sign of volume
+- Sign of price
+- Sign of availableQuantity
+
+**Predicates for method *storeSku*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Sign of weight  | (minint, 0)     |
+|                          |(0, maxint)     |
+| Sign of volume  | (minint, 0)     |
+|                          |(0, maxint)     |
+| Sign of price  | (minint, 0)     |
+|                          |(0, maxint)     |
+| Sign of availableQuantity  | (minint, 0)     |
+|                          |(0, maxint)     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Sign of availableQuantity        |  1               |
+|   Sign of availableQuantity        |  -1               |
+|   Sign of weight        |  0.001               |
+|   Sign of weight        |  -0.001             |
+|   Sign of volume        |  0.001               |
+|   Sign of volume        |  -0.001               |
+|   Sign of price        |  0.001               |
+|   Sign of price        |  -0.001               |
+
+
+
+**Combination of predicates**:
+
+
+| Sign of weight | Sign of volume | Sign of price | Sign of availableQuantity | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|-----|------|
+|(minint, 0)| * | * | *  |Invalid|T1("a new sku",-50,90,9.99,20) -> Error|
+|*| (minint, 0) | * | *  |Invalid|T2("a new sku",50,-90,9.99,20) -> Error|
+|*| * | (minint, 0) | *  |Invalid|T3("a new sku",50,90,-9.99,20) -> Error|
+|*| * | * | (minint, 0)  |Invalid|T4("a new sku",50,90,9.99,-20) -> Error|
+|(0, maxint)| (0, maxint) | (0, maxint) | (0, maxint)  |Valid|T5("a new sku",50,90,9.99,20) -> Ok|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### **Class *skuitem* - method *getStoredSkuitem***
 
 

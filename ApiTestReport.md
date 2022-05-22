@@ -109,8 +109,13 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 | Functional Requirements covered | Mocha  Test(s) | 
 | ------------------------------- | ----------- | 
-| FRx                             |             |             
-| FRy                             |             |           
+| FR2.1                             | store sku, modify sku |             
+| FR2.2                             | delete sku            |
+| FR2.3                             | get multiple skus            |  
+| FR2.4                             | get sku            |  
+| FR5.8.1                            | store skuitem            | 
+| FR5.8.3                            | store skuitem            |   
+| FR6.10                           | delete skuitem            |       
 
 
 
@@ -126,7 +131,7 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-| NFR4 (structure of position id) |           |
-| NFR6 (structure of RFID) |           |
-| NFR9 (date format) |           |
+| NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, //KEVIN AGGIUNGI   |
+| NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem   |
+| NFR9 (date format) |store skuitem, modify skuitem and check, //AGGIUNGETE   |
 
