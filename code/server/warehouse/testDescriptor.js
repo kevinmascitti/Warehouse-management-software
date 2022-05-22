@@ -5,18 +5,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     if (err) throw err;
 });
 
-exports.deleteAllTestDescriptors = () => {
-    return new Promise((resolve, reject) => {
-      const sql = 'DELETE FROM TESTDESCRIPTOR';
-      db.run(sql, [], (err, rows) => {
-        if (err) {
-          reject(err); return;
-        }
-        resolve();
-      });
-    });
-  }
-
 exports.getStoredTestDescriptors = () => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM TESTDESCRIPTOR';
@@ -54,7 +42,7 @@ exports.getStoredTestDescriptor = (data) => {
                     idSKU: r.IDSKU
                 }
             ));
-            resolve(testDescriptor);
+            resolve(testDescriptor[0]);
         });
     });
 }
@@ -85,7 +73,7 @@ exports.storeTestDescriptor = (data) => {
     });
 }
 
- exports.modifyStoredTestDescriptor = (data) => {
+exports.modifyStoredTestDescriptor = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE TESTDESCRIPTOR SET NAME = ?, PROCEDUREDESCRIPTION = ?, IDSKU = ? WHERE ID = ?';
         db.run(sql, [data.newName, data.newProcedureDescription, data.newIdSKU, data.id], (err, rows) => {
@@ -105,6 +93,30 @@ exports.deleteStoredTestDescriptor = (data) => {
             if (err) {
                 reject(err);
                 return;
+            }
+            resolve();
+        });
+    });
+}
+
+exports.deleteAllTestDescriptors = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM TESTDESCRIPTOR';
+        db.run(sql, [], (err, rows) => {
+            if (err) {
+            reject(err); return;
+            }
+            resolve();
+        });
+    });
+}
+
+exports.resetTestDescriptorAutoIncrement = () => {
+    return new Promise((resolve, reject) => {
+        const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='TESTDESCRIPTOR'";
+        db.run(sql, [], (err, rows) => {
+            if (err) {
+            reject(err); return;
             }
             resolve();
         });

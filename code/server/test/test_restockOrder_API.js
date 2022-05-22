@@ -84,28 +84,40 @@ const setRestockOrderProduct1 = {
 describe('test restockorder apis', () => {
 
     before(async () => {
-        await item.deleteAllItems();
+        await sku.deleteAllSkus();
         await skuItem.deleteAllSkuitems();
         await restockOrder.deleteAllOrders();
         await restockOrder.deleteAllProducts();
+        await returnOrder.deleteOrders();
+
+        await sku.resetSkuAutoIncrement();
+        await returnOrder.resetAutoIncrement();
+        await restockOrder.resetAutoIncrement();
+        await restockOrder.resetProductAutoIncrement();
 
         await item.storeItem(item1);
         await item.storeItem(item2);
         await skuItem.storeSkuitem(skuItem1);
         await skuItem.storeSkuitem(skuItem2);
         await restockOrder.storeOrder(restockOrder1);
-
         await restockOrder.storeOrder(restockOrder2);
+    
         await restockOrder.setNewState(stateOrder2);
         await skuItem.setRestockOrder(setReturnForSku1);
         await skuItem.setRestockOrder(setReturnForSku2);
     });
 
     after(async () => {
-        await item.deleteAllItems();
+        await sku.deleteAllSkus();
         await skuItem.deleteAllSkuitems();
         await restockOrder.deleteAllOrders();
         await restockOrder.deleteAllProducts();
+        await returnOrder.deleteOrders();
+
+        await sku.resetSkuAutoIncrement();
+        await returnOrder.resetAutoIncrement();
+        await restockOrder.resetAutoIncrement();
+        await restockOrder.resetProductAutoIncrement();
     });
 
     //TESTS

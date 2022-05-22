@@ -1,4 +1,3 @@
-/*
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
@@ -8,11 +7,30 @@ const app = require('../server');
 var agent = chai.request.agent(app);
 
 const testD = require('../warehouse/testDescriptor');
+const sku = require('../warehouse/sku');
+
+const sku1 = {
+    description: "Sku1",
+    weight: 100,
+    volume: 50,
+    notes: "note",
+    price: 10.99,
+    availableQuantity: 50
+}
+
+const sku2 = {
+    description: "Sku2",
+    weight: 4,
+    volume: 1,
+    notes: "note",
+    price: 87.56,
+    availableQuantity: 5
+}
 
 const testD1 = {
     id: 1,
     name: "Meow1",
-    procedureDescription: "First test",
+    procedureDescription: "Second test",
     idSKU: 1
 };
 
@@ -20,63 +38,114 @@ const testD2 = {
     id: 2,
     name: "Meow2",
     procedureDescription: "Second test",
-    idSKU: 1
+    idSKU: 2
 };
 
-const wrongSku = {
-    id: 1,
-    name: "Meow1",
-    procedureDescription: "First test",
-    idSKU: "number"
-};
-
-const modifyTestD1 = {
-    id: 1,
-    newName: "Modified 1",
-    newProcedureDescription: "First test mod",
-    newIdSKU: 2
-};
-
-const modifyTestD2 = {
-    id: 2,
-    newName: "Modified 2",
-    newProcedureDescription: "Second test mod",
-    newIdSKU: 3
-};
-
-const modifytestDWrongId = {
-    id: 'string',
-    newName: "Modified wrong id",
-    newProcedureDescription: "Test API",
-    newIdSKU: 2
-};
-
-const modifyWrongSku = {
-    id: 1,
-    newName: "Modified wrong sku",
-    newProcedureDescription: "Test API",
-    newIdSKU: 1999
+const testWrongSku = {
+    id: 3,
+    name: "Meow",
+    procedureDescription: "Test",
+    idSKU: 99
 }
 
-describe('test testDescriptor api', () => {
+const testTextSku = {
+    id: 4,
+    name: "Meow",
+    procedureDescription: "Test",
+    idSKU: "sku"
+}
+
+const modTestD1 = {
+    id: 1,
+    newName: "MeowMeow",
+    newProcedureDescription: "First mod test",
+    newIdSKU: 2
+}
+
+const modTestD2 = {
+    id: 2,
+    newName: "MeowMeow2",
+    newProcedureDescription: "Second mod test",
+    newIdSKU: 2
+}
+
+const modTestDWrongID = {
+    id: 99,
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: 2
+}
+
+const modTestDWrongSku = {
+    id: 1,
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: 99
+}
+
+const modTestDTextId = {
+    id: "id",
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: 1
+}
+
+const modTestDNegativeId = {
+    id: -1,
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: 1
+}
+
+const modTestDTextSku = {
+    id: 1,
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: "text"
+}
+
+const modTestDNegativeSku = {
+    id: 1,
+    newName: "MeowMeow",
+    newProcedureDescription: "Test",
+    newIdSKU: -99
+}
+
+describe("Testing testDescriptor API", () => {
 
     before(async () => {
         await testD.deleteAllTestDescriptors();
+        await testD.resetTestDescriptorAutoIncrement();
+        await sku.deleteAllSkus();
+        await sku.storeSku(sku1);
+        await sku.storeSku(sku2);
     });
 
-    getNonExistingTestD(404, testD1); //TestD1 non esiste ancora nel DB
-    storeTestD(201, testD1); //TestD1 inserito
-    getTestD(200, testD1); //ritornato correttamente
-    storeTestD(201, testD2); //TestD2 inserito
-    storeTestD(500, testD2); //DUPLICATO ==> ERRORE 
-    storeTestD(422, wrongSku); //FORMATO SBAGLIATO ==> ERRORE
-    getMultipleTestD(200, [testD1, testD2]); //TestD1 e TestD2 ritornati
-    modifyTestDAndCheck(200, modifyTestD1); //modifico TestD1 e controllo modifiche
-    deleteTestD(204, testD2); //elimino TestD1
-    getNonExistingTestD(404, testD2); //controllo che sia stato eliminato
-    modifyTestD(404, modifyTestD2); //TestD2 non esiste piu
-    modifyTestD(422, modifyWrongSku); //FORMATO SBAGLIATO ==> ERRORE 
-    modifyTestD(422, modifytestDWrongId);
+    //POST
+    storeTestD(201, testD1);
+    storeTestD(201, testD2);
+    storeTestD(404, testWrongSku); //test post with non existing idSKU
+    storeTestD(422, testTextSku); //test post with string idSKU
+    //GET
+    getAllTestD(200, [testD1, testD2]); //test get all testDescriptors
+    getTestD(200, testD1);
+    getNonExistingTestD(404, {id:99}); //test get with non existing id
+    getNonExistingTestD(422, {id:"string"}); //test get with string id
+    getNonExistingTestD(422, {id:-5}); //test get with negative id
+    //PUT
+    modifyTestD(200, modTestD1);
+    modifyTestDAndCheck(200, modTestD2); //test put and check values with get
+    modifyTestD(404, modTestDWrongID); //test put with non existing id
+    modifyTestD(404, modTestDWrongSku); //test put with non existing idSKU
+    modifyTestD(422, modTestDTextId); //test put with string id
+    modifyTestD(422, modTestDNegativeId); //test put with negative id
+    modifyTestD(422, modTestDTextSku); //test put with string idSKU
+    modifyTestD(422, modTestDNegativeSku); //test put with negative idSKU
+    //DELETE
+    deleteTestD(204, testD1);
+    deleteTestD(422, {id:-1}); //test delete with negative id
+    deleteTestD(422, {id:"text"}); //test delete with text id
+
 });
 
 function storeTestD(expectedHTTPStatus, data) {
@@ -104,16 +173,16 @@ function getTestD(expectedHTTPStatus, data) {
     });
 }
 
-function getMultipleTestD(expectedHTTPStatus, data) {
+function getAllTestD(expectedHTTPStatus, data) {
     it('get multiple testDescriptors', function (done) {
         agent.get('/api/testDescriptors')
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
                 for (let i = 0; i < r.body.length; ++i) {
-                    r.body.id[i].should.equal(data[i].id);
-                    r.body.name[i].should.equal(data[i].name);
-                    r.body.procedureDescription[i].should.equal(data[i].procedureDescription);
-                    r.body.idSKU[i].should.equal(data[i].idSKU);
+                    r.body[i].id.should.equal(data[i].id);
+                    r.body[i].name.should.equal(data[i].name);
+                    r.body[i].procedureDescription.should.equal(data[i].procedureDescription);
+                    r.body[i].idSKU.should.equal(data[i].idSKU);
                 }
                 done();
             });
@@ -168,4 +237,4 @@ function deleteTestD(expectedHTTPStatus, data) {
                 done();
             });
     });
-}>*/
+}

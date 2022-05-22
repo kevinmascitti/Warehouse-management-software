@@ -216,3 +216,16 @@ exports.resetAutoIncrement = () => {
     });
   });
 }
+
+
+exports.resetProductAutoIncrement = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='RESTOCKORDERPRODUCT'";
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
+}
