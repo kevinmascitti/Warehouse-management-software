@@ -1,5 +1,6 @@
 'use strict';
 const item = require('../warehouse/item');
+const skuF = require('../warehouse/sku');
 
 
 module.exports = function (app) {
@@ -44,6 +45,9 @@ module.exports = function (app) {
       || req.body.supplierId < 0
       || req.body.id < 0) {
         return res.status(422).json();
+      }
+      if(await skuF.isThereSku({id:req.body.SKUId}) == 0){
+        return res.status(404).json();
       }
       let N = await item.supplierAlreadySellItemWithSkuid(req.body.SKUId,req.body.supplierId);
       let M = await item.supplierAlreadySellThisItem(req.body.id,req.body.supplierId);

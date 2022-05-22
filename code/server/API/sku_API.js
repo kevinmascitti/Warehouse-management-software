@@ -83,13 +83,13 @@ module.exports = function (app) {
                 newNotes: req.body.newNotes,
                 newPrice: req.body.newPrice,
                 newAvailableQuantity: req.body.newAvailableQuantity,
-                newTestDescriptors: req.body.newTestDescriptors
+                newTestDescriptors: req.body.newTestDescriptors ? req.body.newTestDescriptors : false
             };
             const N = await sku.isThereSku({ id: req.params.id });
             if (N == 1) {
                 let skuPosition = await sku.getSkuPosition(req.params.id);
                 
-                if(skuPosition.id.length == 32) {
+                if(skuPosition.id.length == 12) {
                     const sk = await sku.getStoredSku({ id: req.params.id });
                     let oldAvailableQuantity = sk.availableQuantity;
                     let oldVolume = sk.volume;
