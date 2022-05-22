@@ -335,7 +335,7 @@ describe('test sku apis', () => {
     }
 
     function modifySkuAndCheck(expectedHTTPStatus, data, id) {
-        it('modify sku and check', function (done) {
+        it('modify sku and check if all capacities changed correctly', function (done) {
             agent.put('/api/sku/' + id)
                 .send(data)
                 .then(function (res) {

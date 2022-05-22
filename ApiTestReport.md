@@ -69,6 +69,15 @@ We preferred the bottom up approach over the top down one since in this way we o
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |
 |--|--|
+|sku_API| add or modify sku position but problem: not exist OR not capable OR already assigned|
+|sku_API| add or modify sku position and check new and old positions capacities|
+|sku_API| modify sku|
+|sku_API| modify sku and check if all capacities changed correctly|
+|sku_API| get non existing sku|
+|sku_API| get multiple skus|
+|sku_API| get sku|
+|sku_API| store sku|
+|sku_API| delete sku|
 |skuitem_API| get multiple skuitems with a certain skuid and available|
 |skuitem_API|store skuitem not associated to sku|
 |skuitem_API|store skuitem|
@@ -98,14 +107,10 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 
 
-| Scenario ID | Functional Requirements covered | Mocha  Test(s) | 
-| ----------- | ------------------------------- | ----------- | 
-|  ..         | FRx                             |             |             
-|  ..         | FRy                             |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
+| Functional Requirements covered | Mocha  Test(s) | 
+| ------------------------------- | ----------- | 
+| FRx                             |             |             
+| FRy                             |             |           
 
 
 
