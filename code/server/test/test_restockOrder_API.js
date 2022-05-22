@@ -153,7 +153,7 @@ describe('test restockorder apis', () => {
         await skuItem.setRestockOrder(setRestockForSku3);
         await skuItem.setRestockOrder(setRestockForSku12);
     });
-    /*
+    
         after(async () => {
             await item.deleteAllItems();
             await skuItem.deleteAllSkuitems();
@@ -164,7 +164,7 @@ describe('test restockorder apis', () => {
             await returnOrder.resetAutoIncrement();
             await restockOrder.resetAutoIncrement();
             await restockOrder.resetProductAutoIncrement();
-        });*/
+        });
 
     //TESTS
     getRestockOrders(200); //return all orders
@@ -176,7 +176,7 @@ describe('test restockorder apis', () => {
 });
 
 function getRestockOrders(expectedHTTPStatus) {
-    it.only('get all restock orders', function (done) {
+    it('get all restock orders', function (done) {
         agent.get('/api/RestockOrders/')
             .then(function (r) {
                 //console.log(r.body[1])
@@ -219,7 +219,7 @@ function getRestockOrders(expectedHTTPStatus) {
 }
 
 function getRestockOrdersIssued(expectedHTTPStatus) {
-    it.only('get restock orders issued', function (done) {
+    it('get restock orders issued', function (done) {
         agent.get('/api/RestockOrdersIssued/')
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -273,7 +273,7 @@ function getRestockOrderById(expectedHTTPStatus, order) {
 }
 
 function getRestockOrderByIdWrong(expectedHTTPStatus, order) {
-    it.only('get restock order (FAILS) by id = ' + order.id, function (done) {
+    it('get restock order (FAILS) by id = ' + order.id, function (done) {
         agent.get('/api/RestockOrders/'  + order.id)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -283,7 +283,7 @@ function getRestockOrderByIdWrong(expectedHTTPStatus, order) {
 }
 
 function getRestockOrderById(expectedHTTPStatus, order) {
-    it.only('get restock order by id = ' + order.id, function (done) {
+    it('get restock order by id = ' + order.id, function (done) {
         agent.get('/api/RestockOrders/'  + order.id + "/returnItems")
             .then(function (r) {
                 console.log(r.body)
