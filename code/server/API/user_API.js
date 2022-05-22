@@ -50,6 +50,7 @@ module.exports = function (app) {
   //POST /api/newUser
   app.post('/api/newUser', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
         if ( req.body.username===null || req.body.username===undefined
           || req.body.name===null || req.body.name===undefined
           || req.body.surname===null || req.body.surname===undefined
@@ -60,7 +61,7 @@ module.exports = function (app) {
           || typeof req.body.surname !== 'string'
           || typeof req.body.password !== 'string'
           || typeof req.body.type !== 'string'
-          || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+          || re.test(req.body.username)===false
           || req.body.password.length<8 || Object.keys(req.body).length === 0
           || (req.body.type!="customer" && req.body.type!="qualityEmployee" 
           && req.body.type!="clerk" && req.body.type!="deliveryEmployee" && req.body.type!="supplier") ) {
@@ -76,7 +77,6 @@ module.exports = function (app) {
           return res.status(409).json();
         }
         const ID = await user.getMaxID();
-        console.log(ID)
         const store = {
           id: ID+1,
           username: req.body.username,
@@ -88,6 +88,7 @@ module.exports = function (app) {
         await user.storeUser(store);
         return res.status(201).json();
     } catch (err) {
+      console.log(err)
       return res.status(503).json();
     }
   });
@@ -96,19 +97,20 @@ module.exports = function (app) {
   //POST /api/managerSessions
   app.post('/api/managerSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "manager"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "manager"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
-
+        let u = await user.getUser({username: req.body.username, type: "manager"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -131,18 +133,20 @@ module.exports = function (app) {
   //POST /api/customerSessions
   app.post('/api/customerSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "customer"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "customer"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
+        let u = await user.getUser({username: req.body.username, type: "customer"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -165,18 +169,20 @@ module.exports = function (app) {
   //POST /api/supplierSessions
   app.post('/api/supplierSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "supplier"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "supplier"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
+        let u = await user.getUser({username: req.body.username, type: "supplier"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -199,18 +205,20 @@ module.exports = function (app) {
   //POST /api/clerkSessions
   app.post('/api/clerkSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "clerk"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "clerk"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
+        let u = await user.getUser({username: req.body.username, type: "clerk"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -233,18 +241,20 @@ module.exports = function (app) {
   //POST /api/qualityEmployeeSessions
   app.post('/api/qualityEmployeeSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "qualityEmployee"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "qualityEmployee"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
+        let u = await user.getUser({username: req.body.username, type: "qualityEmployee"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -267,18 +277,20 @@ module.exports = function (app) {
   //POST /api/deliveryEmployeeSessions
   app.post('/api/deliveryEmployeeSessions', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if( typeof req.body.username !== 'string'
-       || !req.body.username.match("^[\w]+@[\w]+\.[\w]+$")
+       || re.test(req.body.username)===false
        || typeof req.body.password !== 'string' ){
           return res.status(401).json();
       }
       const data = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        type: "deliveryEmployee"
       };
-      const N = await user.isThereUser({username: req.body.username, type: "deliveryEmployee"})
+      const N = await user.existUser(data);
       if ( N === 1 ) {
-        const u = await user.getLoginInfo(data);
+        let u = await user.getUser({username: req.body.username, type: "deliveryEmployee"})
         username=u.username;
         name=u.name;
         surname=u.surname;
@@ -315,13 +327,14 @@ module.exports = function (app) {
   //PUT /api/users/:username
   app.put('/api/users/:username', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if ( req.params.username===null || req.params.username===undefined
         || req.body.oldType===null || req.body.oldType===undefined
         || req.body.newType===null || req.body.newType===undefined
         || typeof req.params.username !== 'string'
         || typeof req.body.oldType !== 'string'
         || typeof req.body.newType !== 'string'
-        || !req.params.username.match("^[\w]+@[\w]+\.[\w]+$")
+        || re.test(req.params.username)===false
         || req.body.oldType=="manager"
         || req.body.newType=="manager"
         || Object.keys(req.body).length === 0
@@ -339,7 +352,8 @@ module.exports = function (app) {
 
       const data = {
         username: req.params.username,
-        newType: req.body.newType
+        newType: req.body.newType,
+        oldType: req.body.oldType
       };
       await user.modifyRightsStoredUser(data);
       return res.status(200).json();
@@ -351,11 +365,12 @@ module.exports = function (app) {
   //DELETE /api/users/:username/:type
   app.delete('/api/users/:username/:type', async (req, res) => {
     try {
+      let re = new RegExp('^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$');
       if ( req.params.username===null || req.params.username===undefined
           || req.params.type===null || req.params.type===undefined
           || typeof req.params.username !== 'string'
           || typeof req.params.type !== 'string'
-          || !req.params.username.match("^[\w]+@[\w]+\.[\w]+$")
+          || re.test(req.params.username)===false
           || req.params.type=="manager"
           || Object.keys(req.params).length === 0
           || (req.params.type!="customer" && req.params.type!="qualityEmployee"

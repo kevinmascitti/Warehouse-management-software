@@ -65,10 +65,28 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     });
   }
 
-  exports.getLoginInfo = (data) => {
+  exports.existUser = (data) => {
     return new Promise((resolve, reject) => {
-      const sql = 'SELECT * FROM USER WHERE USERNAME = ? AND PASSWORD = ?';
-      db.all(sql, [data.username, data.password], (err, rows) => {
+      const sql = 'SELECT COUNT(*) AS N FROM USER WHERE USERNAME = ? AND PASSWORD = ? AND TYPE = ?';
+      db.all(sql, [data.username, data.password, data.type], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        else if (rows===undefined){
+          resolve(false);
+        }
+        else{
+          resolve(user[0].N);
+        }
+      });
+    });
+  }
+
+  exports.getUser = (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT * FROM USER WHERE USERNAME = ? AND TYPE = ?';
+      db.all(sql, [data.username, data.type], (err, rows) => {
         if (err) {
           reject(err);
           return;
@@ -80,13 +98,13 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           const user = rows.map((r) => (
             {
               id: r.ID,
-              username: r.USERNAME,
               name: r.NAME,
               surname: r.SURNAME,
+              username: r.USERNAME,
               type: r.TYPE
             }
           ));
-          resolve(user[0]);
+          resolve(user);
         }
       });
     });
@@ -147,8 +165,8 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
 
   exports.modifyRightsStoredUser = (data) => {
     return new Promise((resolve, reject) => {
-      const sql = 'UPDATE USER SET TYPE = ? WHERE USERNAME = ?';
-      db.run(sql, [data.newType, data.username], (err, rows) => {
+      const sql = 'UPDATE USER SET TYPE = ? WHERE USERNAME = ? AND TYPE = ?';
+      db.run(sql, [data.newType, data.username, data.oldType], (err, rows) => {
         if (err) {
           reject(err);
           return;
