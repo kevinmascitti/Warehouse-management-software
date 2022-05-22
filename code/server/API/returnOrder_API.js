@@ -22,6 +22,7 @@ module.exports = function (app) {
                         let sku = await skuFunctions.getStoredSku({ id: i.SKUId })
                         o.products.push({ SKUId: i.SKUId, description: sku.description, price: sku.price, RFID: i.rfid });
                     }
+                    else return res.status(500).json(err.message);
                 }
             } catch (err) {
                 return res.status(500).json(err.message);
@@ -37,7 +38,8 @@ module.exports = function (app) {
         }
         let order;
         try {
-            order = await returnOrderFunctions.getOrderById({id: req.params.id});
+            order = await returnOrderFunctions.getOrderById({ id: req.params.id });
+            if (order == undefined) return res.status(404).json();
         } catch (err) {
             return res.status(500).json(err.message);
         }
@@ -48,6 +50,7 @@ module.exports = function (app) {
                     let sku = await skuFunctions.getStoredSku({ id: i.SKUId })
                     order.products.push({ SKUId: i.SKUId, description: sku.description, price: sku.price, RFID: i.rfid });
                 }
+                else return res.status(500).json(err.message);
             }
         } catch (err) {
             return res.status(500).json(err.message);
@@ -61,7 +64,7 @@ module.exports = function (app) {
     });
 
 
-
+    //POST
     app.post('/api/returnOrder', async (req, res) => { //MANCA 401 UNAUTHORIZED
         try {
             if (!dayjs(req.body.returnDate).isValid() || !Array.isArray(req.body.products) || isNaN(req.body.restockOrderId)) {
@@ -74,7 +77,7 @@ module.exports = function (app) {
             for (let o of orders) {
                 if (o.id >= returnOrderId) returnOrderId = o.id + 1;
             }
-            let isThereRestock = await restockOrderFunctions.getOrderById({id: req.body.restockOrderId});
+            let isThereRestock = await restockOrderFunctions.getOrderById({ id: req.body.restockOrderId });
             if (isThereRestock == undefined) {
                 return res.status(404).json(err);
             }
@@ -87,29 +90,36 @@ module.exports = function (app) {
             await returnOrderFunctions.storeOrder(data);
             //PRODUCT + SKU insertion
             for (let p of req.body.products) {
-                if (await skuFunctions.isThereSku({ id: p.SKUId }) == 0) await skuFunctions.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: null, price: p.price })
-                if (await skuItemFunctions.isThereSkuitem({ rfid: p.RFID }) == 0) await skuItemFunctions.storeSkuitem({ rfid: p.RFID, skuid: p.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm') })
-                await skuItemFunctions.setReturn({rfid: p.RFID, restockOrderId: restockOrderId, return: 1})
+                if (await skuFunctions.isThereSku({ id: p.SKUId }) == 0) return res.status(422).json(err);
+                //await skuFunctions.storeSkuWithId({ id: p.SKUId, description: p.description, weight: null, volume: null, notes: null, availableQuantity: null, price: p.price })
+                if (await skuItemFunctions.isThereSkuitem({ rfid: p.RFID }) == 0) return res.status(422).json(err);
+                //await skuItemFunctions.storeSkuitem({ rfid: p.RFID, skuid: p.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm') })
+                await skuItemFunctions.setReturn({ rfid: p.RFID, restockOrderId: req.body.restockOrderId, returnOrderId: returnOrderId })
             }
             return res.status(201).json();
         } catch (err) {
             if (res.statusCode != 422 && res.statusCode != 404) res.status(500).json(err.message);
-            else return res.status(res.statusCode ).json();
+            else return res.status(res.statusCode).json();
         }
     });
 
- //DELETE
- app.delete('/api/returnOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
-    try {
-      if (isNaN(req.params.id)) {
-        return res.status(422).json();
-      }
-      await returnOrderFunctions.deleteOrder({id: req.params.id});
-      return res.status(204).json();
-    } catch (err) {
-      return res.status(503).json();
-    }
-  });   
+    //DELETE
+    app.delete('/api/returnOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+        try {
+            if (isNaN(req.params.id)) {
+                return res.status(422).json();
+            }
+            //let order = await returnOrderFunctions.getOrderById({id: req.params.id});
+            //if (order == undefined) return res.status(422).json();
+
+            await returnOrderFunctions.deleteOrder({ id: req.params.id });
+            return res.status(204).json();
+
+        } catch (err) {
+           if (res.statusCode != 422) res.status(503).json(err.message);
+            else return res.status(res.statusCode).json();
+        }
+    });
 
 
 }
