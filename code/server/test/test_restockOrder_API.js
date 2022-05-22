@@ -80,7 +80,7 @@ const setRestockOrderProduct1 = {
     restockOrderId: 2,
     quantity: 10
 }
-/*
+
 describe('test restockorder apis', () => {
 
     before(async () => {
@@ -109,33 +109,5 @@ describe('test restockorder apis', () => {
     });
 
     //TESTS
-    getRestockOrders(200); //ritorna ordine
+    //getRestockOrders(200); //ritorna ordine
 });
-
-function getRestockOrders(expectedHTTPStatus) {
-    it('get restock orders', function (done) {
-        agent.get('/api/RestockOrders/')
-            .then(function (r) {
-                console.log(r.body)
-                console.log(r.body[1].skuItems)
-                r.should.have.status(expectedHTTPStatus);
-                r.body[0].id.should.equal(restockOrder1.id);
-                r.body[0].state.should.equal(restockOrder1.state);
-                r.body[0].products.length.should.equal(0)
-                r.body[0].supplierId.should.equal(restockOrder1.supplierId);
-                (r.body[0].transportNote == undefined).should.equal(true)
-                r.body[0].skuItems.length.should.equal(0)
-                
-                r.body[1].id.should.equal(restockOrder2.id);
-                r.body[1].state.should.equal(restockOrder2.state);
-                r.body[1].products.length.should.equal(0)
-                r.body[1].supplierId.should.equal(restockOrder2.supplierId);
-                (r.body[1].transportNote == undefined).should.equal(true)
-                r.body[1].skuItems[0].SKUId.should.equal(skuItem1.skuid)
-                r.body[1].skuItems[0].rfid.should.equal(skuItem1.rfid)
-                r.body[1].skuItems[1].SKUId.should.equal(skuItem2.skuid)
-                r.body[1].skuItems[1].rfid.should.equal(skuItem2.rfid)
-                done();
-            });
-    });
-}*/

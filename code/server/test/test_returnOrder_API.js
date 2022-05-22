@@ -228,12 +228,12 @@ describe('test RETURN ORDER apis', () => {
         await restockOrder.storeOrder(restockOrder1);
         await restockOrder.storeOrder(restockOrder2);
     });
-       after(async () => {/*
+       after(async () => {
            await sku.deleteAllSkus();
            await skuItem.deleteAllSkuitems();
            await restockOrder.deleteAllOrders();
            await restockOrder.deleteAllProducts();
-           await returnOrder.deleteOrders();*/
+           await returnOrder.deleteOrders();
        });
 
     //TESTS
@@ -254,7 +254,7 @@ describe('test RETURN ORDER apis', () => {
 });
 
 function getReturnOrders(expectedHTTPStatus) {
-    it.only('get return orders', function (done) {
+    it('get return orders', function (done) {
         agent.get('/api/ReturnOrders/')
             .then(function (r) {
                 //console.log(r.body)
@@ -280,7 +280,7 @@ function getReturnOrders(expectedHTTPStatus) {
 
 
 function getReturnOrderById(expectedHTTPStatus, order) {
-    it.only('get return order with id = ' + order.id, function (done) {
+    it('get return order with id = ' + order.id, function (done) {
         agent.get('/api/ReturnOrders/' + order.id)
             .then(function (r) {
                 //console.log(r.body)
@@ -301,7 +301,7 @@ function getReturnOrderById(expectedHTTPStatus, order) {
 }
 
 function getReturnOrderByIdNotFound(expectedHTTPStatus, order) {
-    it.only('get return order with id (NOT FOUND) = ' + order.id, function (done) {
+    it('get return order with id (NOT FOUND) = ' + order.id, function (done) {
         agent.get('/api/ReturnOrders/' + order.id)
             .then(function (r) {
                 //console.log(r.body)
@@ -314,7 +314,7 @@ function getReturnOrderByIdNotFound(expectedHTTPStatus, order) {
 
 
 function postOrderWithNoMatchingRestock(expectedHTTPStatus, order) {
-    it.only('put no matching restock', function (done) {
+    it('put no matching restock', function (done) {
         agent.post('/api/ReturnOrder/').send(order)
             .then(function (r) {
                 //console.log(r.body)
@@ -326,7 +326,7 @@ function postOrderWithNoMatchingRestock(expectedHTTPStatus, order) {
 }
 
 function postOrderWithNoProductVect(expectedHTTPStatus, order) {
-    it.only('put no product vect', function (done) {
+    it('put no product vect', function (done) {
         agent.post('/api/ReturnOrder/').send(order)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -336,7 +336,7 @@ function postOrderWithNoProductVect(expectedHTTPStatus, order) {
 }
 
 function postNewOrder(expectedHTTPStatus, post) {
-    it.only('post new return order', function (done) {
+    it('post new return order', function (done) {
         agent.post('/api/ReturnOrder/').send(post)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -346,7 +346,7 @@ function postNewOrder(expectedHTTPStatus, post) {
 }
 
 function postNewOrderWithEmptyRequest(expectedHTTPStatus, post) {
-    it.only('post new return order with same restock and 2 skuitems', function (done) {
+    it('post new return order with same restock and 2 skuitems', function (done) {
         agent.post('/api/ReturnOrder/').send(post)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -357,7 +357,7 @@ function postNewOrderWithEmptyRequest(expectedHTTPStatus, post) {
 
 
 function postOrderWrongDate(expectedHTTPStatus, post) {
-    it.only('post new return order with wrong date format', function (done) {
+    it('post new return order with wrong date format', function (done) {
         agent.post('/api/ReturnOrder/').send(post)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -367,7 +367,7 @@ function postOrderWrongDate(expectedHTTPStatus, post) {
 }
 
 function deleteOrder(expectedHTTPStatus, order) {
-    it.only('delete order with id = ' + order.id, function (done) {
+    it('delete order with id = ' + order.id, function (done) {
         agent.delete('/api/returnOrder/' + order.id).send(order)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
