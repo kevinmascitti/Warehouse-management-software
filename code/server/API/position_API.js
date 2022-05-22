@@ -16,6 +16,7 @@ module.exports = function (app) {
   //POST /api/position
   app.post('/api/position', async (req, res) => {
     try {
+      let re = new RegExp('^[0-9]+$');
         if ( req.body.positionID===undefined || req.body.positionID===null
           || req.body.aisleID===undefined || req.body.aisleID===null
           || req.body.row===undefined || req.body.row===null
@@ -26,7 +27,7 @@ module.exports = function (app) {
           || typeof req.body.aisleID !== 'string'
           || typeof req.body.row !== 'string'
           || typeof req.body.col !== 'string'
-          || !req.body.positionID.match("^[0-9]*$")
+          || re.test(req.body.positionID)===false
           || req.body.positionID.length!=12
           || req.body.aisleID.length!=4 
           || req.body.row.length!=4
@@ -57,6 +58,7 @@ module.exports = function (app) {
   //PUT /api/position/:positionID
   app.put('/api/position/:positionID', async (req, res) => {
     try {
+      let re = new RegExp('^[0-9]+$');
           if ( req.params.positionID===undefined || req.params.positionID===null
             || req.body.newAisleID===undefined || req.body.newAisleID===null
             || req.body.newRow===undefined || req.body.newRow===null
@@ -66,15 +68,15 @@ module.exports = function (app) {
             || isNaN(req.body.newOccupiedWeight) || req.body.newOccupiedWeight<=0
             || isNaN(req.body.newOccupiedVolume) || req.body.newOccupiedVolume<=0
             || typeof req.params.positionID !== 'string'
-            || typeof req.body.aisleID !== 'string'
-            || typeof req.body.row !== 'string'
-            || typeof req.body.col !== 'string'
+            || typeof req.body.newAisleID !== 'string'
+            || typeof req.body.newRow !== 'string'
+            || typeof req.body.newCol !== 'string'
             || req.body.newOccupiedWeight>req.body.newMaxWeight
             || req.body.newOccupiedVolume>req.body.newMaxVolume
-            || !req.params.positionID.match("^[0-9]*$")
-            || !req.body.newAisleID.match("^[0-9]*$")
-            || !req.body.newRow.match("^[0-9]*$")
-            || !req.body.newCol.match("^[0-9]*$")
+            || re.test(req.params.positionID)===false
+            || re.test(req.body.newAisleID)===false
+            || re.test(req.body.newRow)===false
+            || re.test(req.body.newCol)===false
             || req.params.positionID.length!=12
             || req.body.newAisleID.length!=4 
             || req.body.newRow.length!=4
@@ -109,12 +111,13 @@ module.exports = function (app) {
   //PUT /api/position/:positionID/changeID
   app.put('/api/position/:positionID/changeID', async (req, res) => {
     try {
+      let re = new RegExp('^[0-9]+$');
       if ( req.params.positionID===undefined || req.params.positionID===null
         || req.body.newPositionID===undefined || req.body.newPositionID===null
         || typeof req.params.positionID !== 'string'
         || typeof req.body.newPositionID !== 'string'
-        || !req.params.positionID.match("^[0-9]*$")
-        || !req.body.newPositionID.match("^[0-9]*$")
+        || re.test(req.params.positionID)===false
+        || re.test(req.body.newPositionID)===false
         || req.params.positionID.length!=12 || req.body.newPositionID.length!=12
         || Object.keys(req.body).length === 0 ) {
         return res.status(422).json();
@@ -141,10 +144,12 @@ module.exports = function (app) {
   //DELETE /api/position/:positionID
   app.delete('/api/position/:positionID', async (req, res) => {
     try {
+      let re = new RegExp('^[0-9]+$');
       if ( req.params.positionID===undefined || req.params.positionID===null
           || typeof req.params.positionID !== 'string'
-          || !req.params.positionID.match("^[0-9]*$")
-          || req.params.positionID.length!=12 ) {
+          || re.test(req.params.positionID)===false
+          || req.params.positionID.length!=12 
+          || await pos.isTherePosition({id: req.params.positionID})!=1 ) {
           return res.status(422).json();
       }
 
