@@ -24,6 +24,14 @@ const item2 = {
     supplierId: 2
 };
 
+const item3 = {
+    id: 3,
+    description: "another item from test API",
+    price: 8.88,
+    SKUId: 2, 
+    supplierId: 2
+};
+
 const wrongItem = {
     id: "DOVREBBE ESSERE UN NUMERO",
     description: "another item from test API",
@@ -65,6 +73,9 @@ describe('test item apis', () => {
     getItem(200, item1); //ritornato correttamente
     storeItem(201, item2); //item2 inserito
     storeItem(422, item2); //DUPLICATO ==> STESSO ITEM GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
+      
+    storeItem(422, item3); //!!!!!!!!!!! STESSO SKUID GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
+    
     storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
     getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
     modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
