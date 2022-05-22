@@ -17,15 +17,15 @@ module.exports = function (app) {
             try {
                 let items = await resOrd.getProducts(o.id);
                 for (let i of items) {
-                    let product;
+                    let item;
                     try {
-                        if (await itemFunctions.isThereItem({ id: i.itemId }) == 1) {
-                            product = await itemFunctions.getStoredItem({ id: i.itemId })
-                            product = product[0]
+                        if (await itemFunctions.isThereItem({ id: i.itemId }) > 0) {
+                            item = await itemFunctions.getStoredItem({ id: i.itemId })
+                            if (item.supplierId != o.supplierId) continue;
                             o.products.push({
-                                SKUId: product.SKUId,
-                                description: product.description,
-                                price: product.price,
+                                SKUId: item.SKUId,
+                                description: item.description,
+                                price: item.price,
                                 qty: i.quantity
                             })
                         }
@@ -34,13 +34,14 @@ module.exports = function (app) {
                     }
                 }
                 if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
-                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.id });
+                items = await skuItemFunctions.getStoredSkuitemsForRestockOrder({ id: o.id });
                 for (let i of items) {
                     o.skuItems.push({
                         SKUId: i.SKUId,
-                        rfid: i.RFID
+                        rfid: i.rfid
                     })
                 }
+                o.skuItems = o.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
             } catch (err) {
                 return res.status(500).json(err.message);
             }
@@ -60,29 +61,21 @@ module.exports = function (app) {
             try {
                 let items = await resOrd.getProducts(o.id);
                 for (let i of items) {
-                    let product;
+                    let item;
                     try {
-                        if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
-                            product = await itemFunctions.getStoredItem({ id: i.id })
-                            product = product[0]
+                        if (await itemFunctions.isThereItem({ id: i.itemId }) > 0) {
+                            item = await itemFunctions.getStoredItem({ id: i.itemId })
+                            if (item.supplierId != o.supplierId) continue;
                             o.products.push({
-                                SKUId: i.SKUId,
-                                description: product.description,
-                                price: product.price,
+                                SKUId: item.SKUId,
+                                description: item.description,
+                                price: item.price,
                                 qty: i.quantity
                             })
                         }
                     } catch (err) {
                         return res.status(500).json(err.message);
                     }
-                }
-                if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
-                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: o.id });
-                for (let i of items) {
-                    o.skuItems.push({
-                        SKUId: i.SKUId,
-                        rfid: i.RFID
-                    })
                 }
             } catch (err) {
                 return res.status(500).json(err.message);
@@ -99,22 +92,22 @@ module.exports = function (app) {
         let order;
         try {
             order = await resOrd.getOrderById({ id: req.params.id });
-            if (order == undefined) return res.status(404).json();
         } catch (err) {
             return res.status(500).json(err.message);
         }
+        if (order == undefined) return res.status(404).json();
         try {
             let items = await resOrd.getProducts(order.id);
             for (let i of items) {
-                let product;
+                let item;
                 try {
-                    if (await itemFunctions.isThereItem({ id: i.id }) == 1) {
-                        product = await itemFunctions.getStoredItem({ id: i.id })
-                        product = product[0]
+                    if (await itemFunctions.isThereItem({ id: i.itemId }) > 0) {
+                        item = await itemFunctions.getStoredItem({ id: i.itemId })
+                        if (item.supplierId != order.supplierId) continue;
                         order.products.push({
-                            SKUId: i.SKUId,
-                            description: product.description,
-                            price: product.price,
+                            SKUId: item.SKUId,
+                            description: item.description,
+                            price: item.price,
                             qty: i.quantity
                         })
                     }
@@ -122,14 +115,15 @@ module.exports = function (app) {
                     return res.status(500).json(err.message);
                 }
             }
-            if (order.state != 'ISSUED' || order.state != 'DELIVERY') {
-                items = await skuItemFunctions.getStoredSkuitemsForReturnOrder({ id: order.id });
+            if (order.state != 'ISSUED' && order.state != 'DELIVERY') {
+                items = await skuItemFunctions.getStoredSkuitemsForRestockOrder({ id: order.id });
                 for (let i of items) {
                     order.skuItems.push({
                         SKUId: i.SKUId,
-                        rfid: i.RFID
+                        rfid: i.rfid
                     })
                 }
+                order.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
             }
         } catch (err) {
             return res.status(500).json(err.message);
@@ -147,16 +141,17 @@ module.exports = function (app) {
         let itemsToReturn = [];
         try {
             order = await resOrd.getOrderById({ id: req.params.id });
-            if (order == undefined) return res.status(404).json();
-            if (order.state != "COMPLETEDRETURN") return res.status(422).json();
         } catch (err) {
             return res.status(500).json(err.message);
         }
+        if (order == undefined) return res.status(404).json();
+        if (order.state != "COMPLETEDRETURN") return res.status(422).json();
         try {
-            let items = await skuItemFunctions.getItemsToReturn({restockOrderId: order.id});
+            let items = await skuItemFunctions.getItemsToReturn({ restockOrderId: order.id });
             for (let i of items) {
                 itemsToReturn.push(i)
             }
+            itemsToReturn.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
         } catch (err) {
             return res.status(500).json(err.message);
         }
@@ -194,7 +189,7 @@ module.exports = function (app) {
                 for (let i of items) {
                     if (i.id >= id) id = i.id + 1;
                 }
-                await itemFunctions.storeItem({ id: id, description: p.description, price: p.price, SKUId: p.SKUId, supplierId: o.supplierId})
+                await itemFunctions.storeItem({ id: id, description: p.description, price: p.price, SKUId: p.SKUId, supplierId: o.supplierId })
             }
             return res.status(201).json();
         } catch (err) {
@@ -206,12 +201,12 @@ module.exports = function (app) {
 
     //PUT
     app.put('/api/restockOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
+        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState == "ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
-        }try {
+        } try {
             let order = await resOrd.getOrderById({ id: req.params.id });
             if (order == undefined) return res.status(404).json();
-            await resOrd.setNewState({id: req.params.id, state: req.body.newState});
+            await resOrd.setNewState({ id: req.params.id, state: req.body.newState });
             return res.status(200).json();
         } catch (err) {
             if (res.statusCode != 422) res.status(500).json(err.message);
@@ -221,16 +216,16 @@ module.exports = function (app) {
 
 
     app.put('/api/restockOrder/:id/returnItems', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
+        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState == "ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
-        }try {
+        } try {
             let order = await resOrd.getOrderById({ id: req.params.id });
             if (order == undefined) return res.status(404).json();
             console.log(req.body.skuItems)
             for (let item of req.body.skuItems) {
                 console.log(item.rfid)
-                if (await skuItemFunctions.isThereSkuitem({rfid: item.rfid}) == 0) await skuItemFunctions.storeSkuitem({rfid: item.rfid, skuid: item.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm')});
-                await skuItemFunctions.setRestockOrder({rfid: item.rfid, restockOrderId: order.id});
+                if (await skuItemFunctions.isThereSkuitem({ rfid: item.rfid }) == 0) await skuItemFunctions.storeSkuitem({ rfid: item.rfid, skuid: item.SKUId, dateofstock: dayjs().format('YYYY/MM/DD HH:mm') });
+                await skuItemFunctions.setRestockOrder({ rfid: item.rfid, restockOrderId: order.id });
             }
             return res.status(200).json();
         } catch (err) {
@@ -242,12 +237,12 @@ module.exports = function (app) {
 
 
     app.put('/api/restockOrder/:id/transportNote', async (req, res) => { //MANCA 401 UNAUTHORIZED
-        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState =="ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
+        if (isNaN(req.params.id) && !(req.body.newState == "ISSUED" || req.body.newState == "ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || req.body.newState == "COMPETED")) {
             return res.status(422).json();
-        }try {
+        } try {
             let order = await resOrd.getOrderById({ id: req.params.id });
             if (order == undefined) return res.status(404).json();
-            await resOrd.setTransportNote({id: req.params.id, transportNote: req.body.transportNote})
+            await resOrd.setTransportNote({ id: req.params.id, transportNote: req.body.transportNote })
             return res.status(200).json();
         } catch (err) {
             if (res.statusCode != 422) res.status(503).json(err.message);
@@ -256,18 +251,18 @@ module.exports = function (app) {
     });
 
     //DELETE
-  app.delete('/api/restockOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
-    try {
-      if (isNaN(req.params.id)) {
-        return res.status(422).json();
-      }
-      await resOrd.deleteOrder({id: req.params.id});
-      await resOrd.deleteProducts({id: req.params.id});
-      return res.status(204).json();
-    } catch (err) {
-      return res.status(503).json();
-    }
-  });   
+    app.delete('/api/restockOrder/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+        try {
+            if (isNaN(req.params.id)) {
+                return res.status(422).json();
+            }
+            await resOrd.deleteOrder({ id: req.params.id });
+            await resOrd.deleteProducts({ id: req.params.id });
+            return res.status(204).json();
+        } catch (err) {
+            return res.status(503).json();
+        }
+    });
 
 
 }
