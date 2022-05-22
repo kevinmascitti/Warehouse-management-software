@@ -243,7 +243,7 @@ function getRestockOrdersIssued(expectedHTTPStatus) {
 }
 
 function getRestockOrderById(expectedHTTPStatus, order) {
-    it.only('get restock order by id = ' + order.id, function (done) {
+    it('get restock order by id = ' + order.id, function (done) {
         agent.get('/api/RestockOrders/'  + order.id)
             .then(function (r) {
                 //console.log(r.body)
