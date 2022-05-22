@@ -7,6 +7,7 @@ const app = require('../server');
 var agent = chai.request.agent(app);
 
 const item = require('../warehouse/item');
+const skuF = require('../warehouse/sku');
 
 const item1 = {
     id: 1,
@@ -31,6 +32,36 @@ const item3 = {
     SKUId: 2, 
     supplierId: 2
 };
+
+const item4 = {
+    id: 3,
+    description: "another item from test API",
+    price: 8.88,
+    SKUId: 37, //NON ESISTE=>MUST 404 
+    supplierId: 2
+};
+
+const sku1 = { //avra id 1
+    "description" : "1 new sku",
+    "weight" : 100,
+    "volume" : 50,
+    "notes" : "1 SKU",
+    "price" : 10.99,
+    "availableQuantity" : 50,
+    position : null,
+    "testDescriptors" : []
+}
+
+const sku2 = { //avra id 2
+    "description" : "2 new sku",
+    "weight" : 100,
+    "volume" : 50,
+    "notes" : "2 SKU",
+    "price" : 10.99,
+    "availableQuantity" : 50,
+    position : null,
+    "testDescriptors" : []
+}
 
 const wrongItem = {
     id: "DOVREBBE ESSERE UN NUMERO",
@@ -62,10 +93,16 @@ describe('test item apis', () => {
 
     before(async () => {
         await item.deleteAllItems();
+        await skuF.deleteAllSkus();
+        await skuF.resetSkuAutoIncrement();
+        await skuF.storeSku(sku1);
+        await skuF.storeSku(sku2);
     });
 
     after(async () => {
         await item.deleteAllItems();
+        await skuF.deleteAllSkus();
+        await skuF.resetSkuAutoIncrement();
     });
 
     getNonExistingItem(404, item1); //item1 non esiste ancora nel DB
@@ -77,6 +114,7 @@ describe('test item apis', () => {
     storeItem(422, item3); //!!!!!!!!!!! STESSO SKUID GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
     
     storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
+    storeItem(404, item4); //SKUID NON ESITENTE ==> ERRORE  404 !!
     getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
     modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
     deleteItem(204, item2); //elimino item1
