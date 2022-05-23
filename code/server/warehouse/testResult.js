@@ -55,7 +55,7 @@ exports.getStoredTestResult = (data) => {
                     Result: r.RESULT
                 }
             ));
-            resolve(testResult);
+            resolve(testResult[0]);
         });
     });
 }
@@ -86,6 +86,18 @@ exports.modifyStoredTestResult = (data) => {
     });
 }
 
+exports.deleteAllTestResults = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM TESTRESULT';
+        db.run(sql, [], (err, rows) => {
+            if (err) {
+            reject(err); return;
+            }
+            resolve();
+        });
+    });
+}
+
 exports.deleteStoredTestResult = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM TESTRESULT WHERE ID = ? AND SKURFID = ?';
@@ -93,6 +105,18 @@ exports.deleteStoredTestResult = (data) => {
             if (err) {
                 reject(err);
                 return;
+            }
+            resolve();
+        });
+    });
+}
+
+exports.resetTestResultAutoIncrement = () => {
+    return new Promise((resolve, reject) => {
+        const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='TESTRESULT'";
+        db.run(sql, [], (err, rows) => {
+            if (err) {
+            reject(err); return;
             }
             resolve();
         });
