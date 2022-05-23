@@ -1,5 +1,6 @@
 'use strict';
 
+const dayjs = require('dayjs');
 const sqlite = require('sqlite3');
 const db = new sqlite.Database('ezwhDB.db', (err) => {
   if (err) throw err;
@@ -39,13 +40,14 @@ exports.getOrderById = async function (params) {
         resolve(undefined);
         return;
       }
+      let transportNote = data.TRANSPORTNOTE != null ? {deliveryDate: dayjs(data.TRANSPORTNOTE).format("YYYY/MM/DD HH:mm")} : undefined;
       let row = {
         id: data.ID,
         issueDate: data.ISSUEDATE,
         state: data.STATE,
         products: [],
         supplierId: data.SUPPLIERID,
-        transportNote: (data.STATE != 'ISSUED' && data.TRANSPORTNOTE != null) ? data.TRANSPORTNOTE : undefined,
+        transportNote: (data.STATE != 'ISSUED') ? transportNote : undefined,
         skuItems: []
       }
       resolve(row);
@@ -140,7 +142,7 @@ exports.setNewState = async function (data) {
 exports.setTransportNote = (data) => {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE RESTOCKORDER SET TRANSPORTNOTE = ? WHERE ID = ?';
-    db.run(sql, [JSON.stringify(data.transportNote).toString(), data.id], (err, rows) => {
+    db.run(sql, [data.transportNote, data.id], (err, rows) => {
       if (err) {
         reject(err); return;
       }
