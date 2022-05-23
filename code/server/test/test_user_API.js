@@ -170,10 +170,12 @@ describe('test user apis', () => {
     
     before(async () => {
         await user.deleteAllUsers();
+        await user.resetUserAutoincrement();
     });
 
     after(async () => {
         await user.deleteAllUsers();
+        await user.resetUserAutoincrement();
     });
     
     storeUser(201, user1); //user inserito

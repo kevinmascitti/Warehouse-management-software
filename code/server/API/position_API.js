@@ -65,8 +65,8 @@ module.exports = function (app) {
             || req.body.newCol===undefined || req.body.newCol===null
             || isNaN(req.body.newMaxWeight) || req.body.newMaxWeight<=0
             || isNaN(req.body.newMaxVolume) || req.body.newMaxVolume<=0
-            || isNaN(req.body.newOccupiedWeight) || req.body.newOccupiedWeight<=0
-            || isNaN(req.body.newOccupiedVolume) || req.body.newOccupiedVolume<=0
+            || isNaN(req.body.newOccupiedWeight) || req.body.newOccupiedWeight<0
+            || isNaN(req.body.newOccupiedVolume) || req.body.newOccupiedVolume<0
             || typeof req.params.positionID !== 'string'
             || typeof req.body.newAisleID !== 'string'
             || typeof req.body.newRow !== 'string'

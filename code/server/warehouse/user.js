@@ -7,8 +7,8 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
 
   exports.storeUser = (data) => {
     return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO USER(ID, USERNAME, NAME, SURNAME, PASSWORD, TYPE) VALUES(?, ?, ?, ?, ?, ?)';
-      db.run(sql, [data.id, data.username, data.name, data.surname, data.password, data.type], (err) => {
+      const sql = 'INSERT INTO USER(USERNAME, NAME, SURNAME, PASSWORD, TYPE) VALUES(?, ?, ?, ?, ?)';
+      db.run(sql, [data.username, data.name, data.surname, data.password, data.type], (err) => {
         if (err) {
           reject(err);
           return;
@@ -22,23 +22,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT COUNT(*) AS N FROM USER WHERE USERNAME = ? AND TYPE = ?';
       db.all(sql, [data.username, data.type], (err, rows) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        else if (rows===undefined){
-          resolve(false);
-        } else {
-          resolve(rows[0].N);
-        }
-      });
-    });
-  }
-
-  exports.getMaxID = () => {
-    return new Promise((resolve, reject) => {
-      const sql = 'SELECT MAX(ID) AS N FROM USER';
-      db.all(sql, [], (err, rows) => {
         if (err) {
           reject(err);
           return;
@@ -91,7 +74,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
               type: r.TYPE
             }
           ));
-          console.log(user.id)
           resolve(user[0]);
         }
       });
@@ -201,6 +183,18 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         else {
          resolve();
         }
+      });
+    });
+  }
+
+  exports.resetUserAutoincrement = () => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='USER'";
+      db.run(sql, [], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve();
       });
     });
   }
