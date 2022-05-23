@@ -17,6 +17,14 @@ const item1 = {
     supplierId: 2
 };
 
+const item_with_same_id_of_item1_but_different_supplier = { //can bestored!!!!
+    id: 1,
+    description: "new item from test API",
+    price: 7.77,
+    SKUId: 1,
+    supplierId: 9
+};
+
 const item2 = {
     id: 2,
     description: "another item from test API",
@@ -116,6 +124,11 @@ describe('test item apis', () => {
     storeItem(422, wrongItem); //FORMATO SBAGLIATO ==> ERRORE 
     storeItem(404, item4); //SKUID NON ESITENTE ==> ERRORE  404 !!
     getMultipleItems(200, [item1, item2]); //item1 e item2 ritornati
+
+    //DOPPIA CHIAVE OKKKKK!!! (ID,SUPPLIERID)
+    storeItem(201,item_with_same_id_of_item1_but_different_supplier); //OK!!! DOPPIA CHIAVE
+    getMultipleItems(200, [item1, item2, item_with_same_id_of_item1_but_different_supplier]); //3 items ritornati
+
     modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
     deleteItem(204, item2); //elimino item1
     getNonExistingItem(404, item2); //controllo che sia stato eliminato

@@ -9,12 +9,36 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
 
   exports.isThereItem = (data) => {
     return new Promise((resolve, reject) => {
-      const sql = 'SELECT COUNT(*) AS N FROM ITEM WHERE ID = ?';
-      db.all(sql, [data.id], (err, rows) => {
+      const sql = 'SELECT COUNT(*) AS N FROM ITEM WHERE ID = ? AND SUPPLIERID = ?';
+      db.all(sql, [data.id, data.supplierId], (err, rows) => {
         if (err) {
           reject(err); return;
         }
         resolve(rows[0].N);
+      });
+    });
+  }
+
+  exports.isThereId = (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT COUNT(*) AS N FROM ITEM WHERE ID = ?';
+      db.all(sql, [data.id, data.supplierId], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve(rows[0].N);
+      });
+    });
+  }
+
+  exports.getSupplierIdOfItem = (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'SELECT SUPPLIERID FROM ITEM WHERE ID = ?';
+      db.all(sql, [data.id], (err, rows) => {
+        if (err) {
+          reject(err); return;
+        }
+        resolve(rows[0].SUPPLIERID);
       });
     });
   }

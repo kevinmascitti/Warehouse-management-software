@@ -22,8 +22,8 @@ module.exports = function (app) {
       || req.params.id < 0) {
         return res.status(422).json();
       }
-      const N = await item.isThereItem({ id: req.params.id });
-      if (N == 1) {
+      const N = await item.isThereId({ id: req.params.id});
+      if (N > 0) {
         const i = await item.getStoredItem({ id: req.params.id });
         return res.status(200).json(i);
       }
@@ -82,8 +82,8 @@ module.exports = function (app) {
         newDescription: req.body.newDescription,
         newPrice: req.body.newPrice,
       };
-      const N = await item.isThereItem({ id: req.params.id });
-      if (N == 1) {
+      const N = await item.isThereId({ id: req.params.id});
+      if (N > 0) {
         await item.modifyStoredItem(data);
         return res.status(200).json();
       }
