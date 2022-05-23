@@ -91,6 +91,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
               type: r.TYPE
             }
           ));
+          console.log(user.id)
           resolve(user[0]);
         }
       });
