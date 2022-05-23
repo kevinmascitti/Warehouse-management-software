@@ -90,21 +90,21 @@ async function testDuplicatedItem(i) {
             await item.storeItem(i);
         }
         catch(err){
-            expect(err.toString()).toEqual('Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: ITEM.ID');   
+            expect(err.toString()).toEqual('Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: ITEM.ID, ITEM.SUPPLIERID');   
         }
     });
 }
 
 async function testIsThereItem(i) {
     test('item present', async () => {
-        let res = await item.isThereItem({ id: i.id });
+        let res = await item.isThereItem({ id: i.id, supplierId: i.supplierId });
         expect(res).toEqual(1);
     });
 }
 
 async function testIsNotThereItem(i) {
     test('item not present', async () => {
-        let res = await item.isThereItem({ id: i.id });
+        let res = await item.isThereItem({ id: i.id, supplierId: i.supplierId });
         expect(res).toEqual(0);
     });
 }
