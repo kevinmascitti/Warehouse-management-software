@@ -5,19 +5,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   if (err) throw err;
 });
 
-
-  let username = "";
-  let name = "";
-  let surname = "";
-  let type = "";
-  let logged = 0;
-
-  exports.isUserLogged = () => {
-    if(logged==1)
-      return 1;
-    return 0;
-  }
-
   exports.storeUser = (data) => {
     return new Promise((resolve, reject) => {
       const sql = 'INSERT INTO USER(ID, USERNAME, NAME, SURNAME, PASSWORD, TYPE) VALUES(?, ?, ?, ?, ?, ?)';
@@ -77,7 +64,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           resolve(false);
         }
         else{
-          resolve(user[0].N);
+          resolve(rows[0].N);
         }
       });
     });
@@ -104,7 +91,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
               type: r.TYPE
             }
           ));
-          resolve(user);
+          resolve(user[0]);
         }
       });
     });
