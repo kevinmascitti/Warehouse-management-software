@@ -4,21 +4,21 @@ const user = require('../warehouse/user');
 
 module.exports = function (app) {
   
-    let username = "";
-    let name = "";
-    let surname = "";
-    let type = "";
+    let usernameD = "";
+    let nameD = "";
+    let surnameD = "";
+    let typeD = "";
     let logged = 0;
 
   //GET /api/userinfo
   app.get('/api/userinfo', async (req, res) => {
     try {
-      if( user.isUserLogged()==1 ){
+      if( logged===1 && nameD!=="" && typeD!=="" ){
         const data = {
-          username: this.username,
-          type: this.type
+          username: usernameD,
+          type: typeD
         }
-        const u = await user.getStoredUser(data);
+        let u = await user.getUser(data);
         return res.status(200).json(u);
       }
       return res.status(404).json();
@@ -110,11 +110,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "manager"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "manager"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -146,11 +146,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "customer"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "customer"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -182,11 +182,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "supplier"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "supplier"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -218,11 +218,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "clerk"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "clerk"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -254,11 +254,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "qualityEmployee"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "qualityEmployee"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -290,11 +290,11 @@ module.exports = function (app) {
       };
       const N = await user.existUser(data);
       if ( N === 1 ) {
-        let u = await user.getUser({username: req.body.username, type: "deliveryEmployee"})
-        username=u.username;
-        name=u.name;
-        surname=u.surname;
-        type=u.type;
+        let u = await user.getUser({username: req.body.username, type: "deliveryEmployee"});
+        usernameD=u.username;
+        nameD=u.name;
+        surnameD=u.surname;
+        typeD=u.type;
         logged=1;
 
         const info = {
@@ -313,10 +313,10 @@ module.exports = function (app) {
   //POST /api/logout
   app.post('/api/logout', async (req, res) => {
     try {
-      username="";
-      name="";
-      surname="";
-      type="";
+      usernameD="";
+      nameD="";
+      surnameD="";
+      typeD="";
       logged=0;
       return res.status(200).json();
     } catch (err) {

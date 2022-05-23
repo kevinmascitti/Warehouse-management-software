@@ -16,6 +16,15 @@ const user1 = {
     type: "deliveryEmployee"
 }
 
+const user1log = {
+    id: 6,
+    username: "deliveryEmployee99@ezwh.com",
+    name: "Simon",
+    surname: "Lebon",
+    password: "testpassword",
+    type: "deliveryEmployee"
+}
+
 const user2 = {
     username: "customer99@ezwh.com",
     name: "Zack",
@@ -70,11 +79,6 @@ const wrongPassword = {
     surname: "Sant",
     password: 10119921,
     type: "deliveryEmployee"
-}
-
-const managerL = {
-    username: "manager1@ezwh.com",
-    password: "testpassword"
 }
 
 const wrongPassManagerL = {
@@ -186,9 +190,11 @@ describe('test user apis', () => {
     getSuppliers(200, [user3]);
     getUsers(200, [user1, user2, user3, user4, user5]);
     
+    getInfo(404, user1);
     managerLogin(401, wrongPassManagerL);
     logout(200);
     deliveryEmployeeLogin(200, deliveryEmployeeL);
+    getInfo(200, user1log);
     logout(200);
     customerLogin(401, wrongUserCustomerL);
     customerLogin(200, customerL);
@@ -204,7 +210,7 @@ describe('test user apis', () => {
     logout(200);
 
     modifyUser(200, modifyUserType); //modifico type
-    modifyUser(422, modifyUserWrongType); //FORMATO SBAGLIATO ==> ERRORE
+    modifyUser(404, modifyUserWrongType); //FORMATO SBAGLIATO ==> ERRORE
     modifyUser(422, modifyUserFromManager); //FORMATO SBAGLIATO ==> ERRORE
     modifyUser(404, modifyUserUnexistent); //USER INESISTENTE ==> ERRORE
 
@@ -213,20 +219,22 @@ describe('test user apis', () => {
 });
 
 
-// function getInfo(expectedHTTPStatus, data) {
-//     it('get user info', function (done) {
-//         agent.get('/api/userinfo')
-//             .then(function (r) {
-//                 r.should.have.status(expectedHTTPStatus);
-//                 r.body.id.should.equal(data.id);
-//                 r.body.username.should.equal(data.username);
-//                 r.body.name.should.equal(data.name);
-//                 r.body.surname.should.equal(data.surname);
-//                 r.body.type.should.equal(data.type);
-//                 done();
-//             });
-//     });
-// }
+function getInfo(expectedHTTPStatus, data) {
+    it('get user info', function (done) {
+        agent.get('/api/userinfo')
+            .then(function (r) {
+                r.should.have.status(expectedHTTPStatus);
+                if(expectedHTTPStatus===200){
+                    r.body.id.should.equal(data.id);
+                    r.body.username.should.equal(data.username);
+                    r.body.name.should.equal(data.name);
+                    r.body.surname.should.equal(data.surname);
+                    r.body.type.should.equal(data.type);
+                }
+                done();
+            });
+    });
+}
 
 function getSuppliers(expectedHTTPStatus, data) {
     it('get all suppliers', function (done) {
@@ -234,7 +242,6 @@ function getSuppliers(expectedHTTPStatus, data) {
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
                 for (let i = 0; i < r.body.length; ++i) {
-                    r.body[i].id.should.equal(data[i].id);
                     r.body[i].name.should.equal(data[i].name);
                     r.body[i].surname.should.equal(data[i].surname);
                     r.body[i].email.should.equal(data[i].username);
@@ -250,7 +257,6 @@ function getUsers(expectedHTTPStatus, data) {
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
                 for (let i = 0; i < r.body.length; ++i) {
-                    r.body[i].id.should.equal(data[i].id);
                     r.body[i].name.should.equal(data[i].name);
                     r.body[i].surname.should.equal(data[i].surname);
                     r.body[i].email.should.equal(data[i].username);
