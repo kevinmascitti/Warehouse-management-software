@@ -26,9 +26,7 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           reject(err);
           return;
         }
-        else if (rows===undefined){
-          resolve(false);
-        } else {
+        else {
           resolve(rows[0].N);
         }
       });
@@ -42,9 +40,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           resolve(rows[0].N);
@@ -60,9 +55,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           const user = rows.map((r) => (
@@ -88,9 +80,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           reject(err);
           return;
         }
-        else if (rows===undefined){
-          resolve(false);
-        }
         else {
           const users = rows.map((r) => (
             {
@@ -113,9 +102,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else {
           const users = rows.map((r) => (
@@ -141,9 +127,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           reject(err);
           return;
         }
-        else if (rows===undefined){
-          resolve(false);
-        }
         else {
          resolve();
         }
@@ -159,9 +142,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           reject(err);
           return;
         }
-         else if (rows===undefined){
-          resolve(false);
-        }
         else {
          resolve();
         }
@@ -176,9 +156,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         if (err) {
           reject(err);
           return;
-        }
-         else if (rows===undefined){
-          resolve(false);
         }
         else {
          resolve();
