@@ -98,8 +98,6 @@ describe('test user apis', () => {
     testIsThereUser(user2);
     testDuplicatedUser(user1);
     testDeleteUser(user2);
-    testUsers([user1test,user3test,user4test]);
-    testIsNotThereUser(user2);
     testModifyUser(user4test);
 });
 

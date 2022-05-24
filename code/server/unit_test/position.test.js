@@ -46,7 +46,7 @@ const modifyPos = {
 }
 
 const modifyPosID = {
-    positionID: "111111111111",
+    positionID: "000033335555",
     newPositionID: "222222222222"
 }
 
@@ -114,7 +114,7 @@ async function testDuplicatedPosition(i) {
 
 async function testIsTherePosition(i) {
     test('position present', async () => {
-        let res = await position.isTherePosition({ positionID: i.positionID });
+        let res = await position.isTherePosition({ id: i.positionID });
         expect(res).toEqual(1);
     });
 }
@@ -150,7 +150,6 @@ async function testModifyPosition(data) {
     test('modify position', async () => {
         await position.modifyPosition(data);
         let res = await position.getPosition({ positionID: data.newPositionID });
-        console.log(res)
         expect(res).toEqual({
             positionID: "111111111111",
             aisleID: "1111",
@@ -166,10 +165,15 @@ async function testModifyPosition(data) {
 
 async function testModifyPositionID(i, data) {
     test('modify positionID', async () => {
-        await position.modifyPositionID(data);
-        console.log(await position.getPositions())
+        const modify = {
+            positionID: data.positionID,
+            newPositionID: data.newPositionID,
+            newAisleID: data.newPositionID.substr(0,4),
+            newRow: data.newPositionID.substr(4,4),
+            newCol: data.newPositionID.substr(8,4)
+        };
+        await position.modifyPositionID(modify);
         let res = await position.getPosition({ positionID: data.newPositionID });
-        console.log(res)
         expect(res).toEqual({
             positionID: "222222222222",
             aisleID: "2222",
