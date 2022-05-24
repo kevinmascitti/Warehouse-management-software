@@ -76,9 +76,7 @@ module.exports = function (app) {
         if ( N === 1 ) {
           return res.status(409).json();
         }
-        const ID = await user.getMaxID();
         const store = {
-          id: ID+1,
           username: req.body.username,
           name: req.body.name,
           surname: req.body.surname,

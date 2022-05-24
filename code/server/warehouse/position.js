@@ -26,9 +26,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
           reject(err);
           return;
         }
-        else if (rows===undefined){
-          resolve(false);
-        }
         else{
           const positions = rows.map((r) => (
             {
@@ -55,9 +52,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           const position = rows.map((r) => (
@@ -86,9 +80,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
                 reject(err);
                 return;
             }
-            else if (rows===undefined){
-              resolve(false);
-            }
             else{
               resolve(rows[0].N);
             }
@@ -99,13 +90,10 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   exports.modifyPosition = (data) => {
     return new Promise((resolve, reject) => {
       const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COLUMN = ?, MAXWEIGHT = ?, MAXVOLUME = ?, OCCUPIEDWEIGHT = ?, OCCUPIEDVOLUME = ? WHERE ID = ?';
-      db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.newMaxWeight, data.newMaxVolume, data.newOccupiedWeight, data.newOccupiedVolume, data.positionID], (err, rows) => {
+      db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.newMaxWeight, data.newMaxVolume, data.newOccupiedWeight, data.newOccupiedVolume, data.positionID], (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           resolve();
@@ -117,13 +105,10 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   exports.modifyPositionID = (data) => {
     return new Promise((resolve, reject) => {
       const sql = 'UPDATE POSITION SET ID = ?, AISLE = ?, ROW = ?, COLUMN = ? WHERE ID = ?';
-      db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.positionID], (err, rows) => {
+      db.run(sql, [data.newPositionID, data.newAisleID, data.newRow, data.newCol, data.positionID], (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           resolve();
@@ -135,13 +120,10 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   exports.deletePosition = (data) => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM POSITION WHERE ID = ?';
-      db.run(sql, [data.positionID], (err, rows) => {
+      db.run(sql, [data.positionID], (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           resolve();
@@ -153,13 +135,10 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
   exports.deleteAllPositions = () => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM POSITION';
-      db.run(sql, [], (err, rows) => {
+      db.run(sql, [], (err) => {
         if (err) {
           reject(err);
           return;
-        }
-        else if (rows===undefined){
-          resolve(false);
         }
         else{
           resolve();

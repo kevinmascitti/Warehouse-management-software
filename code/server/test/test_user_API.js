@@ -170,10 +170,12 @@ describe('test user apis', () => {
     
     before(async () => {
         await user.deleteAllUsers();
+        await user.resetUserAutoincrement();
     });
 
     after(async () => {
         await user.deleteAllUsers();
+        await user.resetUserAutoincrement();
     });
     
     storeUser(201, user1); //user inserito
@@ -216,6 +218,8 @@ describe('test user apis', () => {
 
     deleteUser(204, deleteUserType);
     deleteUser(422, deleteManager);
+
+    getUsers(200, [user1, user2, user3, user5]);
 });
 
 
@@ -368,6 +372,7 @@ function modifyUser(expectedHTTPStatus, data) {
 function deleteUser(expectedHTTPStatus, data) {
     it('delete user', function (done) {
         agent.delete('/api/users/' + data.username + '/' + data.type)
+            .send(data)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
                 done();
