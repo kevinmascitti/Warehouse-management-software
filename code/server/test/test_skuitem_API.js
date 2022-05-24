@@ -147,6 +147,7 @@ describe('test skuitem apis', () => {
     storeSkuitemNotAssociatedToSku(404, skuitem1); //NON puo essere inserito: manca lo sku corrispondente
     storeSkuitem(201, skuitem2); //inserito correttamente
     getSkuitem(200, skuitem2); //ritornato correttamente
+    getSkuitemWrong(422, "1234567890123456789012345678901z"); //formato rfid errato (ha lunghezza giusta ma 1 lettera)
     storeSkuitem(503, skuitem2); //DUPLICATO ==> ERRORE 
     storeSkuitem(422, wrongSkuitem1); //FORMATO RFID SBAGLIATO ==> ERRORE 
     storeSkuitem(422, wrongSkuitem2); //FORMATO DATA SBAGLIATO ==> ERRORE 
@@ -157,10 +158,14 @@ describe('test skuitem apis', () => {
     modifySkuitemAndCheck(200, setAvailableSkuitem2); //modifico skuitem2 (setto available) e controllo modifiche
     modifySkuitemAndCheck(200, setAvailableSkuitem5); //modifico skuitem5 (setto available) e controllo modifiche
     getMultipleSkuitemsWithSkuidAndAvailable(200,[skuitem2,skuitem5]); //torna solo quelli con il dato SKUID e AVAILABLE=1
+    getMultipleSkuitemsWithWrongSkuid(422,-1); //error 422 skuid wrong
+    getMultipleSkuitemsWithWrongSkuid(404,77); //error 422 skuid not exists
     modifySkuitemAndCheck(200, modifySkuitem2); //modifico skuitem2 e controllo modifiche
     modifySkuitemAndCheck(200, modifySkuitem5); //modifico skuitem5 e controllo modifiche
     getSkuitem(200, skuitem3); //ritornato correttamente
     deleteSkuitem(204, skuitem3); //elimino item1
+    deleteSkuitem(422, {RFID : "1234567890123456789012345678901z"}); //wrong RFID
+    deleteSkuitem(422, {RFID : "1234567890123456"}); //wrong RFID
     getNonExistingSkuitem(404, skuitem3); //controllo che sia stato eliminato
     modifySkuitem(404, modifySkuitem2); //skuitem2 non esiste piu
     modifySkuitem(422, modifySkuitemWrong); //FORMATO SBAGLIATO ==> ERRORE 
@@ -183,6 +188,17 @@ describe('test skuitem apis', () => {
                 .send(data)
                 .then(function (res) {
                     res.should.have.status(expectedHTTPStatus);
+                    done();
+                });
+        });
+    }
+
+
+    function getSkuitemWrong(expectedHTTPStatus, rfid) {
+        it('get skuitem wrong rfid', function (done) {
+            agent.get('/api/skuitems/' + rfid)
+                .then(function (r) {
+                    r.should.have.status(expectedHTTPStatus);
                     done();
                 });
         });
@@ -217,6 +233,16 @@ describe('test skuitem apis', () => {
                         }
                         r.body[i].Available.should.equal(data[i].Available);
                     }
+                    done();
+                });
+        });
+    }
+
+    function getMultipleSkuitemsWithWrongSkuid(expectedHTTPStatus, skuid) {
+        it('get multiple skuitems with a wrong skuid', function (done) {
+            agent.get('/api/skuitems/sku/'+skuid)
+                .then(function (r) {
+                    r.should.have.status(expectedHTTPStatus);
                     done();
                 });
         });

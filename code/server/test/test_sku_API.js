@@ -136,6 +136,14 @@ const notExistingPosition = {
     "position": "999999999999"
 }
 
+const wrongPosition1 = {
+    "position": "a99999999999"
+}
+
+const wrongPosition2 = {
+    "position": "123456789"
+}
+
 const modifySkuWrong1 = {
     "newDescription": "a new sku",
     "newWeight": -1, //error 422
@@ -245,7 +253,12 @@ describe('test sku apis', () => {
     addOrModifySkuPositionButSomeProblem(404, 8, modifySku5Position); //ERRORE, sku with id 8 NOT EXISTS
     addOrModifySkuPositionButSomeProblem(404, 4, notExistingPosition); //ERRORE, position entered NOT EXISTS
 
+    addOrModifySkuPositionButSomeProblem(422, 4, wrongPosition1); //ERRORE, position entered has a letter
+    addOrModifySkuPositionButSomeProblem(422, 4, wrongPosition2); //ERRORE, position entered not 12 digits
+
+
     addOrModifySkuPositionButSomeProblem(422, 1, modifySku4Position); //sku1 in posizione 4 (OCCUPATA) ==> 422
+    modifySkuAndCheck(200, modifySku1_without_tds, 5);//non ancora assegnato a nessuna posizione
     addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200, sku1, 1, modifySku5Position, position5, null); //sku1 in posizione 5 (precedentemente occupata ma poi LIBERATA) ==> 200
     modifySkuAndCheck(200, modifySku1_without_tds, 1); //modifico sku1 senza aggiungere test descriptors e controllo modifiche
     modifySkuAndCheck(200, modifySku2_with_tds, 1); //modifico sku1 aggiungendo test descriptors e controllo modifiche
@@ -255,16 +268,14 @@ describe('test sku apis', () => {
 
     modifySku(422, 1, modifySku2_with_tds_HUGE); //422 new values too big!!
     modifySku(422, 1, modifySku1_without_tds_HUGE); //422 new values too big!!
+    modifySku(422, 1, modifySku1_without_tds_HUGE); //422 new values too big!!
 
-    //modifySkuitemAndCheck(200, modifySkuitem2); //modifico skuitem2 e controllo modifiche
     deleteSku(422, sku2.notes); //FORMATO ID ERRATO: NON NUMERICO!!
     getSku(200, sku2, 2); //controllo se ritornato correttamente
     deleteSku(204, 2); //elimino sku2
     getNonExistingSku(404, 2); //controllo se ELIMINATO correttamente
     deleteSku(204, 1); //elimino sku1
     modifySku(404, 1, modifySku1_without_tds); //sku1 non esiste piu
-    //modifySkuitem(422, modifySkuitemWrong); //FORMATO SBAGLIATO ==> ERRORE 
-    //modifySkuitem(422, modifySkuitemWrong2); //FORMATO SBAGLIATO ==> ERRORE 
 
     function storeSku(expectedHTTPStatus, data) {
         it('store sku', function (done) {
@@ -355,11 +366,16 @@ describe('test sku apis', () => {
                                 }
                             }
                             sku.getStoredSku({ id: id }).then(function (skk) {
-                                sku.getPositionInfos(skk.position).then(function (posi) {
-                                    posi.occupiedWeight.should.equal(data.newWeight);
-                                    posi.occupiedVolume.should.equal(data.newVolume);
+                                if(skk.position != null){
+                                    sku.getPositionInfos(skk.position).then(function (posi) {
+                                        posi.occupiedWeight.should.equal(data.newWeight);
+                                        posi.occupiedVolume.should.equal(data.newVolume);
+                                        done();
+                                    });                                    
+                                }
+                                else{
                                     done();
-                                });
+                                }
                             });
                         });
                 });

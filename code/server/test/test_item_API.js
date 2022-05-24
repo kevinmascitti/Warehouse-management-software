@@ -79,6 +79,14 @@ const wrongItem = {
     supplierId: 2
 };
 
+const wrongItem2 = {
+    id: -2, //negativo!!!
+    description: "another item from test API",
+    price: "8.88 SONO UNA STRINGA",
+    SKUId: 2,
+    supplierId: 2
+};2
+
 const modifyItem1 = {
     id: 1,
     newDescription: "another item from test API",
@@ -116,6 +124,7 @@ describe('test item apis', () => {
     getNonExistingItem(404, item1); //item1 non esiste ancora nel DB
     storeItem(201, item1); //item1 inserito
     getItem(200, item1); //ritornato correttamente
+    getItem(422,wrongItem2);
     storeItem(201, item2); //item2 inserito
     storeItem(422, item2); //DUPLICATO ==> STESSO ITEM GIA VENDUTO DA STESSO SUPPLIER (ERROR 422) 
       
@@ -131,6 +140,7 @@ describe('test item apis', () => {
 
     modifyItemAndCheck(200, modifyItem1); //modifico item1 e controllo modifiche
     deleteItem(204, item2); //elimino item1
+    deleteItem(422,wrongItem);
     getNonExistingItem(404, item2); //controllo che sia stato eliminato
     modifyItem(404, modifyItem2); //item2 non esiste piu
     modifyItem(422, modifyItemWrong); //FORMATO SBAGLIATO ==> ERRORE 
@@ -151,6 +161,9 @@ function getItem(expectedHTTPStatus, data) {
     it('get item', function (done) {
         agent.get('/api/items/' + data.id)
             .then(function (r) {
+                if(r.status == 422){
+                    done();
+                }
                 r.should.have.status(expectedHTTPStatus);
                 r.body.id.should.equal(data.id);
                 r.body.description.should.equal(data.description);

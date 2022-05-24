@@ -88,8 +88,7 @@ module.exports = function (app) {
             const N = await sku.isThereSku({ id: req.params.id });
             if (N == 1) {
                 let skuPosition = await sku.getSkuPosition(req.params.id);
-                
-                if(skuPosition.id.length == 12) {
+                if(skuPosition && skuPosition.id.length == 12) {
                     const sk = await sku.getStoredSku({ id: req.params.id });
                     let oldAvailableQuantity = sk.availableQuantity;
                     let oldVolume = sk.volume;
