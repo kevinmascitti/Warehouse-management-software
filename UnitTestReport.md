@@ -232,7 +232,7 @@ Version:
 | Criteria              | Predicate |
 | ------------------------ | --------- |
 | Length of RFID  | 32     |
-|                          | !=32     |
+|                 | !=32   |
 
 
 **Boundaries**:
@@ -301,6 +301,128 @@ Version:
 |==32| ==0 OR ==1 | (0, maxint) | valid DateOfStock  |Valid|T5(12345678123456781234567812345678,0,1,19/05/2022) -> Ok|
 
 
+### **Class *position* - method *storePosition***
+
+ **Criteria for method *storePosition*:**
+	
+- Length of String positionID
+- Length of String aisleID
+- Length of String row
+- Length of String col
+- Sign of maxWeight
+- Sign of maxVolume
+
+**Predicates for method *storePosition*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Length of String positionID | (0, 12) |
+|  | 12 |
+|  | (12, maxint) |
+| Length of String aisleID | (0, 4) |
+|  | 4 |
+|  | (4, maxint) |
+| Length of String row | (0, 4) |
+|  | 4 |
+|  | (4, maxint) |
+| Length of String col | (0, 4) |
+|  | 4 |
+|  | (4, maxint) |
+| Sign of maxWeight  | (minint, 0)     |
+|                          |(0, maxint)     |
+| Sign of maxVolume  | (minint, 0)     |
+|                          |(0, maxint)     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+| Length of String positionID | = 0 |
+|  | maxint |
+| Length of String aisleID | = 0 |
+|  | maxint |
+| Length of String row | = 0 |
+|  | maxint |
+| Length of String col | = 0 |
+|  | maxint |
+|   Sign of maxWeight        |  1     |
+|   Sign of maxWeight        |  -1    |
+|   Sign of maxVolume        |  1     |
+|   Sign of maxVolume        |  -1    |
+
+
+
+**Combination of predicates**:
+
+
+| Length of String positionID | Length of String aisleID | Length of String row | Length of String col | Sign of maxWeight | Sign of maxVolume | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|-----|------|
+|(0,12)| * | * | * | * | * |Invalid|T1("", "1234", "1234", "1234", 300, 200) -> Error|
+|(12,maxint)| * | * | * | * | * |Invalid|T1("123456789012345", "1234", "1234", "1234", 300, 200) -> Error|
+|*| (0,4) | * | * | * | * |Invalid|T1("123412341234", "", "1234", "1234", 300, 200) -> Error|
+|*| (4,maxint) | * | * | * | * |Invalid|T1("123412341234", "1234555", "1234", "1234", 300, 200) -> Error|
+|*| * | (0,4) | * | * | * |Invalid|T1("123412341234", "1234", "", "1234", 300, 200) -> Error|
+|*| * | (4,maxint) | * | * | * |Invalid|T1("123412341234", "1234", "1234555", "1234", 300, 200) -> Error|
+|*| * | * | (0,4) | * | * |Invalid|T1("123412341234", "1234", "1234", "", 300, 200) -> Error|
+|*| * | * | (4,maxint) | * | * |Invalid|T1("123412341234", "1234", "1234", "1234555", 300, 200) -> Error|
+|*| * | * | * | (minint, 0) | * |Invalid|T1("123412341234", "1234", "1234", "1234", -300, 200) -> Error|
+|*| * | * | * | * | (minint, 0) |Invalid|T1("123412341234", "1234", "1234", "1234", 300, -200) -> Error|
+|12| 4 | 4 | 4 | (0, maxint) | (0, maxint) |Valid|T1("123412341234", "1234", "1234", "1234", 300, 200) -> Ok|
+
+
+### **Class *position* - method *storeUser***
+
+ **Criteria for method *storeUser*:**
+	
+- Length of String username
+- Length of String name
+- Length of String surname
+- Length of String password
+- Length of String type
+
+**Predicates for method *storeUser*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Length of String username | (0, maxint) |
+| Length of String name | (0, maxint) |
+| Length of String surname | (0, maxint) |
+| Length of String password | (0,8) |
+|  | (8, maxint) |
+| Length of String type | (0, maxint) |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+| Length of String username | = 0 |
+|  | maxint |
+| Length of String name | = 0 |
+|  | maxint |
+| Length of String surname | = 0 |
+|  | maxint |
+| Length of String password | = 0 |
+|  | maxint |
+| Length of String type | = 0 |
+|  | maxint |
+
+
+**Combination of predicates**:
+
+
+| Length of String username | Length of String name | Length of String surname | Length of String password | Length of String type | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|-----|------|
+|0| * | * | * | * | * |Invalid| T1("", "john", "zan", "testpassword", "clerk") -> Error |
+|*| 0 | * | * | * | * |Invalid| T1("clerk99@exwh.com", "", "zan", "testpassword", "clerk") -> Error |
+|*| * | 0 | * | * | * |Invalid| T1("clerk99@exwh.com", "john", "", "testpassword", "clerk") -> Error | 
+|*| * | * | 7 | * | * |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpas", "clerk")) -> Error |
+|*| * | * | * | 0 | * |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpassword", "") -> Error |
+|16| 4 | 3 | 9 | 5 |Valid| T1("clerk99@exwh.com", "john", "zan", "testpassw", "clerk") -> Ok |
+
+
+
 
 # White Box Unit Tests
 
@@ -341,6 +463,26 @@ Version:
 |sku (DAO)|sku present|
 |sku (DAO)|sku not present|
 |sku (DAO)|delete sku|
+
+|position (DAO)|get position|
+|position (DAO)|get positions|
+|position (DAO)|get not inserted position|
+|position (DAO)|duplicated position|
+|position (DAO)|position present|
+|position (DAO)|position not present|
+|position (DAO)|delete position|
+|position (DAO)|modify position|
+|position (DAO)|modify positionID|
+|user (DAO)|get user|
+|user (DAO)|get users|
+|user (DAO)|get suppliers|
+|user (DAO)|get not inserted user|
+|user (DAO)|duplicated user|
+|user (DAO)|user present|
+|user (DAO)|user not present|
+|user (DAO)|delete user|
+|user (DAO)|modify user|
+
 
 
 ### Code coverage report
