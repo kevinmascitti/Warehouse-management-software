@@ -1,5 +1,27 @@
-/*const testD = require('../warehouse/testDescriptor');
+const testD = require('../warehouse/testDescriptor');
+const sku = require('../warehouse/sku');
 
+const sku1 = {
+    "description" : "first sku",
+    "weight" : 100,
+    "volume" : 50,
+    "notes" : "first SKU",
+    "availableQuantity" : 50,
+    "price" : 10.99,
+    position : null,
+    testDescriptors : []
+}
+ 
+const sku2 = {
+    "description" : "second sku",
+    "weight" : 100,
+    "volume" : 50,
+    "notes" : "second SKU",
+    "availableQuantity" : 50,
+    "price" : 10.99,
+    position : null,
+    testDescriptors : []
+}
 
 const testD1 = {
     id: 1,
@@ -12,19 +34,12 @@ const testD2 = {
     id: 2,
     name: "TestD2",
     procedureDescription: "Weight test",
-    idSKU: 3
+    idSKU: 2
 }
 
 const testD3 = {
     id: 3,
     name: "TestD3",
-    procedureDescription: "Quality test",
-    idSKU: 2
-}
-
-const testD4 = {
-    id: 4,
-    name: "TestD4",
     procedureDescription: "Functional test",
     idSKU: 1
 }
@@ -32,108 +47,100 @@ const testD4 = {
 describe("testDescriptors", () => {
 
     beforeEach(async () => {
+        await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
+        await sku.storeSku(sku1);
+        await sku.storeSku(sku2);
         await testD.deleteAllTestDescriptors();
+        await testD.resetTestDescriptorAutoIncrement();
         await testD.storeTestDescriptor(testD1);
         await testD.storeTestDescriptor(testD2);
         await testD.storeTestDescriptor(testD3);
     });
 
-    testTestDescriptors(testD1);
-    testTestDescriptors(testD2);
-    testTestDescriptors(testD3);
-    testNotExistTestDescriptor(testD4);
-    testTestDescriptors();
-    testIsNotThereTestDescriptor(testD4);
-    testIsThereTestDescriptor(testD2);
-    testDeleteTestDescriptor(testD2);
-    testDuplicatedTestDescriptor(testD1);
-    testEditTestDescriptor(testD2);
+    testTestDescriptor(testD1);
+    testTestDescriptor(testD2);
+    testTestDescriptor(testD3);
+    testNotExistingTestDescriptor({id: 99}); //test non existing testDescriptor
+    testTestDescriptors([testD1, testD2, testD3]); //test if all added testDescriptors are present
+    testIsThereTestDescriptor(testD1); //test if added testDescriptor exists
+    testEditTestDescriptor(testD1); //test if testDescriptor was modified
+    testDeleteTestDescriptor(testD1); //test if testDescriptor was deleted
+    testDeleteAllTestDescriptors();
+    
 });
 
-async function testTestDescriptors(i) {
+async function testTestDescriptor(t) {
     test('get testDescriptor', async () => {
-        let res = await testD.getStoredTestDescriptor({ id: i.id });
+        let res = await testD.getStoredTestDescriptor({ id: t.id });
         expect(res).toEqual({
-            id: i.id,
-            description: i.name,
-            procedureDescription: i.procedureDescription,
-            idSKU: i.idSKU
+            id: t.id,
+            name: t.name,
+            procedureDescription: t.procedureDescription,
+            idSKU: t.idSKU
         });
     });
 }
 
-async function testTestDescriptors() {
-    test('get testDescriptors', async () => {
-        let res = await testD.getStoredTestDescriptor();
-        expect(res).toEqual([testD1,testD2,testD3]);
-    });
-}
-
-async function testNotExistTestDescriptor(i) {
-    test('get not inserted item', async () => {
-        let res = await testD.getStoredTestDescriptor({ id: i.id });
+async function testNotExistingTestDescriptor(id) {
+    test('get non existing testDescriptor', async () => {
+        let res = await testD.getStoredTestDescriptor({ id: id });
         expect(res).toEqual(undefined);
     });
 }
 
-async function testDuplicatedTestDescriptor(i) {
-    test('duplicated testDescriptor', async () => {
-        try{
-            await testD.storeTestDescriptor(i);
-        }
-        catch(err){
-            expect(err.toString()).toEqual('Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: TESTDESCRIPTOR.ID');   
+async function testTestDescriptors(tests) {
+    test('get all testDescriptors', async () => {
+        let res = await testD.getStoredTestDescriptors();
+        for (let i = 0; i < tests.length; ++i){
+            expect(res[i].id).toEqual(tests[i].id);
+            expect(res[i].name).toEqual(tests[i].name);
+            expect(res[i].procedureDescription).toEqual(tests[i].procedureDescription);
+            expect(res[i].idSKU).toEqual(tests[i].idSKU);
         }
     });
 }
 
-async function testIsThereTestDescriptor(i) {
-    test('testDescriptor present', async () => {
-        let res = await testD.isThereTestDescriptor({ id: i.id });
+async function testIsThereTestDescriptor(t) {
+    test('testDescriptor exists', async () => {
+        let res = await testD.isThereTestDescriptor({ id: t.id });
         expect(res).toEqual(1);
     });
 }
 
-async function testIsNotThereTestDescriptor(i) {
-    test('testDescriptor not present', async () => {
-        let res = await testD.isThereTestDescriptor({ id: i.id });
-        expect(res).toEqual(0);
+async function testEditTestDescriptor(t) {
+    test('edit testDescriptor', async () => {
+        const modifyTest = {
+            id: t.id,
+            newName: "edited testDescriptor",
+            newProcedureDescription: "Testing Testing",
+            newIdSKU: 2
+        }
+        await testD.modifyStoredTestDescriptor(modifyTest);
+        let res = await testD.getStoredTestDescriptor({ id: modifyTest.id });
+        expect(res).toEqual({
+            id: t.id,
+            name: modifyTest.newName,
+            procedureDescription: modifyTest.newProcedureDescription,
+            idSKU: modifyTest.newIdSKU
+        });
     });
 }
 
-async function testDeleteTestDescriptor(i) {
+async function testDeleteTestDescriptor(t) {
     test('delete testDescriptor', async () => {
-        let res0 = await testD.getStoredTestDescriptor({ id: i.id });
-        expect(res0).toEqual({
-            id: i.id,
-            description: i.name,
-            procedureDescription: i.procedureDescription,
-            idSKU: i.idSKU
-        });
-        let res1 = await testD.deleteStoredTestDescriptor({ id: i.id });
+        let res1 = await testD.deleteStoredTestDescriptor({ id: t.id });
         expect(res1).toEqual(undefined);
-        let res2 = await testD.getStoredTestDescriptor({id: i.id});
+        let res2 = await testD.getStoredTestDescriptor({ id: t.id });
         expect(res2).toEqual(undefined);
     });
 }
 
-    async function testEditTestDescriptor(i) {
-        test('edit testDescriptor', async () => {
-            const modifyItem = {
-                id: i.id,
-                newName: "edited testDescriptor",
-                newProcedureDescription: "Testing Testing",
-                newIdSKU: 1
-            }
-            await testD.modifyStoredTestDescriptor(modifyItem);
-            let res = await testD.getStoredTestDescriptor({ id: modifyItem.id });
-            expect(res).toEqual({
-                id: i.id,
-                name: modifyItem.newName,
-                procedureDescription: modifyItem.newProcedureDescription,
-                idSKU: modifyItem.newIdSKU
-            });
-        });
-    }
-
-   */ 
+async function testDeleteAllTestDescriptors() {
+    test('delete all testDescriptors', async () => {
+        let res1 = await testD.deleteAllTestDescriptors();
+        expect(res1).toEqual(undefined);
+        let res = await testD.getStoredTestDescriptors();
+        expect(res).toEqual([]);
+    });
+}
