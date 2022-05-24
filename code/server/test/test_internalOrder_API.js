@@ -231,7 +231,7 @@ describe('test internalorder apis', () => {
     getOrdersIssued(200);
     getOrdersAccepted(200);
     getOrderById(200,order1)
-    getOrderById(200,order2)
+    //getOrderById(200,order2)
     getOrderById(200,order3)
     getOrderByIdWrong(404,{id:4})
     getOrderByIdWrong(422,{id:"unIdMoltoInappropriato"})
