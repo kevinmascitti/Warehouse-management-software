@@ -192,8 +192,7 @@ module.exports = function (app) {
             }
             return res.status(201).json();
         } catch (err) {
-            if (res.statusCode != 422) res.status(500).json(err.message);
-            else return res.status(422).json();
+            return res.status(503).json(err.message);
         }
     });
 
@@ -208,8 +207,7 @@ module.exports = function (app) {
             await restockOrderFunctions.setNewState({ id: req.params.id, state: req.body.newState });
             return res.status(200).json();
         } catch (err) {
-            if (res.statusCode != 422) res.status(500).json(err.message);
-            else return res.status(422).json();
+            res.status(503).json(err.message);
         }
     });
 
@@ -244,8 +242,7 @@ module.exports = function (app) {
             await restockOrderFunctions.setTransportNote({ id: req.params.id, transportNote: req.body.transportNote.deliveryDate})
             return res.status(200).json();
         } catch (err) {
-            if (res.statusCode != 422) res.status(503).json(err.message);
-            else return res.status(422).json();
+            return res.status(503).json(err.message);
         }
     });
 

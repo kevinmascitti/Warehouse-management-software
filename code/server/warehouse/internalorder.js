@@ -33,7 +33,7 @@ exports.getInternalOrders = async function () {
  exports.getInternalOrdersWithState = async function (state) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM INTERNALORDER WHERE STATE = ?';
-    db.all(sql, state, (err, rows) => {
+    db.all(sql, [state], (err, rows) => {
       if (err) {
         reject(err);
         return;
@@ -112,7 +112,7 @@ exports.getSKU = async function (sku, quantityToReturn) {
           SKUId: data.ID,
           description: data.DESCRIPTION,
           price: data.PRICE,
-          quantity: quantityToReturn
+          qty: quantityToReturn
         }
       )
     });
@@ -268,4 +268,52 @@ return new Promise((resolve, reject) => {
     resolve();
   });
 })
+}
+
+
+exports.deleteAllOrders = () => {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM INTERNALORDER';
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
+}
+
+exports.deleteAllProducts = () => {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM INTERNALORDERPRODUCT';
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
+}
+
+exports.resetOrderAutoIncrement = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='INTERNALORDER'";
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
+}
+exports.resetProductAutoIncrement = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='INTERNALORDERPRODUCT'";
+    db.run(sql, [], (err, rows) => {
+      if (err) {
+        reject(err); return;
+      }
+      resolve();
+    });
+  });
 }
