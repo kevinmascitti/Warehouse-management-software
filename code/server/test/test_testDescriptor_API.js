@@ -117,6 +117,7 @@ describe("Testing testDescriptor API", () => {
         await testD.deleteAllTestDescriptors();
         await testD.resetTestDescriptorAutoIncrement();
         await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
         await sku.storeSku(sku1);
         await sku.storeSku(sku2);
     });
@@ -145,6 +146,13 @@ describe("Testing testDescriptor API", () => {
     deleteTestD(204, testD1);
     deleteTestD(422, {id:-1}); //test delete with negative id
     deleteTestD(422, {id:"text"}); //test delete with text id
+
+    after(async () => {
+        await testD.deleteAllTestDescriptors();
+        await testD.resetTestDescriptorAutoIncrement();
+        await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
+    });
 
 });
 

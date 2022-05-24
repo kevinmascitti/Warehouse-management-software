@@ -104,7 +104,8 @@ exports.deleteAllTestDescriptors = () => {
         const sql = 'DELETE FROM TESTDESCRIPTOR';
         db.run(sql, [], (err, rows) => {
             if (err) {
-            reject(err); return;
+            reject(err); 
+            return;
             }
             resolve();
         });
@@ -116,7 +117,8 @@ exports.resetTestDescriptorAutoIncrement = () => {
         const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='TESTDESCRIPTOR'";
         db.run(sql, [], (err, rows) => {
             if (err) {
-            reject(err); return;
+            reject(err); 
+            return;
             }
             resolve();
         });
