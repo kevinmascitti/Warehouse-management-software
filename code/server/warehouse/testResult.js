@@ -86,18 +86,6 @@ exports.modifyStoredTestResult = (data) => {
     });
 }
 
-exports.deleteAllTestResults = () => {
-    return new Promise((resolve, reject) => {
-        const sql = 'DELETE FROM TESTRESULT';
-        db.run(sql, [], (err, rows) => {
-            if (err) {
-            reject(err); return;
-            }
-            resolve();
-        });
-    });
-}
-
 exports.deleteStoredTestResult = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM TESTRESULT WHERE ID = ? AND SKURFID = ?';
@@ -105,6 +93,18 @@ exports.deleteStoredTestResult = (data) => {
             if (err) {
                 reject(err);
                 return;
+            }
+            resolve();
+        });
+    });
+}
+
+exports.deleteAllTestResults = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM TESTRESULT';
+        db.run(sql, [], (err, rows) => {
+            if (err) {
+            reject(err); return;
             }
             resolve();
         });

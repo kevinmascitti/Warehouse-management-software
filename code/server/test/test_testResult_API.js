@@ -106,6 +106,8 @@ describe('Testing testResult API', () => {
         await testD.deleteAllTestDescriptors();
         await testD.resetTestDescriptorAutoIncrement();
         await skuI.deleteAllSkuitems();
+        await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
         await sku.storeSku(sku1);
         await sku.storeSku(sku2);
         await skuI.storeSkuitem(skuI1);
@@ -143,6 +145,16 @@ describe('Testing testResult API', () => {
     getNonExistingtestR(404, testR1, "12345678901234567890123456789014"); //test if item was deleted
     deleteTestR(422, {id:"string"}, "12345678901234567890123456789014"); //test delete with string id
     deleteTestR(422, {id:2}, "123456789012345678901234567890"); //test delete with short rfid
+
+    after(async () => {
+        await testR.deleteAllTestResults();
+        await testR.resetTestResultAutoIncrement();
+        await testD.deleteAllTestDescriptors();
+        await testD.resetTestDescriptorAutoIncrement();
+        await skuI.deleteAllSkuitems();
+        await sku.deleteAllSkus();
+        await sku.resetSkuAutoIncrement();
+    });
 
 });
 
