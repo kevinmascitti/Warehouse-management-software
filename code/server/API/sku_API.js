@@ -93,8 +93,8 @@ module.exports = function (app) {
                     let oldAvailableQuantity = sk.availableQuantity;
                     let oldVolume = sk.volume;
                     let oldWeight = sk.weight;
-                    let diffVolume = req.body.newVolume - oldVolume;
-                    let diffWeight = req.body.newWeight - oldWeight;
+                    let diffVolume = req.body.newVolume*req.body.newAvailableQuantity - oldVolume*oldAvailableQuantity;
+                    let diffWeight = req.body.newWeight*req.body.newAvailableQuantity - oldWeight*oldAvailableQuantity;
                     if (diffVolume > skuPosition.maxVolume - skuPosition.occupiedVolume
                         || diffWeight > skuPosition.maxWeight - skuPosition.occupiedWeight){
                             return res.status(422).json(); //posizione non ha capienza sufficiente!!!!!!
@@ -144,11 +144,13 @@ module.exports = function (app) {
                 
                 let positionObject = await sku.getPositionInfos(req.body.position);
                 const sk = await sku.getStoredSku({ id: req.params.id });
+                //oldPos: sk.position (string)
+                //newPos: positionObject (weight and volume infos), req.body.position
                 if(sk.position == req.body.position){
                     return res.status(200).json(); //posizione rimane uguale!!!
                 }
-                if(sk.volume > positionObject.maxVolume - positionObject.occupiedVolume
-                    || sk.weight > positionObject.maxWeight - positionObject.occupiedWeight){
+                if(sk.volume*sk.availableQuantity > positionObject.maxVolume - positionObject.occupiedVolume
+                    || sk.weight*sk.availableQuantity > positionObject.maxWeight - positionObject.occupiedWeight){
                         return res.status(422).json();
                     }
                 const data = {

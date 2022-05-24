@@ -15,7 +15,7 @@ const sku1 = {
     "volume": 80,
     "notes": "first SKU",
     "price": 10.99,
-    "availableQuantity": 50,
+    "availableQuantity": 10,
     position: null,
     "testDescriptors": []
 }
@@ -26,7 +26,7 @@ const sku2 = {
     "volume": 50,
     "notes": "second SKU",
     "price": 10.99,
-    "availableQuantity": 50,
+    "availableQuantity": 1,
     position: null,
     "testDescriptors": []
 }
@@ -37,7 +37,7 @@ const sku3 = {
     "volume": 60,
     "notes": "tihrd SKU",
     "price": 10.99,
-    "availableQuantity": 50,
+    "availableQuantity": 1,
     position: null,
     "testDescriptors": []
 }
@@ -48,7 +48,7 @@ const sku4 = {
     "volume": 60,
     "notes": "fourth SKU",
     "price": 40.99,
-    "availableQuantity": 40,
+    "availableQuantity": 1,
     position: null,
     "testDescriptors": []
 }
@@ -59,10 +59,30 @@ const sku5_is_HUGE = { //TOO BIG TO BE STORED
     "volume": 376,
     "notes": "fourth SKU",
     "price": 40.99,
-    "availableQuantity": 40,
+    "availableQuantity": 800,
     position: null,
     "testDescriptors": []
 }
+
+const sku6 = {
+    "description": "sixth new sku",
+    "weight": 50,
+    "volume": 150,
+    "notes": "sixth SKU",
+    "price": 40.99,
+    "availableQuantity": 6, //se piu di 6 non ci sta
+    position: null,
+    "testDescriptors": []
+}
+
+const modifySku6_okForPos6_tooBigForPos7 = {
+    "newDescription": "MODIFIED BY MEEE",
+    "newWeight": 99,
+    "newVolume": 50, 
+    "newNotes": "first MODIFIED SKU, WITHOUT TESTDESCRIPTORS",
+    "newPrice": 90.99,
+    "newAvailableQuantity": 9
+};
 
 const wrongSku1 = {
     description: "primo sku errato da API testing",
@@ -85,10 +105,10 @@ const wrongSku2 = {
 const modifySku1_without_tds = {
     "newDescription": "MODIFIED BY MEEE",
     "newWeight": 99,
-    "newVolume": 50, //errore: posiotion5 ha volume max 80
+    "newVolume": 50, 
     "newNotes": "first MODIFIED SKU, WITHOUT TESTDESCRIPTORS",
     "newPrice": 90.99,
-    "newAvailableQuantity": 90
+    "newAvailableQuantity": 9
 };
 
 const modifySku1_without_tds_HUGE = {
@@ -106,7 +126,7 @@ const modifySku2_with_tds = {
     "newVolume": 65,
     "newNotes": "first MODIFIED SKU, WITH TESTDESCRIPTORS",
     "newPrice": 98.98,
-    "newAvailableQuantity": 98,
+    "newAvailableQuantity": 10,
     "newTestDescriptors": [98, 99, 100]
 };
 
@@ -130,6 +150,14 @@ const modifySku4Position = {
 
 const modifySku5Position = {
     "position": "555555555555"
+}
+
+const modifySku6Position = {
+    "position": "666666666666"
+}
+
+const modifySku7Position = {
+    "position": "777777777777"
 }
 
 const notExistingPosition = {
@@ -169,10 +197,10 @@ describe('test sku apis', () => {
         "aisleID": "3333",
         "row": "3333",
         "col": "3333",
-        "maxWeight": 100,
-        "maxVolume": 100,
-        "occupiedWeight": 30,
-        "occupiedVolume": 30
+        "maxWeight": 1000,
+        "maxVolume": 1000,
+        "occupiedWeight": 257,
+        "occupiedVolume": 312
     }
 
     let position4 = {
@@ -180,10 +208,10 @@ describe('test sku apis', () => {
         "aisleID": "4444",
         "row": "4444",
         "col": "4444",
-        "maxWeight": 100,
-        "maxVolume": 100,
-        "occupiedWeight": 5,
-        "occupiedVolume": 5
+        "maxWeight": 1000,
+        "maxVolume": 1000,
+        "occupiedWeight": 50,
+        "occupiedVolume": 59
     }
 
     let position5 = {
@@ -191,9 +219,9 @@ describe('test sku apis', () => {
         "aisleID": "5555",
         "row": "5555",
         "col": "5555",
-        "maxWeight": 100,
-        "maxVolume": 80,
-        "occupiedWeight": 0,
+        "maxWeight": 1010,
+        "maxVolume": 800,
+        "occupiedWeight": 10,
         "occupiedVolume": 0
     }
 
@@ -202,10 +230,21 @@ describe('test sku apis', () => {
         "aisleID": "6666",
         "row": "6666",
         "col": "6666",
-        "maxWeight": 100,
-        "maxVolume": 100,
+        "maxWeight": 1000,
+        "maxVolume": 1000,
         "occupiedWeight": 0,
         "occupiedVolume": 0
+    }
+
+    let position7 = {
+        "positionID": "777777777777",
+        "aisleID": "7777",
+        "row": "7777",
+        "col": "7777",
+        "maxWeight": 505,
+        "maxVolume": 905,
+        "occupiedWeight": 5,
+        "occupiedVolume": 5
     }
 
 
@@ -219,6 +258,7 @@ describe('test sku apis', () => {
         await positionF.storePosition(position4);
         await positionF.storePosition(position5);
         await positionF.storePosition(position6);
+        await positionF.storePosition(position7);
     });
 
     after(async () => {
@@ -258,10 +298,10 @@ describe('test sku apis', () => {
 
 
     addOrModifySkuPositionButSomeProblem(422, 1, modifySku4Position); //sku1 in posizione 4 (OCCUPATA) ==> 422
-    modifySkuAndCheck(200, modifySku1_without_tds, 5);//non ancora assegnato a nessuna posizione
+    modifySkuAndCheck(200, modifySku1_without_tds, 5, null);//non ancora assegnato a nessuna posizione
     addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200, sku1, 1, modifySku5Position, position5, null); //sku1 in posizione 5 (precedentemente occupata ma poi LIBERATA) ==> 200
-    modifySkuAndCheck(200, modifySku1_without_tds, 1); //modifico sku1 senza aggiungere test descriptors e controllo modifiche
-    modifySkuAndCheck(200, modifySku2_with_tds, 1); //modifico sku1 aggiungendo test descriptors e controllo modifiche
+    modifySkuAndCheck(200, modifySku1_without_tds, 1, position5); //modifico sku1 senza aggiungere test descriptors e controllo modifiche
+    modifySkuAndCheck(200, modifySku2_with_tds, 1, position5); //modifico sku1 aggiungendo test descriptors e controllo modifiche
 
     modifySku(422, 1, modifySkuWrong1); //422 formato errato
     modifySku(422, 1, modifySkuWrong2); //422 formato errato
@@ -277,6 +317,14 @@ describe('test sku apis', () => {
     deleteSku(204, 1); //elimino sku1
     modifySku(404, 1, modifySku1_without_tds); //sku1 non esiste piu
 
+    storeSku(201,sku6);
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku6,6,modifySku7Position,position7,null); 
+    addOrModifySkuPositionAndCheckNewAndOldPositionCapacities(200,sku6,6,modifySku6Position,position6,position7); 
+    modifySkuAndCheck(200, modifySku6_okForPos6_tooBigForPos7, 6, position6); 
+    addOrModifySkuPositionButSomeProblem(422, 6, modifySku7Position);
+    modifySku(200,6,modifySku6_okForPos6_tooBigForPos7);
+    modifySku(422,6,modifySku2_with_tds_HUGE);
+    
     function storeSku(expectedHTTPStatus, data) {
         it('store sku', function (done) {
             agent.post('/api/sku')
@@ -345,7 +393,7 @@ describe('test sku apis', () => {
         });
     }
 
-    function modifySkuAndCheck(expectedHTTPStatus, data, id) {
+    function modifySkuAndCheck(expectedHTTPStatus, data, id, oldPosObj) {
         it('modify sku and check if all capacities changed correctly', function (done) {
             agent.put('/api/sku/' + id)
                 .send(data)
@@ -368,8 +416,8 @@ describe('test sku apis', () => {
                             sku.getStoredSku({ id: id }).then(function (skk) {
                                 if(skk.position != null){
                                     sku.getPositionInfos(skk.position).then(function (posi) {
-                                        posi.occupiedWeight.should.equal(data.newWeight);
-                                        posi.occupiedVolume.should.equal(data.newVolume);
+                                        posi.occupiedWeight.should.equal(data.newWeight*data.newAvailableQuantity + oldPosObj.occupiedWeight);
+                                        posi.occupiedVolume.should.equal(data.newVolume*data.newAvailableQuantity + oldPosObj.occupiedVolume);
                                         done();
                                     });                                    
                                 }
@@ -416,8 +464,8 @@ describe('test sku apis', () => {
                                     }
                                     //controllo se capacita modificate correttamente
                                     positionF.getPosition({ positionID: newPos.position }).then(function (p) {
-                                        p.occupiedWeight.should.equal(posObj.occupiedWeight + sku.weight);
-                                        p.occupiedVolume.should.equal(posObj.occupiedVolume + sku.volume);
+                                        p.occupiedWeight.should.equal(posObj.occupiedWeight + sku.weight*sku.availableQuantity);
+                                        p.occupiedVolume.should.equal(posObj.occupiedVolume + sku.volume*sku.availableQuantity);
                                         if (oldPosObj != null && oldPosObj.positionID != posObj.positionID) {
                                             positionF.getPosition({ positionID: oldPosObj.positionID }).then(function (pOld) {
                                                 pOld.occupiedWeight.should.equal(oldPosObj.occupiedWeight);

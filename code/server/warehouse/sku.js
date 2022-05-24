@@ -181,7 +181,7 @@ exports.isPositionAlreadyAssignedToOtherSku = (id, position) => {
 exports.updateNewPosition = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT =  OCCUPIEDWEIGHT + ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME + ? WHERE ID = ?';
-        db.run(sql, [data.weight, data.volume, data.newPosition], (err, rows) => {
+        db.run(sql, [data.weight*data.availableQuantity, data.volume*data.availableQuantity, data.newPosition], (err, rows) => {
             if (err) {
                 reject(err); return;
             }
@@ -194,7 +194,7 @@ exports.updateNewPosition = (data) => {
 exports.updateOldPosition = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE POSITION SET OCCUPIEDWEIGHT = OCCUPIEDWEIGHT - ?, OCCUPIEDVOLUME = OCCUPIEDVOLUME - ? WHERE ID = ?';
-        db.run(sql, [data.weight, data.volume, data.oldPosition], (err, rows) => {
+        db.run(sql, [data.weight*data.availableQuantity, data.volume*data.availableQuantity, data.oldPosition], (err, rows) => {
             if (err) {
                 reject(err); return;
             }
