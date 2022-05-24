@@ -6,14 +6,17 @@ Version:
 
 # Contents
 
-- [Dependency graph](#Dependencygraph)
+- [Dependency graph](#dependency-graph)
 
-- [Integration approach](#integration)
+- [Integration approach](#integration-approach)
 
-- [Tests](#tests)
+- [Testing steps](#testing-steps)
+  + [DB Testing](#step-1:-testing-the-db)
+  + [API Testing](#step-2:-testing-the-apis)
 
-- [Coverage of scenarios and FR](#scenario-coverage)
-- [Coverage of non-functional requirements](#nfr-coverage)
+- [Coverage of Functional Requirements](#coverage-of-functional-requirements)
+
+- [Coverage of Non Functional requirements](#coverage-of-non-functional-requirements)
 
 
 
@@ -27,10 +30,7 @@ We basically applied an incremental integration with a bottom up approach, as ou
 We preferred the bottom up approach over the top down one since in this way we observed directly the lower levels (i.e., the queries on the database) earlier in the process, without having the strict need to have immediately both all the APIs and the services to the DB fully working.
 
 
-#  Integration Tests
-
-   <define below a table for each integration step. For each integration step report the group of classes under test, and the names of
-     Jest test cases applied to them, and the mock ups used, if any> Jest test cases should be here code/server/unit_test
+# Testing steps
 
 ## Step 1: testing the DB
 
@@ -98,13 +98,7 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 
 
-# Coverage of Scenarios and FR
-
-
-<Report in the following table the coverage of  scenarios (from official requirements and from above) vs FR. 
-Report also for each of the scenarios the (one or more) API Mocha tests that cover it. >  Mocha test cases should be here code/server/test
-
-
+# Coverage of Functional Requirements
 
 
 | Functional Requirements covered | Mocha  Test(s) | 
@@ -121,11 +115,6 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 # Coverage of Non Functional Requirements
 
-
-<Report in the following table the coverage of the Non Functional Requirements of the application - only those that can be tested with automated testing frameworks.>
-
-
-### 
 
 //ho aggiunto quelli interessanti, poi metteremo i nomi dei test che li coprono
 

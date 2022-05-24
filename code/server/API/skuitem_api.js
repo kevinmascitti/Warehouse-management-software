@@ -88,6 +88,7 @@ module.exports = function (app) {
             let regexp = new RegExp('^[0-9]+$');
             if (isNaN(req.params.rfid) 
             || req.params.rfid.length != 32 
+            || regexp.test(req.params.rfid) == false
             || req.params.rfid < 0
             || (req.body.newAvailable != 0 && req.body.newAvailable != 1)
             || isNaN(req.body.newRFID) 

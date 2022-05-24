@@ -9,18 +9,12 @@ Version:
 - [Black Box Unit Tests](#black-box-unit-tests)
 
 
-
-
 - [White Box Unit Tests](#white-box-unit-tests)
+    + [Code coverage report](#code-coverage-report)
 
 
 # Black Box Unit Tests
 
-    <Define here criteria, predicates and the combination of predicates for each function of each class.
-    Define test cases to cover all equivalence classes and boundary conditions.
-    In the table, report the description of the black box test case and (traceability) the correspondence with the Jest test case writing the 
-    class and method name that contains the test case>
-    <Jest tests  must be in code/server/unit_test  >
 
  ### **Class *item* - method *getStoredItem***
 
@@ -357,7 +351,7 @@ Version:
 
 
 | Length of String positionID | Length of String aisleID | Length of String row | Length of String col | Sign of maxWeight | Sign of maxVolume | Valid / Invalid | Description of the test case |
-|-------|-------|-------|--------|-----|------|
+|-------|-------|-------|--------|-----|------|------|------|
 |(0,12)| * | * | * | * | * |Invalid|T1("", "1234", "1234", "1234", 300, 200) -> Error|
 |(12,maxint)| * | * | * | * | * |Invalid|T1("123456789012345", "1234", "1234", "1234", 300, 200) -> Error|
 |*| (0,4) | * | * | * | * |Invalid|T1("123412341234", "", "1234", "1234", 300, 200) -> Error|
@@ -413,12 +407,12 @@ Version:
 
 
 | Length of String username | Length of String name | Length of String surname | Length of String password | Length of String type | Valid / Invalid | Description of the test case |
-|-------|-------|-------|--------|-----|------|
-|0| * | * | * | * | * |Invalid| T1("", "john", "zan", "testpassword", "clerk") -> Error |
-|*| 0 | * | * | * | * |Invalid| T1("clerk99@exwh.com", "", "zan", "testpassword", "clerk") -> Error |
-|*| * | 0 | * | * | * |Invalid| T1("clerk99@exwh.com", "john", "", "testpassword", "clerk") -> Error | 
-|*| * | * | 7 | * | * |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpas", "clerk")) -> Error |
-|*| * | * | * | 0 | * |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpassword", "") -> Error |
+|-------|-------|-------|--------|-----|------|------|
+|0| * | * | * | *  |Invalid| T1("", "john", "zan", "testpassword", "clerk") -> Error |
+|*| 0 | * | * | * |Invalid| T1("clerk99@exwh.com", "", "zan", "testpassword", "clerk") -> Error |
+|*| * | 0 | * | *  |Invalid| T1("clerk99@exwh.com", "john", "", "testpassword", "clerk") -> Error | 
+|*| * | * | 7 | *  |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpas", "clerk")) -> Error |
+|*| * | * | * | 0  |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpassword", "") -> Error |
 |16| 4 | 3 | 9 | 5 |Valid| T1("clerk99@exwh.com", "john", "zan", "testpassw", "clerk") -> Ok |
 
 
@@ -427,10 +421,6 @@ Version:
 # White Box Unit Tests
 
 ### Test cases definition
-    
-    
-    <Report here all the created Jest test cases, and the units/classes under test >
-    <For traceability write the class and method name that contains the test case>
 
 
 | Unit name | Jest test case |
@@ -463,7 +453,6 @@ Version:
 |sku (DAO)|sku present|
 |sku (DAO)|sku not present|
 |sku (DAO)|delete sku|
-
 |position (DAO)|get position|
 |position (DAO)|get positions|
 |position (DAO)|get not inserted position|
