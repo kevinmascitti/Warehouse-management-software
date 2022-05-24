@@ -229,15 +229,12 @@ exports.getItemsToReturn = (data) => {
 
 /* istanbul ignore next */ //ESCLUDO DA COVERAGE
 exports.setInternalOrder = (data) => {
-    console.log(data)
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE SKUITEM SET INTERNALORDERID = ? WHERE RFID = ?';
         db.run(sql, [data.internalOrderId, data.rfid], (err, rows) => {
             if (err) {
-                console.log("FAIL")
                 reject(err); return;
             }
-            console.log("INSERTED")
             resolve();
         });
     });

@@ -288,7 +288,7 @@ function getReturnOrderById(expectedHTTPStatus, order) {
     it('get return order with id = ' + order.id, function (done) {
         agent.get('/api/ReturnOrders/' + order.id)
             .then(function (r) {
-                console.log(r.body)
+                //console.log(r.body)
                 //console.log(order)
                 r.should.have.status(expectedHTTPStatus);
                 r.body.returnDate.should.equal(order.returnDate);

@@ -38,12 +38,11 @@ module.exports = function (app) {
             }
           }
           else products.push(product);
-
         }
+        o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
       } catch (err) {
         return res.status(500).json(err.message);
       }
-      o.products = products;
     }
     return res.status(200).json(orders);
   });
@@ -83,7 +82,7 @@ module.exports = function (app) {
       } catch (err) {
         return res.status(500).json(err.message);
       }
-      o.products = products;
+      o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     }
     return res.status(200).json(orders);
   });
@@ -123,7 +122,7 @@ module.exports = function (app) {
       } catch (err) {
         return res.status(500).json(err.message);
       }
-      o.products = products;
+      o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     }
     return res.status(200).json(orders);
   });
@@ -162,8 +161,8 @@ module.exports = function (app) {
           }
         }
         else o.products.push(product);
-
       }
+      o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     } catch (err) {
       return res.status(500).json(err.message);
     }
@@ -205,8 +204,8 @@ module.exports = function (app) {
 
   //PUT 
   app.put('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
-    try {
-      if (isNaN(req.params.id) || !(req.body.newState == "ISSUED" || req.body.newState == "ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || (req.body.newState == "COMPETED" && Array.isArray(req.body.products)))) {
+      try {
+      if (isNaN(req.params.id) || !(req.body.newState == "ISSUED" || req.body.newState == "ACCEPTED" || req.body.newState == "REFUSED" || req.body.newState == "CANCELED" || (req.body.newState == "COMPLETED" && Array.isArray(req.body.products)))) {
         return res.status(422).json();
       }
       const order = await intord.getInternalOrderWithID(req.params.id);
@@ -216,8 +215,8 @@ module.exports = function (app) {
 
       if (req.body.newState == "COMPLETED") {
         for (let product of req.body.products) {
-          let item = await skuItemFunctions.getStoredSkuitem(product);
-          if (item == undefined) await intord.addSkuItem(product.SkuID, req.params.id, product.RFID);
+          let item = await skuItemFunctions.getStoredSkuitem({rfid: product.RFID});
+          //if (item == undefined) await intord.addSkuItem(product.SkuID, req.params.id, product.RFID);
           await skuItemFunctions.setInternalOrder({rfid: product.RFID, internalOrderId: req.params.id})
         }
       }
@@ -230,13 +229,13 @@ module.exports = function (app) {
 
   //DELETE
   app.delete('/api/internalOrders/:id', async (req, res) => { //MANCA 401 UNAUTHORIZED
+
     try {
       if (isNaN(req.params.id)) {
         return res.status(422).json();
       }
       await intord.deleteInternalOrder(req.params.id);
       await intord.deleteInternalOrderProducts(req.params.id);
-      await intord.deleteSkuItems(req.params.id);
       return res.status(204).json();
     } catch (err) {
       return res.status(503).json();

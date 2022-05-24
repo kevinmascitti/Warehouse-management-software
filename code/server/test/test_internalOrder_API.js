@@ -26,7 +26,7 @@ const sku12 = {
 }
 
 const sku180 = {
-    "id": 180,
+    "id": 290,
     "description": "another product",
     "weight": 100, //occupera esattamente tutta la posizione 5!!! (OK!)
     "volume": 80,
@@ -49,6 +49,18 @@ const sku1 = {
     "testDescriptors": []
 }
 
+const sku29 = {
+    "id": 29,
+    "description": "another product",
+    "weight": 100, //occupera esattamente tutta la posizione 5!!! (OK!)
+    "volume": 80,
+    "notes": "first SKU",
+    "price": 11.99,
+    "availableQuantity": 50,
+    position: null,
+    "testDescriptors": []
+}
+
 //SKUITEM
 const skuItem1 = {
     skuid: 12,
@@ -56,7 +68,7 @@ const skuItem1 = {
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
 const skuItem2 = {
-    skuid: 180,
+    skuid: 290,
     rfid: "12345678901234567890123456789039",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
@@ -66,18 +78,18 @@ const skuItem3 = {
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
 const skuItem4 = {
-    skuid: 2,
+    skuid: 1,
     rfid: "12345678901234567890123456789012",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm"),
 }
 const skuItem180 = {
-    skuid: 180,
+    skuid: 290,
     rfid: "12345678901234567890123456789180",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
-const skuItem154 = {
-    skuid: 180,
-    rfid: "12345678901234567890123456789154",
+const skuItem29 = {
+    skuid: 29,
+    rfid: "12345678901234567890123456789029",
     dateofstock: dayjs().format("YYYY/MM/DD HH:mm")
 }
 
@@ -93,6 +105,10 @@ const skuItem180order2 = {
     rfid: "12345678901234567890123456789180",
     internalOrderId: 2
 }
+const skuItem29order1 = {
+    rfid: "12345678901234567890123456789029",
+    internalOrderId: 1
+}
 
 //ORDERS
 const order1 = {
@@ -100,7 +116,7 @@ const order1 = {
     "issueDate": "2021/11/29 09:33",
     "state": "ACCEPTED",
     "products": [{ "SKUId": 12, "description": "a product", "price": 10.99, "qty": 2 },
-    { "SKUId": 180, "description": "another product", "price": 11.99, "qty": 3 }],
+    { "SKUId": 290, "description": "another product", "price": 11.99, "qty": 3 }],
     "customerId": 1
 }
 const order2 = {
@@ -108,8 +124,8 @@ const order2 = {
     "issueDate": "2021/11/30 19:33",
     "state": "COMPLETED",
     "products": [{ "SKUId": 12, "description": "a product", "price": 10.99, "RFID": "12345678901234567890123456789016" },
-    { "SKUId": 180, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789039" },
-    { "SKUId": 180, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789180" }],
+    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789039" },
+    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789180" }],
     "customerId": 1
 }
 const order3 = {
@@ -124,13 +140,13 @@ const order4 = {
     "issueDate": "2021/11/29 19:00",
     "state": "ISSUED",
     "products": [{"SKUId":12,"description":"a product","price":10.99,"qty":8},
-    {"SKUId":180,"description":"another product","price":11.99,"qty":1}],
+    {"SKUId":290,"description":"another product","price":11.99,"qty":1}],
     "customerId": 5
 }
 const postOrder4 = {
         "issueDate":"2021/11/29 19:00",
         "products": [{"SKUId":12,"description":"a product","price":10.99,"qty":8},
-                    {"SKUId":180,"description":"another product","price":11.99,"qty":1}],
+                    {"SKUId":290,"description":"another product","price":11.99,"qty":1}],
         "customerId" : 5
 }
 const order4newState = {
@@ -138,7 +154,7 @@ const order4newState = {
     "issueDate": "2021/11/29 19:00",
     "state": "REFUSED",
     "products": [{"SKUId":12,"description":"a product","price":10.99,"qty":8},
-    {"SKUId":180,"description":"another product","price":11.99,"qty":1}],
+    {"SKUId":290,"description":"another product","price":11.99,"qty":1}],
     "customerId": 5
 }
 const setStateOrder3 = {
@@ -148,8 +164,15 @@ const setStateOrder3 = {
 const order3newState = {
     "id": 3,
     "issueDate": dayjs().format("YYYY/MM/DD HH:mm"),
-    "state": "ISSUED",
+    "state": "COMPLETED",
     "products": [{ "SKUId": 1, "description": "first sku", "price": 1.99, "RFID":"12345678901234567890123456789003"},{ "SKUId": 1, "description": "first sku", "price": 1.99,"RFID":"12345678901234567890123456789012"}],
+    "customerId": 1
+}
+const order1newState = {
+    "id": 1,
+    "issueDate": "2021/11/29 09:33",
+    "state": "COMPLETED",
+    "products": [],
     "customerId": 1
 }
 
@@ -160,7 +183,7 @@ const order1product1 = {
 }
 const order1product2 = {
     id: 1,
-    skuid: 180,
+    skuid: 290,
     quantity: 3
 }
 const order2product1 = {
@@ -170,7 +193,7 @@ const order2product1 = {
 }
 const order2product2 = {
     id: 2,
-    skuid: 180,
+    skuid: 290,
     quantity: 3 //irrilevante
 }
 const order3product1 = {
@@ -194,14 +217,18 @@ describe('test internalorder apis', () => {
 
         //STORE DATA
         sku.storeSkuWithId(sku12)
-        sku.storeSkuWithId(sku180)
+        sku.storeSkuWithId(sku29)
         sku.storeSkuWithId(sku1)
+        sku.storeSkuWithId(sku180)
+        skuItem.storeSkuitem(skuItem180)
         skuItem.storeSkuitem(skuItem1)
-        skuItem.storeSkuitem(skuItem2)
+        skuItem.storeSkuitem(skuItem29)
         skuItem.storeSkuitem(skuItem3)
         skuItem.storeSkuitem(skuItem4)
-        skuItem.storeSkuitem(skuItem180)
+        skuItem.storeSkuitem(skuItem2)
+        skuItem.setInternalOrder(skuItem29order1)
         skuItem.setInternalOrder(skuItem1order2)
+        skuItem.setInternalOrder(skuItem180order2)
         skuItem.setInternalOrder(skuItem2order2)
         skuItem.setInternalOrder(skuItem180order2)
         internalOrder.storeInternalOrder(order1)
@@ -227,11 +254,11 @@ describe('test internalorder apis', () => {
 
     //TESTS
     //get orders
-    //getOrders(200);
+    getOrders(200);
     getOrdersIssued(200);
     getOrdersAccepted(200);
     getOrderById(200,order1)
-    //getOrderById(200,order2)
+    getOrderById(200,order2)
     getOrderById(200,order3)
     getOrderByIdWrong(404,{id:4})
     getOrderByIdWrong(422,{id:"unIdMoltoInappropriato"})
@@ -245,19 +272,26 @@ describe('test internalorder apis', () => {
     editOrder(422,{id: "unIdMoltoInappropriato"}, {newState: "REFUSED"})
     editOrder(422,{id: 1}, {newState: "refused"})
     editOrder(404,{id: 123456765432}, {newState: "REFUSED"})
+    editOrder(422,{id: 1}, {newState: "COMPLETED", products: "foo"})
     editOrder(200,order4newState,{newState: "REFUSED"})
     getOrderById(200,order4newState)
-    //editOrder(200,order3,setStateOrder3)
-    //getOrderById(200,order3newState)
+    editOrder(200,order3,setStateOrder3)
+    getOrderById(200,order3newState)
+    editOrder(200,order1,{newState: "COMPLETED", products: []})
+    getOrderById(200,order1newState)
+    //delete orders
+    deleteOrder(204,order1)
+    getOrderByIdWrong(404,order1)
+    deleteOrder(422,{id: "unIdMoltoInappropriato"})
 
 
 });
 
 function getOrders(expectedHTTPStatus) {
-    it('get all internal orders', function (done) {
+   it('get all internal orders', function (done) {
         agent.get('/api/InternalOrders/')
             .then(function (r) {
-                console.log(r.body[1])
+                //console.log(r.body[1])
                 r.should.have.status(expectedHTTPStatus);
                 r.body.length.should.equal(3)
 
@@ -289,11 +323,11 @@ function getOrders(expectedHTTPStatus) {
                 r.body[1].products[1].SKUId.should.equal(order2.products[1].SKUId)
                 r.body[1].products[1].description.should.equal(order2.products[1].description)
                 r.body[1].products[1].price.should.equal(order2.products[1].price)
-                r.body[1].products[1].RFID.should.equal(order2.products[1].RFID)/*
+                r.body[1].products[1].RFID.should.equal(order2.products[1].RFID)
                 r.body[1].products[2].SKUId.should.equal(order2.products[2].SKUId)
                 r.body[1].products[2].description.should.equal(order2.products[2].description)
                 r.body[1].products[2].price.should.equal(order2.products[2].price)
-                r.body[1].products[2].RFID.should.equal(order2.products[2].RFID)*/
+                r.body[1].products[2].RFID.should.equal(order2.products[2].RFID)
 
                 r.body[2].id.should.equal(order3.id)
                 r.body[2].issueDate.should.equal(order3.issueDate)
@@ -312,7 +346,7 @@ function getOrders(expectedHTTPStatus) {
 }
 
 function getOrdersAccepted(expectedHTTPStatus) {
-    it('get all internal orders with state = ACCEPTED', function (done) {
+   it('get all internal orders with state = ACCEPTED', function (done) {
         agent.get('/api/InternalOrdersAccepted/')
             .then(function (r) {
                 //console.log(r.body)
@@ -340,7 +374,7 @@ function getOrdersAccepted(expectedHTTPStatus) {
 }
 
 function getOrdersIssued(expectedHTTPStatus) {
-    it('get all internal orders with state = ISSUED', function (done) {
+   it('get all internal orders with state = ISSUED', function (done) {
         agent.get('/api/InternalOrdersIssued/')
             .then(function (r) {
                 //console.log(r.body)
@@ -364,10 +398,10 @@ function getOrdersIssued(expectedHTTPStatus) {
 }
 
 function getOrderById(expectedHTTPStatus, order) {
-    it('get all internal order with id = ' + order.id, function (done) {
+   it('get internal order with id = ' + order.id, function (done) {
         agent.get('/api/InternalOrders/' + order.id)
             .then(function (r) {
-                if(r.body.id == 2) console.log(r.body)
+                //if(r.body.id == 1) console.log(r.body)
                 r.should.have.status(expectedHTTPStatus);
 
                 r.body.id.should.equal(order.id)
@@ -393,7 +427,7 @@ function getOrderById(expectedHTTPStatus, order) {
 }
 
 function getOrderByIdWrong(expectedHTTPStatus, order) {
-    it('get all internal order (FAILS) with id = ' + order.id, function (done) {
+   it('get all internal order (FAILS) with id = ' + order.id, function (done) {
         agent.get('/api/InternalOrders/' + order.id)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -404,7 +438,7 @@ function getOrderByIdWrong(expectedHTTPStatus, order) {
 
 
 function postNewOrder(expectedHTTPStatus, order) {
-    it('post new internal order ', function (done) {
+   it('post new internal order ', function (done) {
         agent.post('/api/internalOrders/').send(order)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
@@ -414,8 +448,19 @@ function postNewOrder(expectedHTTPStatus, order) {
 }
 
 function editOrder(expectedHTTPStatus, order, state) {
-    it('put internal order with id = ' + order.id, function (done) {
+   it('put internal order with id = ' + order.id, function (done) {
         agent.put('/api/internalOrders/'+order.id).send(state)
+            .then(function (r) {
+                r.should.have.status(expectedHTTPStatus);
+                done();
+            });
+    });
+}
+
+
+function deleteOrder(expectedHTTPStatus, order) {
+   it('delete internal order with id = ' + order.id, function (done) {
+        agent.delete('/api/internalOrders/'+ order.id)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
                 done();
