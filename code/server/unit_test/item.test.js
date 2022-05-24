@@ -43,6 +43,10 @@ describe("items", () => {
         await item.storeItem(item3); //ha supplier diverso dai primi due
     });
 
+    afterAll(async () => {
+        await item.deleteAllItems();
+    });
+
     testItem(item1);
     testItem(item2);
     testItem(item3);

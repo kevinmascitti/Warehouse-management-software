@@ -34,16 +34,7 @@ const sku2 = {
      testDescriptors : []
  }
 
-
-const nonExistingSku = {
-    rfid:"00045678901234567890123456789015",
-    skuid:1,
-    available:1,
-    dateofstock:"2021/11/29 12:30"
-}
-
-
-describe("skuitems", () => {
+describe("skus", () => {
 
     beforeEach(async () => {
         await skuFunctions.deleteAllSkus();
@@ -52,6 +43,11 @@ describe("skuitems", () => {
         await skuFunctions.storeSku(sku1);
         await skuFunctions.storeSku(sku2);
         await skuFunctions.storeSku(sku3);
+    });
+
+    afterAll(async () => {
+        await skuFunctions.deleteAllSkus();
+        await skuFunctions.resetSkuAutoIncrement(); //resetto id dei prossimi inserimenti (ripartiranno da 1)
     });
 
     testSku(sku1,1);

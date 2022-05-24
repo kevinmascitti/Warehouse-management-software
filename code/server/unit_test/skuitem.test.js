@@ -24,13 +24,17 @@ const nonExistingSkuitem = {
 }
 
 
-describe("items", () => {
+describe("skuitems", () => {
 
     beforeEach(async () => {
         await skuitem.deleteAllSkuitems();
 
         await skuitem.storeSkuitem(skuitem1);
         await skuitem.storeSkuitem(skuitem2);
+    });
+
+    afterAll(async () => {
+        await skuitem.deleteAllSkuitems();
     });
 
     testSkuitem(skuitem1);
