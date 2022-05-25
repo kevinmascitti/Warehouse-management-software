@@ -31,18 +31,6 @@ const db = new sqlite.Database('ezwhDB.db', (err) => {
     });
   }
 
-  exports.getSupplierIdOfItem = (data) => {
-    return new Promise((resolve, reject) => {
-      const sql = 'SELECT SUPPLIERID FROM ITEM WHERE ID = ?';
-      db.all(sql, [data.id], (err, rows) => {
-        if (err) {
-          reject(err); return;
-        }
-        resolve(rows[0].SUPPLIERID);
-      });
-    });
-  }
-
   exports.deleteAllItems = () => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM ITEM';
