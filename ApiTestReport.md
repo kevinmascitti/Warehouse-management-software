@@ -79,7 +79,6 @@ We preferred the bottom up approach over the top down one since in this way we o
 |testresult (DAO)|delete testResult|
 |testresult (DAO)|delete all testResults|
 
-
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |
 |--|--|
@@ -151,10 +150,26 @@ We preferred the bottom up approach over the top down one since in this way we o
 | FR2.2 (delete a sku) | delete sku |
 | FR2.3 (list all skus) | get multiple skus |  
 | FR2.4 (search a sku) | get sku |  
+| FR5.1 (Start a restock order)  |  post new restock order |
+| FR5.2 (Add a SKU to a restock order)  | post new restock order |
+| FR5.3 (Define quantity of SKU to be ordered)  | post new restock order |
+| FR5.5 (Select a Supplier for the restock order)  | post new restock order |
+| FR5.6 (Issue  a restock order)  | put new state ... to order ... |
+| FR5.7 (Change state of a restock order) | put new state |
+| FR5.8 (Manage reception of a restock order) | post new restock order |
+| FR5.10 (Return a SKU item listed in a restock order) | get restock order by id = ... |
+| FR5.11 (Commit a return order)  | post new return order, post new return order with same restock and 2 skuitems |
+| FR6.1 (Start an internal order)  | post new internal order |
+| FR6.2 (Add a SKU to an internal order)  | post new internal order |
+| FR6.3 (Define quantity of SKU to be ordered)  | post new internal order |
+| FR6.5 (Issue an internal order)  | post new internal order |
+| FR6.6 (Accept, reject or cancel an internal order) | put new state/skuitems to internal order with id = ... |
+| FR6.7 (Change state of an internal order) | put new state/skuitems to internal order with id = ... |
+| FR6.8 (Manage delivery of an internal order) | put new state/skuitems to internal order with id = ... |
+| FR6.10 (remove a sku) | delete skuitem |  
 | FR5.8.1 (create a sku with rfid) | store skuitem  | 
 | FR5.8.2 (store result of quality test on sku item) | store testResult | 
-| FR5.8.3 (store a skuitem)  | store skuitem |   
-| FR6.10 (remove a sku) | delete skuitem |       
+| FR5.8.3 (store a skuitem)  | store skuitem |  
 
 
 
@@ -167,5 +182,5 @@ We preferred the bottom up approach over the top down one since in this way we o
 | -------------------------- | --------- |
 | NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
 | NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem   |
-| NFR9 (date format) |store skuitem, modify skuitem and check, //AGGIUNGETE   |
+| NFR9 (date format) |store skuitem, modify skuitem and check,  post new internal order,  post new restock order, post new return order   |
 

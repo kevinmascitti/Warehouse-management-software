@@ -87,6 +87,11 @@ describe('test user apis', () => {
         await user.resetUserAutoincrement();
     });
     
+    afterAll(async () => {
+        await user.deleteAllUsers();
+        await user.resetUserAutoincrement();
+    });
+
     testUser(user1test);
     testUser(user2test);
     testUser(user3test);

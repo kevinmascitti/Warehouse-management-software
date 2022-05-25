@@ -499,7 +499,7 @@ function postNewRestockOrder(expectedHTTPStatus, order) {
 }
 
 function putNewState(expectedHTTPStatus, order, state) {
-    it('put new status ' + state.newState + ' to order '+ order.id, function (done) {
+    it('put new state ' + state.newState + ' to order '+ order.id, function (done) {
         agent.put('/api/RestockOrder/'+ order.id).send(state)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
