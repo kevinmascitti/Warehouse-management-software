@@ -110,11 +110,20 @@ We preferred the bottom up approach over the top down one since in this way we o
 | FR3.1.1 (create or modify position) |  |
 | FR3.1.2 (delete position) |  |
 | FR3.1.3 (list all positions) |  |
+| FR3.1.4 (modify attrutes of a position) |  |
+| FR3.2.1 (add a quality test) | store testDescriptor |
+| FR3.2.2 (modify a quality test) | modify testDescriptor and check, modify testDescriptor |
+| FR3.2.3 (delete a quality test) | delete testDescriptor |
+| FR4.1 (register or modify a customer) |  |
+| FR4.2 (delete a customer) |  |
+| FR4.3 (search a customer) |  |
+| FR4.4 (list all customer) |  |
 | FR2.1 (create or modify sku) | store sku, modify sku |             
 | FR2.2 (delete a sku) | delete sku |
 | FR2.3 (list all skus) | get multiple skus |  
 | FR2.4 (search a sku) | get sku |  
 | FR5.8.1 (create a sku with rfid) | store skuitem  | 
+| FR5.8.2 (store result of quality test on sku item) | store testResult | 
 | FR5.8.3 (store a skuitem)  | store skuitem |   
 | FR6.10 (remove a sku) | delete skuitem |  
 
@@ -145,7 +154,7 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-| NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, //KEVIN AGGIUNGI   |
+| NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
 | NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem   |
 | NFR9 (date format) |store skuitem, modify skuitem and check, //AGGIUNGETE   |
 

@@ -28,8 +28,8 @@ Version:
 
 | Criteria              | Predicate |
 | ------------------------ | --------- |
-| Sign of id  | (minint, 0)     |
-|                          |(0, maxint)     |
+| Sign of id  |   (0, maxint)   |
+|                          |(minint, 0)     |
 
 
 **Boundaries**:
@@ -61,10 +61,10 @@ Version:
 
 | Criteria              | Predicate |
 | ------------------------ | --------- |
-| Sign of id  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of newPrice  | (minint, 0)     |
-|                          |(0, maxint)     |
+| Sign of id  |  (0, maxint)    |
+|                          |(minint, 0)     |
+| Sign of newPrice  |  (0, maxint)  |
+|                          |(minint, 0)   |
 
 
 **Boundaries**:
@@ -102,14 +102,14 @@ Version:
 
 | Criteria              | Predicate |
 | ------------------------ | --------- |
-| Sign of id  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of newPrice  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of skuId  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of supplierId  | (minint, 0)     |
-|                          |(0, maxint)     |
+| Sign of id  |   (0, maxint)   |
+|                          |(minint, 0)     |
+| Sign of newPrice  |  (0, maxint)    |
+|                          |(minint, 0)     |
+| Sign of skuId  |   (0, maxint)   |
+|                          |(minint, 0)     |
+| Sign of supplierId  |  (0, maxint)    |
+|                          |(minint, 0)     |
 
 
 **Boundaries**:
@@ -162,14 +162,14 @@ Version:
 
 | Criteria              | Predicate |
 | ------------------------ | --------- |
-| Sign of weight  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of volume  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of price  | (minint, 0)     |
-|                          |(0, maxint)     |
-| Sign of availableQuantity  | (minint, 0)     |
-|                          |(0, maxint)     |
+| Sign of weight  |   (0, maxint)   |
+|                          |(minint, 0)     |
+| Sign of volume  |  (0, maxint)    |
+|                          |(minint, 0)     |
+| Sign of price  |  (0, maxint)   |
+|                          | (minint, 0)     |
+| Sign of availableQuantity  | (0, maxint)     |
+|                          | (minint, 0)    |
 
 
 **Boundaries**:
@@ -266,8 +266,8 @@ Version:
 |                          | !=32     |
 | Value of Available  | == 0 OR == 1     |
 |                          | !=0 AND !=1     |
-| Sign of skuId  | (minint, 0)     |
-|                          |(0, maxint)     |
+| Sign of skuId  |   (0, maxint)   |
+|                          |(minint, 0)     |
 | Format of DateOfStock  | valid date     |
 |                          |invalid date     |
 
@@ -293,6 +293,48 @@ Version:
 |*| * | (minint, 0) | *  |Invalid|T3(12345678123456781234567812345678,1,-1,19/05/2022) -> Error|
 |*| * | * | invalid DateOfStock  |Invalid|T4(12345678123456781234567812345678,1,1,1932/2205/2022) -> Error|
 |==32| ==0 OR ==1 | (0, maxint) | valid DateOfStock  |Valid|T5(12345678123456781234567812345678,0,1,19/05/2022) -> Ok|
+
+
+### **Class *testResult* - method *storeTestResult***
+
+ **Criteria for method *storeTestResult*:**
+	
+- Length of RFID
+- Sign of idTestDescriptor
+- Format of Date
+
+**Predicates for method *storeTestResult*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Length of RFID  | 32     |
+|                          | !=32     |
+| Sign of idTestDescriptor  | (0, maxint) |
+|                          | (minint, 0)  |
+| Format of Date  | date |
+|                          | invalid date  |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Length of RFID        |  12345678123456781234567812345678 (32 digits) |
+|   Length of RFID        |  123456781234567812345678123456781  (33 digits)|
+|   Length of RFID        |  1234567812345678123456781234567  (31 digits)|
+|   Sign of idTestDescriptor        |  1               |
+|   Sign of idTestDescriptor        |  -1               |
+
+
+**Combination of predicates**:
+
+
+| Length of RFID | Sign of idTestDescriptor | Format of DateOfStock | Valid / Invalid | Description of the test case |
+|-------|-------|--------|-----|------|
+|!=32 | * | *  |Invalid|T1(46473847434,1,19/05/2022) -> Error|
+|*|(minint, 0)| *  |Invalid|T2(12345678123456781234567812345678,-1,19/05/2022) -> Error|
+|*| * | invalid DateOfStock  |Invalid|T3(12345678123456781234567812345678,1,1932/2205/2022) -> Error|
+|==32| (0, maxint) | valid DateOfStock  |Valid|T4(12345678123456781234567812345678,1,19/05/2022) -> Ok|
 
 
 ### **Class *position* - method *storePosition***
@@ -453,6 +495,20 @@ Version:
 |sku (DAO)|sku present|
 |sku (DAO)|sku not present|
 |sku (DAO)|delete sku|
+|testdescriptor (DAO)|get testDescriptor|
+|testdescriptor (DAO)|get non existing testDescriptor|
+|testdescriptor (DAO)|get all testDescriptors|
+|testdescriptor (DAO)|testDescriptor exists|
+|testdescriptor (DAO)|edit testDescriptor|
+|testdescriptor (DAO)|delete testDescriptor|
+|testdescriptor (DAO)|delete all testDescriptors|
+|testdescriptor (DAO)|get testResult|
+|testdescriptor (DAO)|get non existing testResult|
+|testdescriptor (DAO)|get all testResults for rfid|
+|testdescriptor (DAO)|testResult exists|
+|testdescriptor (DAO)|edit testResult|
+|testdescriptor (DAO)|delete testResult|
+|testdescriptor (DAO)|delete all testResults|
 |position (DAO)|get position|
 |position (DAO)|get positions|
 |position (DAO)|get not inserted position|
