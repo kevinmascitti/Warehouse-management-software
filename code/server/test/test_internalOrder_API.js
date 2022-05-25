@@ -448,7 +448,7 @@ function postNewOrder(expectedHTTPStatus, order) {
 }
 
 function editOrder(expectedHTTPStatus, order, state) {
-   it('put internal order with id = ' + order.id, function (done) {
+   it('put new state/skuitems to internal order with id = ' + order.id, function (done) {
         agent.put('/api/internalOrders/'+order.id).send(state)
             .then(function (r) {
                 r.should.have.status(expectedHTTPStatus);
