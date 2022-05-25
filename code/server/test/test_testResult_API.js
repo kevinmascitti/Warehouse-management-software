@@ -210,7 +210,7 @@ function getNonExistingtestR(expectedHTTPStatus, data, rfid) {
 }
 
 function modifyTestRAndCheck(expectedHTTPStatus, data, rfid) {
-    it('modify testResult', function (done) {
+    it('modify testResult and check', function (done) {
         agent.put('/api/skuitems/' + rfid + '/testResult/' + data.id)
             .send(data)
             .then(function (res) {

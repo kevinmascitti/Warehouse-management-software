@@ -502,13 +502,13 @@ Version:
 |testdescriptor (DAO)|edit testDescriptor|
 |testdescriptor (DAO)|delete testDescriptor|
 |testdescriptor (DAO)|delete all testDescriptors|
-|testdescriptor (DAO)|get testResult|
-|testdescriptor (DAO)|get non existing testResult|
-|testdescriptor (DAO)|get all testResults for rfid|
-|testdescriptor (DAO)|testResult exists|
-|testdescriptor (DAO)|edit testResult|
-|testdescriptor (DAO)|delete testResult|
-|testdescriptor (DAO)|delete all testResults|
+|testresult (DAO)|get testResult|
+|testresult (DAO)|get non existing testResult|
+|testresult (DAO)|get all testResults for rfid|
+|testresult (DAO)|testResult exists|
+|testresult (DAO)|edit testResult|
+|testresult (DAO)|delete testResult|
+|testresult (DAO)|delete all testResults|
 |position (DAO)|get position|
 |position (DAO)|get positions|
 |position (DAO)|get not inserted position|

@@ -64,6 +64,20 @@ We preferred the bottom up approach over the top down one since in this way we o
 |skuitem (DAO)|skuitem not present|
 |skuitem (DAO)|delete skuitem|
 |skuitem (DAO)| editSkutem|
+|testdescriptor (DAO)|get testDescriptor|
+|testdescriptor (DAO)|get non existing testDescriptor|
+|testdescriptor (DAO)|get all testDescriptors|
+|testdescriptor (DAO)|testDescriptor exists|
+|testdescriptor (DAO)|edit testDescriptor|
+|testdescriptor (DAO)|delete testDescriptor|
+|testdescriptor (DAO)|delete all testDescriptors|
+|testresult (DAO)|get testResult|
+|testresult (DAO)|get non existing testResult|
+|testresult (DAO)|get all testResults for rfid|
+|testresult (DAO)|testResult exists|
+|testresult (DAO)|edit testResult|
+|testresult (DAO)|delete testResult|
+|testresult (DAO)|delete all testResults|
 
 
 ## Step 2: testing the APIs
@@ -94,6 +108,20 @@ We preferred the bottom up approach over the top down one since in this way we o
 |item_API|modify item and check|
 |item_API|modify item|
 |item_API|delete item|
+|testDescriptor_API|store testDescriptor|
+|testDescriptor_API|get testDescriptor|
+|testDescriptor_API|get multiple testDescriptors|
+|testDescriptor_API|get non existing testDescriptors|
+|testDescriptor_API|modify testDescriptor and check|
+|testDescriptor_API|modify testDescriptor|
+|testDescriptor_API|delete testDescriptor|
+|testResult_API|store testResult|
+|testResult_API|get testResult|
+|testResult_API|get multiple testResults|
+|testResult_API|get non existing testResult|
+|testResult_API|modify testResult and check|
+|testResult_API|modify testResult|
+|testResult_API|delete testResult|
 
 
 
