@@ -118,6 +118,7 @@ exports.getSKU = async function (sku, quantityToReturn) {
     });
   });
 }
+
 exports.getSKUItems = async function (skuid, internalOrderId) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM SKUITEM WHERE SKUID = ? AND INTERNALORDERID = ?';
@@ -166,38 +167,10 @@ exports.storeInternalOrderProduct = async function(data){
   });
 }
 
-exports.storeSKU = async function(data){
-  return new Promise((resolve, reject) => {
-   const sql = 'INSERT INTO SKU(ID, DESCRIPTION, PRICE, TESTDESCRIPTORS) VALUES(?, ?, ?, ?)';
-   db.run(sql, [data.id, data.description, data.price, []], (err) => {
-     if (err) {
-       reject(err);
-       return;
-     }
-     resolve();
-   });
- });
-}
-
-
-
 exports.updateStateInternalOrder = async function(id, state) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE INTERNALORDER SET STATE = ? WHERE ID = ?';
     db.run(sql, [state, id], (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    });
-  });
-}
-
-exports.addSkuItem = async function(skuid, internalOrderId, rfid) {
-  return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO SKUITEM (RFID, SKUID, AVAILABLE, DATEOFSTOCK, INTERNALORDERID) VALUES (?, ?, ?, ?, ?)';
-    db.run(sql, [rfid, skuid, 1, dayjs().format('YYYY/MM/DD HH:mm'), internalOrderId], (err) => {
       if (err) {
         reject(err);
         return;
@@ -232,44 +205,6 @@ exports.deleteInternalOrderProducts = async function(internalOrderId) {
     });
   })
 }
-
-exports.getSKUItem = async function(rfid) {
-return new Promise((resolve, reject) => {
-  const sql = 'SELECT * FROM SKUITEM WHERE RFID = ?';
-  db.get(sql, [rfid], (err, data) => {
-    if (err) {
-      reject(err);
-      return;
-    }
-    if (data == undefined){
-      resolve(undefined);
-      return;
-    } 
-    resolve({
-      rfid: data.RFID,
-      skuid: data.SKUID,
-      available: data.AVAILABLE,
-      dateOfStock: data.DATEOFSTOCK,
-      internalOrderId: data.INTERNALORDERID,
-      restockOrderId: data.RESTOCKORDERID
-    });
-  });
-})
-}
-
-exports.deleteSkuItems = async function(internalOrderId) {
-return new Promise((resolve, reject) => {
-  const sql = 'DELETE FROM SKUITEM WHERE INTERNALORDERID = ?';
-  db.run(sql, [internalOrderId], (err) => {
-    if (err) {
-      reject(err);
-      return;
-    }
-    resolve();
-  });
-})
-}
-
 
 exports.deleteAllOrders = () => {
   return new Promise((resolve, reject) => {
