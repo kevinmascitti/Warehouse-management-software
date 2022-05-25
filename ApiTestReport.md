@@ -129,7 +129,24 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |testResult_API|modify testResult and check|
 |testResult_API|modify testResult|
 |testResult_API|delete testResult|
-
+|position_API| get multiple positions |
+|position_API| store position |
+|position_API| modify position |
+|position_API| modify positionID |
+|position_API| delete position |
+|user_API| get user info |
+|user_API| get all suppliers |
+|user_API| get all users |
+|user_API| store user |
+|user_API| login manager |
+|user_API| login customer |
+|user_API| login supplier |
+|user_API| login clerk |
+|user_API| login quality employee |
+|user_API| login delivery employee |
+|user_API| logout user |
+|user_API| modify user |
+|user_API| delete user |
 
 
 
@@ -138,22 +155,19 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 
 | Functional Requirements covered | Mocha  Test(s) | 
 | ------------------------------- | ----------- | 
-| FR1.1 (create or modify user) |  |
-| FR1.2 (delete user) |  |
-| FR1.3 (list all users) |  |
-| FR1.4 (search a user) |  |
-| FR1.5 (manage rights) |  |
-| FR3.1.1 (create or modify position) |  |
-| FR3.1.2 (delete position) |  |
-| FR3.1.3 (list all positions) |  |
-| FR3.1.4 (modify attrutes of a position) |  |
+| FR1.1 (create user) | store user |
+| FR1.2 (delete user) | delete user |
+| FR1.3 (list all users) | get all users |
+| FR1.5 (manage rights) | modify user |
+| FR3.1.1 (create or modify position) | store position, modify position, modify positionID |
+| FR3.1.2 (delete position) | delete position |
+| FR3.1.3 (list all positions) | get multiple positions |
+| FR3.1.4 (modify attributes of a position) | modify position |
 | FR3.2.1 (add a quality test) | store testDescriptor |
 | FR3.2.2 (modify a quality test) | modify testDescriptor and check, modify testDescriptor |
 | FR3.2.3 (delete a quality test) | delete testDescriptor |
-| FR4.1 (register or modify a customer) |  |
-| FR4.2 (delete a customer) |  |
-| FR4.3 (search a customer) |  |
-| FR4.4 (list all customer) |  |
+| FR4.1 (register or modify a customer) | store user, modify user |
+| FR4.2 (delete a customer) | delete user |
 | FR2.1 (create or modify sku) | store sku, modify sku |             
 | FR2.2 (delete a sku) | delete sku |
 | FR2.3 (list all skus) | get multiple skus |  
@@ -189,4 +203,3 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 | NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
 | NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem, get testResult, post testResult, put testResult, delete testResult  |
 | NFR9 (date format) |store skuitem, modify skuitem and check,  post new internal order,  post new restock order, post new return order, post testResult, modify testResult |
-
