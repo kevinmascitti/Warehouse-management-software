@@ -208,7 +208,7 @@ function getNonExistingTestD(expectedHTTPStatus, data) {
 }
 
 function modifyTestDAndCheck(expectedHTTPStatus, data) {
-    it('modify testDescriptor', function (done) {
+    it('modify testDescriptor and check', function (done) {
         agent.put('/api/testDescriptor/' + data.id)
             .send(data)
             .then(function (res) {
