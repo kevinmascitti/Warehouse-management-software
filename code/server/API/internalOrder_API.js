@@ -39,7 +39,8 @@ module.exports = function (app) {
           }
           else products.push(product);
         }
-        o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
+        o.products = products;
+        //o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
       } catch (err) {
         return res.status(500).json(err.message);
       }
@@ -82,7 +83,8 @@ module.exports = function (app) {
       } catch (err) {
         return res.status(500).json(err.message);
       }
-      o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
+      o.products = products
+      //o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     }
     return res.status(200).json(orders);
   });
@@ -122,7 +124,8 @@ module.exports = function (app) {
       } catch (err) {
         return res.status(500).json(err.message);
       }
-      o.products = products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
+      o.products = products;
+      //o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     }
     return res.status(200).json(orders);
   });
@@ -162,7 +165,7 @@ module.exports = function (app) {
         }
         else o.products.push(product);
       }
-      o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
+      //o.products = o.products.sort(function (a,b) {if (a.SKUId == b.SKUId)  return (a.RFID.toString()).localeCompare(b.RFID.toString()); else return a.SKUId - b.SKUId });
     } catch (err) {
       return res.status(500).json(err.message);
     }
