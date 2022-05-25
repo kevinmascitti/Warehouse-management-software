@@ -460,6 +460,49 @@ Version:
 
 
 
+### **Class *returnOrder* - method *storeOrder***
+
+ **Criteria for method *storeOrder*:**
+	
+- sign of id
+- format of date
+- sign of restockorderid
+
+**Predicates for method *storeUser*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| sign of id | (0, maxint) |
+|            | (minint, 0] |
+| format of date | Valid |
+|                |Invalid|
+| sign of restockorderid | (0, maxint) |
+|                       | (minint, 0) |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+| sign of id | = 0 |
+|  | maxint |
+| sign of restockorderid | = 0 |
+|  | maxint |
+
+
+**Combination of predicates**:
+
+
+| sign of id | format of date | sign of restockorderid |
+|-------|-------|-------|
+|(minint, 0)| * | * | |Invalid| T1() -> Error |
+|*| (invalid) | * | |Invalid| T2("clerk99@exwh.com", "", "zan", "testpassword", "clerk") -> Error |
+|*| * | (minint, 0) | |Invalid| T3("clerk99@exwh.com", "john", "", "testpassword", "clerk") -> Error | 
+|1| 1821/5/5 | 1 | |Valid| T4("clerk99@exwh.com", "john", "zan", "testpas", "clerk")) -> Error |
+
+
+
+
 # White Box Unit Tests
 
 ### Test cases definition
