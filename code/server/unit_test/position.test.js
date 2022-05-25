@@ -57,6 +57,10 @@ describe('test position apis', () => {
         await position.storePosition(position1);
         await position.storePosition(position2);
     });
+
+    afterAll(async () => {
+        await position.deleteAllPositions();
+    });
     
     testPosition(position1);
     testPosition(position2);
