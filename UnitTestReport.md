@@ -532,6 +532,6 @@ Version:
 
 ### Code coverage report
 
-    <Add here the screenshot report of the statement and branch coverage obtained using
-    the coverage tool. >
+
+<img src="photos_for_tests_documents/UNIT_coverage.png" width="1200">
 

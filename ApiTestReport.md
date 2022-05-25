@@ -1,14 +1,16 @@
 # Integration and API Test Report
 
-Date:
+Date: 25/05/2022
 
-Version:
+Version: 1.0
 
 # Contents
 
 - [Dependency graph](#dependency-graph)
 
 - [Integration approach](#integration-approach)
+
+- [Code coverage report](#code-coverage-report)
 
 - [Testing steps](#testing-steps)
   + [DB Testing](#step-1:-testing-the-db)
@@ -29,6 +31,12 @@ Version:
 We basically applied an incremental integration with a bottom up approach, as our first step consisted in unit tests on the functions which query directly the database and afterward we moved onto integration tests at the API level, which obviously depend on the DB.
 We preferred the bottom up approach over the top down one since in this way we observed directly the lower levels (i.e., the queries on the database) earlier in the process, without having the strict need to have immediately both all the APIs and the services to the DB fully working.
 
+# Code coverage report
+
+We report below the complete code coverage report after running the API tests.
+Note that also the files interacting with the DB (those in server/warehouse) are shown in the picture since their queries are called by API functions.
+
+<img src="photos_for_tests_documents/API_coverage.png" width="1200">
 
 # Testing steps
 
