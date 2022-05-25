@@ -156,6 +156,36 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |testResult_API|modify testResult and check|
 |testResult_API|modify testResult|
 |testResult_API|delete testResult|
+|restockOrder_API| get all restock orders |
+|restockOrder_API|get restock orders issued|
+|restockOrder_API|get restock order by id = ...|
+|restockOrder_API|get restock order (FAILS) by id = ...|
+|restockOrder_API|get return items (FAIL) given id = |
+|restockOrder_API|get return items given id = |
+|restockOrder_API|post new restock order |
+|restockOrder_API|put new state ... to order ... |
+|restockOrder_API|put skuItems to order ...|
+|restockOrder_API|put note to order ...|
+|restockOrder_API|get restock order with TRANSPORT NOTE by id = ...|
+|restockOrder_API|delete order = ...|
+|returnOrder_API| get return orders|
+|returnOrder_API|get return order with id = ...
+|returnOrder_API|get return order with id (NOT FOUND) = ...
+|returnOrder_API|put no matching restock
+|returnOrder_API|put no product vect
+|returnOrder_API|post new return order
+|returnOrder_API|post new return order with same restock and 2 skuitems
+|returnOrder_API|post new return order with wrong date format
+|returnOrder_API|delete order with id = ...
+|internalOrder_API|get all internal orders
+|internalOrder_API|get all internal orders with state = ACCEPTED
+|internalOrder_API|get all internal orders with state = ISSUED
+|internalOrder_API|get internal order with id = ...
+|internalOrder_API|get all internal order (FAILS) with id = ...
+|internalOrder_API|post new internal order
+|internalOrder_API|put new state/skuitems to internal order with id = ...
+|internalOrder_API|delete internal order with id = ...
+
 
 
 
