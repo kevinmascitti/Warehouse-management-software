@@ -118,10 +118,10 @@ describe('Testing testResult API', () => {
     //POST
     storeTestR(201, testR1);
     storeTestR(201, testR2);
-    storeTestR(404, {idTestDescriptor:99, rfid:"12345678901234567890123456789014"}); //test post with non existing testDescriptor
-    storeTestR(404, {idTestDescriptor:1, rfid:"12345678901234567890123456789011"}); //test post with non existing rfid
-    storeTestR(422, {idTestDescriptor:"text", rfid:"12345678901234567890123456789014"}); //test post with string idTestDescriptor
-    storeTestR(422, {idTestDescriptor:1, rfid:"123456789012345678901234567890"}); //test post with rfid too short
+    storeTestR(404, {idTestDescriptor:99, rfid:"12345678901234567890123456789014", Date: "2022/01/10"}); //test post with non existing testDescriptor
+    storeTestR(404, {idTestDescriptor:1, rfid:"12345678901234567890123456789011", Date: "2022/01/10"}); //test post with non existing rfid
+    storeTestR(422, {idTestDescriptor:"text", rfid:"12345678901234567890123456789014", Date: "2022/01/10"}); //test post with string idTestDescriptor
+    storeTestR(422, {idTestDescriptor:1, rfid:"123456789012345678901234567890", Date: "2022/01/10"}); //test post with rfid too short
     //GET
     getMultipleTestR(200, [testR1, testR2], "12345678901234567890123456789014");
     getMultipleTestR(404, [testR1, testR2], "12345678901234567890123456789011"); //test get with non existing rfid
@@ -134,12 +134,12 @@ describe('Testing testResult API', () => {
     //PUT
     modifyTestR(200, modTestR1, "12345678901234567890123456789014");
     modifyTestRAndCheck(200, modTestR2, "12345678901234567890123456789014"); //test put and check if testResult was updated
-    modifyTestR(422, {id:1,newIdTestDescriptor:1}, "123456789012345678901234567890"); //test put with short rfid
-    modifyTestR(422, {id:1,newIdTestDescriptor:"text"}, "12345678901234567890123456789014"); //test put with string testDescriptor id
-    modifyTestR(422, {id:"meow",newIdTestDescriptor:1}, "12345678901234567890123456789014"); //test put with string id
-    modifyTestR(404, {id:99, newIdTestDescriptor:1}, "12345678901234567890123456789014"); //test put with non existing testResult
-    modifyTestR(404, {id:1, newIdTestDescriptor:99}, "12345678901234567890123456789014"); //test put with non existing testDescriptor
-    modifyTestR(404, {id:1, newIdTestDescriptor:1}, "12345678901234567890123456789015"); //test put with non existing skuitem
+    modifyTestR(422, {id:1,newIdTestDescriptor:1,newDate:"2022/02/10"}, "123456789012345678901234567890"); //test put with short rfid
+    modifyTestR(422, {id:1,newIdTestDescriptor:"text",newDate:"2022/02/10"}, "12345678901234567890123456789014"); //test put with string testDescriptor id
+    modifyTestR(422, {id:"meow",newIdTestDescriptor:1,newDate:"2022/02/10"}, "12345678901234567890123456789014"); //test put with string id
+    modifyTestR(404, {id:99, newIdTestDescriptor:1,newDate:"2022/02/10"}, "12345678901234567890123456789014"); //test put with non existing testResult
+    modifyTestR(404, {id:1, newIdTestDescriptor:99,newDate:"2022/02/10"}, "12345678901234567890123456789014"); //test put with non existing testDescriptor
+    modifyTestR(404, {id:1, newIdTestDescriptor:1,newDate:"2022/02/10"}, "12345678901234567890123456789015"); //test put with non existing skuitem
     //DELETE
     deleteTestR(204, testR1, "12345678901234567890123456789014");
     getNonExistingtestR(404, testR1, "12345678901234567890123456789014"); //test if item was deleted

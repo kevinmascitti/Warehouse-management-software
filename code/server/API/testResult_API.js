@@ -51,7 +51,7 @@ module.exports = function (app) {
                 return res.status(422).json({error:"validation of idTestDescriptor failed"});
             }else if(isNaN(req.body.rfid) || req.body.rfid < 0 || req.body.rfid.length != 32){
                 return res.status(422).json({error:"validation of rfid failed"});
-            }else if(isNan(Date.parse(req.body.Date))){
+            }else if(isNaN(Date.parse(req.body.Date))){
                 return res.status(422).json({error:"validation of date failed"});
             }
             const N1 = await skuI.isThereSkuitem({ rfid: req.body.rfid });
@@ -84,7 +84,7 @@ module.exports = function (app) {
                 return res.status(422).json({error:"validation of rfid failed"});
             }else if(isNaN(req.params.id) || req.params.id < 0){
                 return res.status(422).json({error:"validation of id failed"});
-            }else if(isNan(Date.parse(req.body.newDate))){
+            }else if(isNaN(Date.parse(req.body.newDate))){
                 return res.status(422).json({error:"validation of date failed"});
             }
             const N1 = await skuI.isThereSkuitem({ rfid: req.params.rfid });
