@@ -457,6 +457,81 @@ Version:
 |*| * | * | * | 0  |Invalid| T1("clerk99@exwh.com", "john", "zan", "testpassword", "") -> Error |
 |16| 4 | 3 | 9 | 5 |Valid| T1("clerk99@exwh.com", "john", "zan", "testpassw", "clerk") -> Ok |
 
+### **Class *internalorder* - method *storeInternalOrder***
+
+ **Criteria for method *storeInternalOrder*:**
+	
+- Sign of id
+- Format of Date
+
+
+**Predicates for method *storeInternalOrder*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Sign of id | (0, maxint) |
+|                    | (minint, 0) |
+| Format of Date  |   valid   |
+|                          | invalid  |
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+| Sign of id | 1 |
+|  | -1 |
+
+
+**Combination of predicates**:
+
+
+| Sign of id | Format of date | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|
+|(minint, 0)| * |Invalid|T1(-2,"2022/10/15") -> Error|
+|*| invalid |Invalid|T2(2,"202210/2210/99") -> Error|
+|(0, maxint)| valid |Valid|T3(1,"2022/01/10") -> Ok|
+
+
+
+
+
+
+
+
+
+### **Class *restockorder* - method *storeRestockorder***
+
+ **Criteria for method *storeRestockorder*:**
+
+- Sign of supplierid
+- Format of issueDate
+
+**Predicates for method *storeRestockorder*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Sign of supplierid  |   (0, maxint)   |
+|                          |(minint, 0)     |
+| Format of issueDate  | valid date     |
+|                          |invalid date     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Sign of supplierid        |  1               |
+|   Sign of supplierid        |  -1               |
+
+
+**Combination of predicates**:
+
+
+| Sign of supplierid | Format of issueDate | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|
+| (minint, 0) | *  |Invalid|T1(-1,19/05/2022) -> Error|
+| * | invalid date  |Invalid|T2(1,399/05/202298) -> Error|
+| (0, maxint) | valid date  |Valid|T3(1,19/05/2022) -> Ok|
 
 
 
@@ -570,15 +645,7 @@ Version:
 |user (DAO)|user not present|
 |user (DAO)|delete user|
 |user (DAO)|modify user|
-|restockorder (DAO) | get all restock orders |
-|restockorder (DAO) | get issued restock orders |
-|restockorder (DAO) | get restock order with id |
-|restockorder (DAO) | get restock order products |
-|returnorder (DAO) | get all return orders |
-|returnorder (DAO) | get all products |
-|returnorder (DAO) | get return order with id |
-|returnorder (DAO) | delete return order with id |
-|returnorder (DAO) | delete all return orders |
+
 
 
 ### Code coverage report
