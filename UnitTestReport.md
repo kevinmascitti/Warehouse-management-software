@@ -460,6 +460,48 @@ Version:
 
 
 
+
+
+
+
+
+
+### **Class *restockorder* - method *storeRestockorder***
+
+ **Criteria for method *storeRestockorder*:**
+
+- Sign of supplierid
+- Format of issueDate
+
+**Predicates for method *storeSkuitem*:**
+
+| Criteria              | Predicate |
+| ------------------------ | --------- |
+| Sign of supplierid  |   (0, maxint)   |
+|                          |(minint, 0)     |
+| Format of issueDate  | valid date     |
+|                          |invalid date     |
+
+
+**Boundaries**:
+
+| Criteria | Boundary values |
+| --------- | --------------- |
+|   Sign of supplierid        |  1               |
+|   Sign of supplierid        |  -1               |
+
+
+**Combination of predicates**:
+
+
+| Sign of supplierid | Format of issueDate | Valid / Invalid | Description of the test case |
+|-------|-------|-------|--------|
+| (minint, 0) | *  |Invalid|T1(-1,19/05/2022) -> Error|
+| * | invalid date  |Invalid|T2(1,399/05/202298) -> Error|
+| (0, maxint) | valid date  |Valid|T3(1,19/05/2022) -> Ok|
+
+
+
 # White Box Unit Tests
 
 ### Test cases definition
