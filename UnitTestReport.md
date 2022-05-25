@@ -570,10 +570,10 @@ Version:
 
 | sign of id | format of date | sign of restockorderid |
 |-------|-------|-------|
-|(minint, 0)| * | * | |Invalid| T1() -> Error |
-|*| (invalid) | * | |Invalid| T2("clerk99@exwh.com", "", "zan", "testpassword", "clerk") -> Error |
-|*| * | (minint, 0) | |Invalid| T3("clerk99@exwh.com", "john", "", "testpassword", "clerk") -> Error | 
-|1| 1821/5/5 | 1 | |Valid| T4("clerk99@exwh.com", "john", "zan", "testpas", "clerk")) -> Error |
+|(minint, 0)| * | * | |Invalid| T1(-5, "1821/5/5", 3) -> Error |
+|*| (invalid) | * | |Invalid| T2(1, "paperino", 3) -> Error |
+|*| * | (minint, 0) | |Invalid| T3(1, "1821/5/5", -4) -> Error | 
+|1| 1821/5/5 | 1 | |Valid| T4(1, "1821/5/5", 3)) -> Error |
 
 
 
