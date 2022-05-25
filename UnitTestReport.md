@@ -527,7 +527,15 @@ Version:
 |user (DAO)|user not present|
 |user (DAO)|delete user|
 |user (DAO)|modify user|
-
+|restockorder (DAO) | get all restock orders |
+|restockorder (DAO) | get issued restock orders |
+|restockorder (DAO) | get restock order with id |
+|restockorder (DAO) | get restock order products |
+|returnorder (DAO) | get all return orders |
+|returnorder (DAO) | get all products |
+|returnorder (DAO) | get return order with id |
+|returnorder (DAO) | delete return order with id |
+|returnorder (DAO) | delete all return orders |
 
 
 ### Code coverage report
