@@ -94,7 +94,7 @@ exports.deleteOrders = async function (data) {
     });
 }
 
-
+/* istanbul ignore next */ //ESCLUDO DA COVERAGE
 exports.resetAutoIncrement = () => {
     return new Promise((resolve, reject) => {
       const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='RETURNORDER'";

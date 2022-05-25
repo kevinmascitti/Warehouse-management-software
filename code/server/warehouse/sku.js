@@ -203,6 +203,7 @@ exports.updateOldPosition = (data) => {
     });
 }
 
+/* istanbul ignore next */ //ESCLUDO DA COVERAGE
 exports.deleteStoredSku = (data) => {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM SKU WHERE ID = ?';
@@ -214,7 +215,7 @@ exports.deleteStoredSku = (data) => {
         });
     });
 }
-
+/* istanbul ignore next */ //ESCLUDO DA COVERAGE
 exports.deleteAllSkus = () => {
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM SKU';
@@ -226,7 +227,7 @@ exports.deleteAllSkus = () => {
       });
     });
   }
-
+/* istanbul ignore next */ //ESCLUDO DA COVERAGE
   exports.resetSkuAutoIncrement = () => {
     return new Promise((resolve, reject) => {
       const sql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME='SKU'";
