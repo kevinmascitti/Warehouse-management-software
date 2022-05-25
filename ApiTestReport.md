@@ -137,7 +137,7 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-| NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, //KEVIN AGGIUNGI   |
+| NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
 | NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem   |
 | NFR9 (date format) |store skuitem, modify skuitem and check, //AGGIUNGETE   |
 
