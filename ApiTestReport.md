@@ -185,8 +185,24 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |internalOrder_API|post new internal order
 |internalOrder_API|put new state/skuitems to internal order with id = ...
 |internalOrder_API|delete internal order with id = ...
-
-
+|position_API| get multiple positions |
+|position_API| store position |
+|position_API| modify position |
+|position_API| modify positionID |
+|position_API| delete position |
+|user_API| get user info |
+|user_API| get all suppliers |
+|user_API| get all users |
+|user_API| store user |
+|user_API| login manager |
+|user_API| login customer |
+|user_API| login supplier |
+|user_API| login clerk |
+|user_API| login quality employee |
+|user_API| login delivery employee |
+|user_API| logout user |
+|user_API| modify user |
+|user_API| delete user |
 
 
 
@@ -195,26 +211,23 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 
 | Functional Requirements covered | Mocha  Test(s) | 
 | ------------------------------- | ----------- | 
-| FR1.1 (create or modify user) |  |
-| FR1.2 (delete user) |  |
-| FR1.3 (list all users) |  |
-| FR1.4 (search a user) |  |
-| FR1.5 (manage rights) |  |
-| FR3.1.1 (create or modify position) |  |
-| FR3.1.2 (delete position) |  |
-| FR3.1.3 (list all positions) |  |
-| FR3.1.4 (modify attrutes of a position) |  |
-| FR3.2.1 (add a quality test) | store testDescriptor |
-| FR3.2.2 (modify a quality test) | modify testDescriptor and check, modify testDescriptor |
-| FR3.2.3 (delete a quality test) | delete testDescriptor |
-| FR4.1 (register or modify a customer) |  |
-| FR4.2 (delete a customer) |  |
-| FR4.3 (search a customer) |  |
-| FR4.4 (list all customer) |  |
+| FR1.1 (create user) | store user |
+| FR1.2 (delete user) | delete user |
+| FR1.3 (list all users) | get all users |
+| FR1.5 (manage rights) | modify user |
 | FR2.1 (create or modify sku) | store sku, modify sku |             
 | FR2.2 (delete a sku) | delete sku |
 | FR2.3 (list all skus) | get multiple skus |  
-| FR2.4 (search a sku) | get sku |  
+| FR2.4 (search a sku) | get sku | 
+| FR3.1.1 (create or modify position) | store position, modify position, modify positionID |
+| FR3.1.2 (delete position) | delete position |
+| FR3.1.3 (list all positions) | get multiple positions |
+| FR3.1.4 (modify attributes of a position) | modify position |
+| FR3.2.1 (add a quality test) | store testDescriptor |
+| FR3.2.2 (modify a quality test) | modify testDescriptor and check, modify testDescriptor |
+| FR3.2.3 (delete a quality test) | delete testDescriptor |
+| FR4.1 (register or modify a customer) | store user, modify user |
+| FR4.2 (delete a customer) | delete user | 
 | FR5.1 (Start a restock order)  |  post new restock order |
 | FR5.2 (Add a SKU to a restock order)  | post new restock order |
 | FR5.3 (Define quantity of SKU to be ordered)  | post new restock order |
@@ -222,6 +235,9 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 | FR5.6 (Issue  a restock order)  | put new state ... to order ... |
 | FR5.7 (Change state of a restock order) | put new state |
 | FR5.8 (Manage reception of a restock order) | post new restock order |
+| FR5.8.1 (create a sku with rfid) | store skuitem  | 
+| FR5.8.2 (store result of quality test on sku item) | store testResult | 
+| FR5.8.3 (store a skuitem)  | store skuitem |  
 | FR5.10 (Return a SKU item listed in a restock order) | get restock order by id = ... |
 | FR5.11 (Commit a return order)  | post new return order, post new return order with same restock and 2 skuitems |
 | FR6.1 (Start an internal order)  | post new internal order |
@@ -232,9 +248,7 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 | FR6.7 (Change state of an internal order) | put new state/skuitems to internal order with id = ... |
 | FR6.8 (Manage delivery of an internal order) | put new state/skuitems to internal order with id = ... |
 | FR6.10 (remove a sku) | delete skuitem |  
-| FR5.8.1 (create a sku with rfid) | store skuitem  | 
-| FR5.8.2 (store result of quality test on sku item) | store testResult | 
-| FR5.8.3 (store a skuitem)  | store skuitem |  
+
 
 
 
@@ -246,4 +260,3 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 | NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
 | NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem, get testResult, post testResult, put testResult, delete testResult  |
 | NFR9 (date format) |store skuitem, modify skuitem and check,  post new internal order,  post new restock order, post new return order, post testResult, modify testResult |
-
