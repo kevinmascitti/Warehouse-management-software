@@ -473,7 +473,7 @@ Version:
 - Sign of supplierid
 - Format of issueDate
 
-**Predicates for method *storeSkuitem*:**
+**Predicates for method *storeRestockorder*:**
 
 | Criteria              | Predicate |
 | ------------------------ | --------- |
