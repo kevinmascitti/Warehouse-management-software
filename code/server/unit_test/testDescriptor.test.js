@@ -66,7 +66,13 @@ describe("testDescriptors", () => {
     testIsThereTestDescriptor(testD1); //test if added testDescriptor exists
     testEditTestDescriptor(testD1); //test if testDescriptor was modified
     testDeleteTestDescriptor(testD1); //test if testDescriptor was deleted
-    testDeleteAllTestDescriptors();
+    testDeleteAllTestDescriptors(); //test if all testDescriptors are deleted
+
+    afterAll(async () => {
+        testD.resetTestDescriptorAutoIncrement();
+        sku.deleteAllSkus();
+        sku.resetSkuAutoIncrement();
+    });
     
 });
 
