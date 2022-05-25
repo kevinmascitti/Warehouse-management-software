@@ -124,8 +124,8 @@ const order2 = {
     "issueDate": "2021/11/30 19:33",
     "state": "COMPLETED",
     "products": [{ "SKUId": 12, "description": "a product", "price": 10.99, "RFID": "12345678901234567890123456789016" },
-    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789039" },
-    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789180" }],
+    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789180" },
+    { "SKUId": 290, "description": "another product", "price": 11.99, "RFID": "12345678901234567890123456789039" }],
     "customerId": 1
 }
 const order3 = {
@@ -401,7 +401,9 @@ function getOrderById(expectedHTTPStatus, order) {
    it('get internal order with id = ' + order.id, function (done) {
         agent.get('/api/InternalOrders/' + order.id)
             .then(function (r) {
-                //if(r.body.id == 1) console.log(r.body)
+                //if(r.body.id == 2) console.log(r.body)
+                //if(order.id == 2) console.log(order)
+
                 r.should.have.status(expectedHTTPStatus);
 
                 r.body.id.should.equal(order.id)

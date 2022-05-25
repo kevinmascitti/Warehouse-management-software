@@ -33,7 +33,7 @@ module.exports = function (app) {
                         return res.status(500).json(err.message);
                     }
                 }
-                o.products.sort(function (a, b) {return a.SKUId - b.SKUId})
+                //o.products = o.products.sort(function (a, b) {return a.SKUId - b.SKUId})
                 if (o.state == 'ISSUED' || o.state == 'DELIVERY') continue;
                 items = await skuItemFunctions.getStoredSkuitemsForRestockOrder({ id: o.id });
                 for (let i of items) {
@@ -42,7 +42,7 @@ module.exports = function (app) {
                         rfid: i.rfid
                     })
                 }
-                o.skuItems = o.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
+                //o.skuItems = o.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
             } catch (err) {
                 return res.status(500).json(err.message);
             }
@@ -77,7 +77,7 @@ module.exports = function (app) {
                         return res.status(500).json(err.message);
                     }
                 }
-                o.products.sort(function (a, b) {return a.SKUId - b.SKUId})
+                //o.products = o.products.sort(function (a, b) {return a.SKUId - b.SKUId})
             } catch (err) {
                 return res.status(500).json(err.message);
             }
@@ -115,7 +115,7 @@ module.exports = function (app) {
                     return res.status(500).json(err.message);
                 }
             }
-            order.products.sort(function (a, b) {return a.SKUId - b.SKUId})
+            //order.products = order.products.sort(function (a, b) {return a.SKUId - b.SKUId})
             if (order.state != 'ISSUED' && order.state != 'DELIVERY') {
                 items = await skuItemFunctions.getStoredSkuitemsForRestockOrder({ id: order.id });
                 for (let i of items) {
@@ -124,7 +124,7 @@ module.exports = function (app) {
                         rfid: i.rfid
                     })
                 }
-                order.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
+                //order.skuItems = order.skuItems.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
             }
         } catch (err) {
             return res.status(500).json(err.message);
@@ -152,7 +152,7 @@ module.exports = function (app) {
             for (let i of items) {
                 if(i.restockOrderId = req.params.id) itemsToReturn.push(i)
             }
-            itemsToReturn.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
+            //itemsToReturn = itemsToReturn.sort(function (a, b) { if (a.SKUId - b.SKUId != 0) return a.SKUId - b.SKUId; else return (a.rfid).localeCompare(b.rfid) })
             return res.status(200).json(itemsToReturn);
         } catch (err) {
             return res.status(500).json(err.message);

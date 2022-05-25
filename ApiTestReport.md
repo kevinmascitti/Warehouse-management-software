@@ -44,7 +44,6 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 
 | Unit name | Jest test case |
 |--|--|
-|item (DAO)|supplier already sells this item|
 |item (DAO)|get item|
 |item (DAO)|get items|
 |item (DAO)|get not inserted item|
@@ -53,6 +52,16 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |item (DAO)|item not present|
 |item (DAO)|delete item|
 |item (DAO)|edit item|
+|item (DAO)|supplier already sells this item|
+|skuitem (DAO)|get skuitem|
+|skuitem (DAO)|get available skuitem by skuid|
+|skuitem (DAO)|get skuitems|
+|skuitem (DAO)|get not inserted skuitem|
+|skuitem (DAO)|duplicated skuitem|
+|skuitem (DAO)|skuitem present|
+|skuitem (DAO)|skuitem not present|
+|skuitem (DAO)|delete skuitem|
+|skuitem (DAO)| editSkutem|
 |sku (DAO)|sku position already assigned to another sku|
 |sku (DAO)|modify position of an sku|
 |sku (DAO)|editSku without test descriptors|
@@ -63,15 +72,6 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |sku (DAO)|sku present|
 |sku (DAO)|sku not present|
 |sku (DAO)|delete sku|
-|skuitem (DAO)|get skuitem|
-|skuitem (DAO)|get available skuitem by skuid|
-|skuitem (DAO)|get skuitems|
-|skuitem (DAO)|get not inserted skuitem|
-|skuitem (DAO)|duplicated skuitem|
-|skuitem (DAO)|skuitem present|
-|skuitem (DAO)|skuitem not present|
-|skuitem (DAO)|delete skuitem|
-|skuitem (DAO)| editSkutem|
 |testdescriptor (DAO)|get testDescriptor|
 |testdescriptor (DAO)|get non existing testDescriptor|
 |testdescriptor (DAO)|get all testDescriptors|
@@ -86,6 +86,33 @@ Note that also the files interacting with the DB (those in server/warehouse) are
 |testresult (DAO)|edit testResult|
 |testresult (DAO)|delete testResult|
 |testresult (DAO)|delete all testResults|
+|position (DAO)|get position|
+|position (DAO)|get positions|
+|position (DAO)|get not inserted position|
+|position (DAO)|duplicated position|
+|position (DAO)|position present|
+|position (DAO)|position not present|
+|position (DAO)|delete position|
+|position (DAO)|modify position|
+|position (DAO)|modify positionID|
+|user (DAO)|get user|
+|user (DAO)|get users|
+|user (DAO)|get suppliers|
+|user (DAO)|get not inserted user|
+|user (DAO)|duplicated user|
+|user (DAO)|user present|
+|user (DAO)|user not present|
+|user (DAO)|delete user|
+|user (DAO)|modify user|
+|restockorder (DAO) | get all restock orders |
+|restockorder (DAO) | get issued restock orders |
+|restockorder (DAO) | get restock order with id |
+|restockorder (DAO) | get restock order products |
+|returnorder (DAO) | get all return orders |
+|returnorder (DAO) | get all products |
+|returnorder (DAO) | get return order with id |
+|returnorder (DAO) | delete return order with id |
+|returnorder (DAO) | delete all return orders |
 
 ## Step 2: testing the APIs
 | Unit name  |Mocha test cases |

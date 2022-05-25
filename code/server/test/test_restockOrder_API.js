@@ -135,12 +135,12 @@ const restockOrder2 = {
     id: 2,
     issueDate: dayjs().format("YYYY/MM/DD HH:mm"),
     state: "COMPLETEDRETURN",
-    products: [{"SKUId":12,"description":"a product","price":10.99,"qty":30}, {"SKUId":180,"description":"another product","price":11.99,"qty":20}]
+    products: [{"SKUId":180,"description":"another product","price":11.99,"qty":20}, {"SKUId":12,"description":"a product","price":10.99,"qty":30}]
 ,
     supplierId: 2,
     transportNote: undefined,
-    skuItems: [{ "SKUId": 12, "rfid": "12345678901234567890123456789012" }, { "SKUId": 12, "rfid": "12345678901234567890123456789016" }, { "SKUId": 180, "rfid": "12345678901234567890123456789017" }],
-    returnItems: [{ SKUId: 12, rfid: '12345678901234567890123456789012' },{ SKUId: 12, rfid: '12345678901234567890123456789016' } ]
+    skuItems: [{ "SKUId": 12, "rfid": "12345678901234567890123456789016" }, { "SKUId": 180, "rfid": "12345678901234567890123456789017" }, { "SKUId": 12, "rfid": "12345678901234567890123456789012" }],
+    returnItems: [{ SKUId: 12, rfid: '12345678901234567890123456789016' },{ SKUId: 12, rfid: '12345678901234567890123456789012' } ]
 }
 
 const restockOrder3 = {
@@ -414,7 +414,8 @@ function getRestockOrderById(expectedHTTPStatus, order) {
     it('get restock order by id = ' + order.id, function (done) {
         agent.get('/api/RestockOrders/'  + order.id)
             .then(function (r) {
-                //console.log(r.body)
+                //if (r.body.id == 2) console.log(r.body)
+                //if (r.body.id == 2) console.log(order)
                 //console.log(order)
                 //console.log(order.state)
                 //console.log("Transportnote " + r.body.transportNote)
@@ -474,7 +475,7 @@ function getReturnItemsByRestock(expectedHTTPStatus, order) {
         agent.get('/api/RestockOrders/'  + order.id + "/returnItems")
             .then(function (r) {
                 //console.log(r.body)
-                //console.log(order.id)
+                //console.log(order)
                 r.should.have.status(expectedHTTPStatus);
                 r.body.length.should.equal(order.returnItems.length)
                 
