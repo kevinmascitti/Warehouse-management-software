@@ -79,12 +79,21 @@ describe("testDescriptors", () => {
 
     testTestResult(testR1);
     testTestResult(testR2);
-    testNotExistingTestResult({id: 99, rfid:"12345678901234567890123456789011"});
-    testTestResults([testR1, testR2]);
-    testIsThereTestResult(testR1);
-    testEditTestResult(testR1);
-    testDeleteTestResult(testR1);
-    testDeleteAllTestResults(testR1.rfid);
+    testNotExistingTestResult({id: 99, rfid:"12345678901234567890123456789011"}); //test non existing testResult
+    testTestResults([testR1, testR2]); //test if all testResults of rfid are retrieved
+    testIsThereTestResult(testR1); //test if added testResult is present
+    testEditTestResult(testR1); //test if testResult was modified
+    testDeleteTestResult(testR1); //test if testResult was deleted
+    testDeleteAllTestResults(testR1.rfid); //test if all testResults are deleted
+
+    afterAll(async () => {
+        testR.resetTestResultAutoIncrement();
+        testD.deleteAllTestDescriptors();
+        testD.resetTestDescriptorAutoIncrement();
+        skuI.deleteAllSkuitems();
+        sku.deleteAllSkus();
+        sku.resetSkuAutoIncrement();
+    });
 
 });
 
