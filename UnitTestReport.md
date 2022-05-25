@@ -527,11 +527,19 @@ Version:
 |user (DAO)|user not present|
 |user (DAO)|delete user|
 |user (DAO)|modify user|
-
+|restockorder (DAO) | get all restock orders |
+|restockorder (DAO) | get issued restock orders |
+|restockorder (DAO) | get restock order with id |
+|restockorder (DAO) | get restock order products |
+|returnorder (DAO) | get all return orders |
+|returnorder (DAO) | get all products |
+|returnorder (DAO) | get return order with id |
+|returnorder (DAO) | delete return order with id |
+|returnorder (DAO) | delete all return orders |
 
 
 ### Code coverage report
 
-    <Add here the screenshot report of the statement and branch coverage obtained using
-    the coverage tool. >
+
+<img src="photos_for_tests_documents/UNIT_coverage.png" width="1200">
 
