@@ -176,11 +176,9 @@ We preferred the bottom up approach over the top down one since in this way we o
 # Coverage of Non Functional Requirements
 
 
-//ho aggiunto quelli interessanti, poi metteremo i nomi dei test che li coprono
-
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
 | NFR4 (structure of position id) | modify sku and check if all capacities changed correctly, get multiple positions, store position, modify position, modify positionID, delete position |
-| NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem   |
-| NFR9 (date format) |store skuitem, modify skuitem and check,  post new internal order,  post new restock order, post new return order   |
+| NFR6 (structure of RFID) | get skuitem, store skuitem, modify skuitem and check, delete skuitem, get testResult, post testResult, put testResult, delete testResult  |
+| NFR9 (date format) |store skuitem, modify skuitem and check,  post new internal order,  post new restock order, post new return order, post testResult, modify testResult |
 
