@@ -103,13 +103,21 @@ We preferred the bottom up approach over the top down one since in this way we o
 
 | Functional Requirements covered | Mocha  Test(s) | 
 | ------------------------------- | ----------- | 
-| FR2.1                             | store sku, modify sku |             
-| FR2.2                             | delete sku            |
-| FR2.3                             | get multiple skus            |  
-| FR2.4                             | get sku            |  
-| FR5.8.1                            | store skuitem            | 
-| FR5.8.3                            | store skuitem            |   
-| FR6.10                           | delete skuitem            |       
+| FR1.1 (create or modify user) |  |
+| FR1.2 (delete user) |  |
+| FR1.3 (list all users) |  |
+| FR1.4 (search a user) |  |
+| FR1.5 (manage rights) |  |
+| FR3.1.1 (create or modify position) |  |
+| FR3.1.2 (delete position) |  |
+| FR3.1.3 (list all positions) |  |
+| FR2.1 (create or modify sku) | store sku, modify sku |             
+| FR2.2 (delete a sku) | delete sku |
+| FR2.3 (list all skus) | get multiple skus |  
+| FR2.4 (search a sku) | get sku |  
+| FR5.8.1 (create a sku with rfid) | store skuitem  | 
+| FR5.8.3 (store a skuitem)  | store skuitem |   
+| FR6.10 (remove a sku) | delete skuitem |       
 
 
 
