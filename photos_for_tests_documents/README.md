@@ -1,0 +1,1 @@
+photos for tests document will go in this folder
